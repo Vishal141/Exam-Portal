@@ -6,7 +6,7 @@ import com.exam.portal.entities.Teacher;
 import com.exam.portal.interfaces.Authentication;
 
 public class AuthenticationService implements Authentication {
-    private AuthenticationDb authentication;
+    private final AuthenticationDb authentication;
 
     public AuthenticationService(){
         authentication = new AuthenticationDb();

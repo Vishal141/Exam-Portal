@@ -1,14 +1,16 @@
 package com.exam.portal.entities;
 
+import java.util.Date;
+
 public class Team {
     private String TeamId;
     private String Name;
     private String CreatorId;
-    private String DateCreated;
+    private Date DateCreated;
 
     public Team(){}
 
-    public Team(String teamId, String name, String creatorId, String dateCreated) {
+    public Team(String teamId, String name, String creatorId, Date dateCreated) {
         TeamId = teamId;
         Name = name;
         CreatorId = creatorId;
@@ -39,11 +41,11 @@ public class Team {
         CreatorId = creatorId;
     }
 
-    public String getDateCreated() {
+    public Date getDateCreated() {
         return DateCreated;
     }
 
-    public void setDateCreated(String dateCreated) {
+    public void setDateCreated(Date dateCreated) {
         DateCreated = dateCreated;
     }
 }
