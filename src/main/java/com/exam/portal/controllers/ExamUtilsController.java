@@ -8,8 +8,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
-
 @RestController
 @RequestMapping("/exam-portal/exam-utilities")
 public class ExamUtilsController{
@@ -20,8 +18,8 @@ public class ExamUtilsController{
     }
 
     @RequestMapping("/create-exam")
-    public String createExam(@RequestBody Exam exam, @RequestBody ArrayList<Question> questions){
-        if(examUtils.createExam(exam,questions))
+    public String createExam(@RequestBody Exam exam){
+        if(examUtils.createExam(exam,exam.getQuestions()))
             return "SUCCESSFUL";
         return "FAILED";
     }

@@ -1,5 +1,6 @@
 package com.exam.portal.entities;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 public class Exam {
@@ -8,6 +9,8 @@ public class Exam {
     private String CreatorId;
     private Date ExamDate;
     private int Duration;
+
+    private ArrayList<Question> Questions;
 
     public Exam(){}
 
@@ -57,5 +60,13 @@ public class Exam {
 
     public void setDuration(int duration) {
         Duration = duration;
+    }
+
+    public void setQuestions(ArrayList<Question> questions){
+        Questions = questions;
+    }
+
+    public ArrayList<Question> getQuestions(){
+        return Questions;
     }
 }

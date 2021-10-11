@@ -1,7 +1,6 @@
 package com.exam.portal.database;
 
 import com.exam.portal.entities.BelongTo;
-import com.exam.portal.entities.Student;
 import com.exam.portal.entities.Team;
 
 import java.sql.Connection;
