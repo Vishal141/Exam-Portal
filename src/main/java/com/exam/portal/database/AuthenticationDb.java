@@ -25,6 +25,7 @@ public class AuthenticationDb {
             preparedStatement.setString(5,teacher.getPassword());
             preparedStatement.execute();
             return true;
+
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -35,7 +36,7 @@ public class AuthenticationDb {
     public boolean register(Student student) {
         PreparedStatement preparedStatement = null;
         // connection=null;
-        String query = "INSERT INTO Student values(?,?,?,?,?)";
+        String query = "INSERT INTO Teacher values(?,?,?,?,?)";
         try {
             preparedStatement = connection.prepareStatement(query);
             preparedStatement.setString(1, student.getStudentId());
@@ -90,7 +91,4 @@ public class AuthenticationDb {
         }
         return false;
     }
-
-
-
 }
