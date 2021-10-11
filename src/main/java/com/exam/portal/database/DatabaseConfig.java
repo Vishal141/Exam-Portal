@@ -7,7 +7,7 @@ public class DatabaseConfig {
     private static final String DATABASE_URL = "jdbc:mysql://localhost:3306/Exam_Portal?" +
             "characterEncoding=utf-8&allowMultiQueries=true";
     private static final String DATABASE_USERNAME = "root";
-    private static final String DATABASE_PASSWORD = "NaRaD@123mysql";
+    private static final String DATABASE_PASSWORD = "Abhi1881@";
 
     private static Connection connection;
 
