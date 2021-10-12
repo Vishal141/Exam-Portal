@@ -102,13 +102,7 @@ public class AuthenticationDb {
             preparedStatement.setString(1,email);
             rs=preparedStatement.executeQuery();
             if (rs.next()){
-                Teacher teacher = new Teacher();
-                teacher.setTeacherId(rs.getString(1));
-                teacher.setName(rs.getString(2));
-                teacher.setEmail(rs.getString(3));
-                teacher.setContactNo(rs.getString(4));
-                teacher.setPassword("");
-                return teacher;
+                return extractTeacher(rs);
             }
         }catch (Exception e){
             e.printStackTrace();
@@ -126,12 +120,7 @@ public class AuthenticationDb {
             preparedStatement.setString(1,email);
             rs=preparedStatement.executeQuery();
             if (rs.next()){
-                Student student = new Student();
-                student.setStudentId(rs.getString(1));
-                student.setName(rs.getString(2));
-                student.setEmail(rs.getString(3));
-                student.setContactNo(rs.getString(4));
-                student.setPassword("");
+                Student student = extractStudent(rs);
                 return student;
             }
         }catch (Exception e){
@@ -145,7 +134,7 @@ public class AuthenticationDb {
         ResultSet rs;
         PreparedStatement preparedStatement=null;
         ArrayList<Student> students;
-        String query="SELECT * FROM Student WHERE Student_Id=?% OR Name=?% OR Email=?%";
+        String query="SELECT * FROM Student WHERE Student_Id=%?% OR Name=%?% OR Email=%?%";
         try{
             preparedStatement=connection.prepareStatement(query);
             preparedStatement.setString(1,prefix);
@@ -154,13 +143,7 @@ public class AuthenticationDb {
             rs=preparedStatement.executeQuery();
             students = new ArrayList<>();
             while (rs.next()){
-                Student student = new Student();
-                student.setStudentId(rs.getString(1));
-                student.setName(rs.getString(2));
-                student.setEmail(rs.getString(3));
-                student.setContactNo(rs.getString(4));
-                student.setPassword("");
-                students.add(student);
+                students.add(extractStudent(rs));
             }
             return students;
         }catch (Exception e){
@@ -173,7 +156,7 @@ public class AuthenticationDb {
         ResultSet rs;
         PreparedStatement preparedStatement=null;
         ArrayList<Teacher> teachers;
-        String query="SELECT * FROM Teacher WHERE Teacher_Id=?% OR Name=?% OR Email=?%";
+        String query="SELECT * FROM Teacher WHERE Teacher_Id=%?% OR Name=%?% OR Email=%?%";
         try{
             preparedStatement=connection.prepareStatement(query);
             preparedStatement.setString(1,prefix);
@@ -182,12 +165,7 @@ public class AuthenticationDb {
             rs=preparedStatement.executeQuery();
             teachers= new ArrayList<>();
             while (rs.next()){
-                Teacher teacher = new Teacher();
-                teacher.setTeacherId(rs.getString(1));
-                teacher.setName(rs.getString(2));
-                teacher.setEmail(rs.getString(3));
-                teacher.setContactNo(rs.getString(4));
-                teacher.setPassword("");
+                Teacher teacher = extractTeacher(rs);
                 teachers.add(teacher);
             }
             return teachers;
@@ -196,4 +174,44 @@ public class AuthenticationDb {
         }
         return null;
     }
+
+    public boolean updateTeacher(Teacher teacher){
+        PreparedStatement preparedStatement = null;
+        String query = "UPDATE Teacher SET Email=?,Name=?,ContactNo=? WHERE Teacher_Id=? AND Password=?";
+        try{
+            preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1,teacher.getEmail());
+            preparedStatement.setString(2,teacher.getName());
+            preparedStatement.setString(3,teacher.getContactNo());
+            preparedStatement.setString(4, teacher.getTeacherId());
+            preparedStatement.setString(5,teacher.getPassword());
+            if(preparedStatement.executeUpdate()>0)
+                return true;
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    private Teacher extractTeacher(ResultSet rs) throws SQLException {
+        Teacher teacher = new Teacher();
+        teacher.setTeacherId(rs.getString(1));
+        teacher.setName(rs.getString(2));
+        teacher.setEmail(rs.getString(3));
+        teacher.setContactNo(rs.getString(4));
+        teacher.setPassword("");
+        return teacher;
+    }
+
+    private Student extractStudent(ResultSet rs) throws SQLException {
+        Student student = new Student();
+        student.setStudentId(rs.getString(1));
+        student.setName(rs.getString(2));
+        student.setEmail(rs.getString(3));
+        student.setContactNo(rs.getString(4));
+        student.setPassword("");
+        return student;
+    }
+
 }

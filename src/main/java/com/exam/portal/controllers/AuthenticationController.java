@@ -52,8 +52,9 @@ public class AuthenticationController {
         return FAILED;
     }
 
-    @RequestMapping("/teacher/get?{email}")
+    @RequestMapping("/teacher/get/{email}")
     public Teacher getTeacher(@PathVariable String email){
+        System.out.println(email);
         return authentication.findTeacherByEmail(email);
     }
 
@@ -70,5 +71,12 @@ public class AuthenticationController {
     @RequestMapping("/student/search?q={prefix}")
     public ArrayList<Student> searchStudent(@PathVariable String prefix){
         return authentication.searchStudent(prefix);
+    }
+
+    @RequestMapping("/teacher/update")
+    public String updateTeacherDetails(@RequestBody Teacher teacher){
+        if(authentication.updateTeacher(teacher))
+            return SUCCESSFUL;
+        return FAILED;
     }
 }

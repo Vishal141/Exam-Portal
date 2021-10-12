@@ -53,4 +53,9 @@ public class AuthenticationService implements Authentication {
     public ArrayList<Student> searchStudent(String prefix) {
         return authentication.searchStudent(prefix);
     }
+
+    @Override
+    public boolean updateTeacher(Teacher teacher) {
+        return authentication.updateTeacher(teacher);
+    }
 }

@@ -40,12 +40,12 @@ public class TeamUtilsController {
         return FAILED;
     }
 
-    @RequestMapping("/get/all/student?{Id}")
+    @RequestMapping("/get/all/student?id={Id}")
     public ArrayList<Team> getStudentTeams(@PathVariable String Id){
         return teamUtils.findStudentTeamsById(Id);
     }
 
-    @RequestMapping("/get/all/teacher?{Id}")
+    @RequestMapping("/get/all/teacher?id={Id}")
     public ArrayList<Team> getTeacherTeams(@PathVariable String Id){
         return teamUtils.findTeacherTeamsById(Id);
     }

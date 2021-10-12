@@ -14,4 +14,5 @@ public interface Authentication {
     public Student findStudentByEmail(String email);
     public ArrayList<Teacher> searchTeacher(String prefix);
     public ArrayList<Student> searchStudent(String prefix);
+    public boolean updateTeacher(Teacher teacher);
 }
