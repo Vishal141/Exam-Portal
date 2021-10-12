@@ -1,0 +1,16 @@
+.button{
+    -fx-background-color: black;
+    -fx-border-color: white;
+    -fx-border-radius: 5px;
+}
+.button:hover{
+    -fx-background-color: #00E676;
+}
+
+.jfx-button{
+    -fx-background-color: #3f1dcb;
+}
+
+.jfx-button:hover{
+    -fx-background-color: #00E676;
+}

@@ -2,12 +2,16 @@ package com.exam.portal.server;
 
 import com.exam.portal.models.*;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ServerHandler implements Server{
     private static final String AUTHENTICATION_URL = "/authentication";
@@ -148,6 +152,126 @@ public class ServerHandler implements Server{
             connection = ServerConfig.getConnection(url);
             assert connection != null;
             String json = gson.toJson(exam);
+            writeJson(json);
+
+            BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            String response = reader.readLine();
+            return response.equals(SUCCESSFUL);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return  false;
+    }
+
+    @Override
+    public Teacher getTeacher(String email) {
+        try{
+            String url = AUTHENTICATION_URL + "/teacher/get/"+email;
+            connection = ServerConfig.getConnection(url);
+            assert connection != null;
+
+            BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            String response = reader.readLine();
+            Teacher teacher = gson.fromJson(response,Teacher.class);
+            return teacher;
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public Student getStudent(String email) {
+        try{
+            String url = AUTHENTICATION_URL + "/student/get?"+email;
+            connection = ServerConfig.getConnection(url);
+            assert connection != null;
+
+            BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            String response = reader.readLine();
+            Student student = gson.fromJson(response,Student.class);
+            return student;
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public ArrayList<Teacher> searchTeacher(String text) {
+        try{
+            String url = AUTHENTICATION_URL + "/teacher/search?q="+text;
+            connection = ServerConfig.getConnection(url);
+            assert connection != null;
+
+            BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            String response = reader.readLine();
+            ArrayList<Teacher> teachers = gson.fromJson(response,new TypeToken<List<Teacher>>(){}.getType());
+            return teachers;
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public ArrayList<Student> searchStudent(String text) {
+        try{
+            String url = AUTHENTICATION_URL + "/student/search?q="+text;
+            connection = ServerConfig.getConnection(url);
+            assert connection != null;
+
+            BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            String response = reader.readLine();
+            ArrayList<Student> students = gson.fromJson(response,new TypeToken<List<Student>>(){}.getType());
+            return students;
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public ArrayList<Team> getStudentsTeams(String Id) {
+        try{
+            String url = TEAM_URL + "/get/all/student?id="+Id;
+            connection = ServerConfig.getConnection(url);
+            assert connection != null;
+
+            BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            String response = reader.readLine();
+            ArrayList<Team> teams = gson.fromJson(response,new TypeToken<List<Team>>(){}.getType());
+            return teams;
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public ArrayList<Team> getTeachersTeams(String Id) {
+        try{
+            String url = TEAM_URL + "/get/all/teacher?id="+Id;
+            connection = ServerConfig.getConnection(url);
+            assert connection != null;
+
+            BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            String response = reader.readLine();
+            ArrayList<Team> teams = gson.fromJson(response,new TypeToken<List<Team>>(){}.getType());
+            return teams;
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public boolean updateTeacher(Teacher teacher) {
+        try {
+            String url = AUTHENTICATION_URL + "/teacher/update";
+            connection = ServerConfig.getConnection(url);
+            assert connection != null;
+            String json = gson.toJson(teacher);
             writeJson(json);
 
             BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));

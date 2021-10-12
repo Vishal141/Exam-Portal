@@ -4,27 +4,28 @@ import com.exam.portal.models.Student;
 import com.exam.portal.models.Teacher;
 import com.exam.portal.server.Server;
 import com.exam.portal.server.ServerHandler;
+import com.exam.portal.teacher.TeacherController;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
 
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 import java.io.IOException;
 import java.math.BigInteger;
+import java.net.URL;
 import java.security.MessageDigest;
 import java.security.SecureRandom;
 import java.security.spec.KeySpec;
+import java.util.ResourceBundle;
 import java.util.UUID;
 
-public class LoginController {
+public class LoginController implements Initializable {
     @FXML
     RadioButton isStudent;
     @FXML
@@ -36,10 +37,14 @@ public class LoginController {
     @FXML
     Button signupBtn;
 
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        UserEmailId.requestFocus();
+    }
     @FXML
     void signIn(ActionEvent event) {
         if(UserEmailId.getText().equals("") || enteredPassword.getText().equals("")){
-            showWarning("All fields are mandatory.");
+            showWarning("All fields are mandatory.", Alert.AlertType.WARNING);
         }else{
             Server server = ServerHandler.getInstance();
             if(isStudent.isSelected()){
@@ -49,16 +54,17 @@ public class LoginController {
                 if(server.login(student)){
                     System.out.println("successful");
                 }else{
-                    System.out.println("failed");
+                    showWarning("Invalid Credentials", Alert.AlertType.ERROR);
                 }
             }else{
                 Teacher teacher = new Teacher();
                 teacher.setEmail(UserEmailId.getText());
                 teacher.setPassword(getHash(enteredPassword.getText()));
                 if(server.login(teacher)){
-                    System.out.println("login successful");
+                    TeacherController.teacher = server.getTeacher(UserEmailId.getText());
+                    gotoDashboard("../teacher/TeacherDashboard.fxml");
                 }else{
-                    System.out.println("login failed");
+                    showWarning("Invalid Credentials", Alert.AlertType.ERROR);
                 }
             }
         }
@@ -92,7 +98,7 @@ public class LoginController {
     @FXML
     void makePerson(ActionEvent event) {
         if(pName.getText().equals("") || pNumber.getText().equals("") || pMail.getText().equals("") || pPassword.getText().equals("")){
-            showWarning("All fields are mandatory.");
+            showWarning("All fields are mandatory.", Alert.AlertType.WARNING);
         }else{
             Server server = ServerHandler.getInstance();
             if(isStudent.isSelected()){
@@ -107,7 +113,7 @@ public class LoginController {
                 if(server.register(student)){
                     System.out.println("successful");
                 }else{
-                    System.out.println("failed");
+                    showWarning("Email is already registered.", Alert.AlertType.ERROR);
                 }
             }else{
                 Teacher teacher = new Teacher();
@@ -118,17 +124,22 @@ public class LoginController {
                 teacher.setPassword(getHash(pPassword.getText()));
 
                 if(server.register(teacher)){
-                    System.out.println("register successful");
+                    TeacherController.teacher = server.getTeacher(teacher.getEmail());
+                    gotoDashboard("../teacher/TeacherDashboard.fxml");
                 }else {
-                    System.out.println("register failed");
+                    showWarning("Email is already registered.", Alert.AlertType.ERROR);
                 }
             }
         }
     }
 
     //function for showing alert.
-    private void showWarning(String message){
-
+    private void showWarning(String message, Alert.AlertType type){
+        Alert alert = new Alert(type);
+        alert.setHeaderText(null);
+        alert.setTitle("Warning");
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 
     //function for hashing password.
@@ -160,6 +171,18 @@ public class LoginController {
             Parent root = FXMLLoader.load(getClass().getResource("Login.fxml"));
             stage.setTitle("Login");
             stage.setScene(new Scene(root,700,500));
+            stage.show();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public void gotoDashboard(String path){
+        try {
+            Stage stage = (Stage) isStudent.getScene().getWindow();
+            Parent root = FXMLLoader.load(getClass().getResource(path));
+            stage.setTitle("Dashboard");
+            stage.setScene(new Scene(root,500,600));
             stage.show();
         }catch (Exception e){
             e.printStackTrace();
