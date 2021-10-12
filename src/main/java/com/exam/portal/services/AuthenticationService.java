@@ -4,7 +4,8 @@ import com.exam.portal.database.AuthenticationDb;
 import com.exam.portal.entities.Student;
 import com.exam.portal.entities.Teacher;
 import com.exam.portal.interfaces.Authentication;
-import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
 
 public class AuthenticationService implements Authentication {
     private final AuthenticationDb authentication;
@@ -31,5 +32,25 @@ public class AuthenticationService implements Authentication {
     @Override
     public boolean login(Teacher teacher) {
         return authentication.login(teacher);
+    }
+
+    @Override
+    public Teacher findTeacherByEmail(String email) {
+        return authentication.findTeacherByEmail(email);
+    }
+
+    @Override
+    public Student findStudentByEmail(String email) {
+        return authentication.findStudentByEmail(email);
+    }
+
+    @Override
+    public ArrayList<Teacher> searchTeacher(String prefix) {
+        return authentication.searchTeacher(prefix);
+    }
+
+    @Override
+    public ArrayList<Student> searchStudent(String prefix) {
+        return authentication.searchStudent(prefix);
     }
 }

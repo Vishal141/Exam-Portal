@@ -4,7 +4,12 @@ import com.exam.portal.entities.BelongTo;
 import com.exam.portal.entities.Student;
 import com.exam.portal.entities.Team;
 
+import java.util.ArrayList;
+
 public interface TeamUtils {
     public boolean createTeam(Team team);
     public boolean addStudent(BelongTo belongTo);
+    public ArrayList<Team> findStudentTeamsById(String Id);
+    public ArrayList<Team> findTeacherTeamsById(String Id);
+    public boolean makeAdmin(String teamId,String teacherId);
 }
