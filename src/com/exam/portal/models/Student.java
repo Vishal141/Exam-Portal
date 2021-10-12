@@ -1,59 +1,59 @@
 package com.exam.portal.models;
 
 public class Student {
-    private String StudentId;
-    private String Name;
-    private String Email;
-    private String ContactNo;
-    private String Password;
+    private String studentId;
+    private String name;
+    private String email;
+    private String contactNo;
+    private String password;
 
     public Student(){}
 
     public Student(String studentId, String name, String email, String contactNo, String password) {
-        StudentId = studentId;
-        Name = name;
-        Email = email;
-        ContactNo = contactNo;
-        Password = password;
+        this.studentId = studentId;
+        this.name = name;
+        this.email = email;
+        this.contactNo = contactNo;
+        this.password = password;
     }
 
     public String getStudentId() {
-        return StudentId;
+        return studentId;
     }
 
     public void setStudentId(String studentId) {
-        StudentId = studentId;
+        this.studentId = studentId;
     }
 
     public String getName() {
-        return Name;
+        return name;
     }
 
     public void setName(String name) {
-        Name = name;
+        this.name = name;
     }
 
     public String getEmail() {
-        return Email;
+        return email;
     }
 
     public void setEmail(String email) {
-        Email = email;
+        this.email = email;
     }
 
     public String getContactNo() {
-        return ContactNo;
+        return contactNo;
     }
 
     public void setContactNo(String contactNo) {
-        ContactNo = contactNo;
+        this.contactNo = contactNo;
     }
 
     public String getPassword() {
-        return Password;
+        return password;
     }
 
     public void setPassword(String password) {
-        Password = password;
+        this.password = password;
     }
 }

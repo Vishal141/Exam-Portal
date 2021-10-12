@@ -2,8 +2,6 @@ package com.exam.portal.server;
 
 import com.exam.portal.models.*;
 
-import java.util.ArrayList;
-
 public interface Server {
     public boolean login(Student student);
     public boolean login(Teacher teacher);

@@ -7,6 +7,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
+import java.net.URL;
 
 public class ServerHandler implements Server{
     private static final String AUTHENTICATION_URL = "/authentication";
@@ -16,6 +17,7 @@ public class ServerHandler implements Server{
     private static final String SUCCESSFUL = "SUCCESSFUL";
 
     private static Gson gson;
+    private HttpURLConnection connection;
 
     private static ServerHandler serverHandler=null;
 
@@ -33,10 +35,10 @@ public class ServerHandler implements Server{
     public boolean login(Student student) {
         try{
             String url = AUTHENTICATION_URL + "/student/signIn";
-            HttpURLConnection connection = ServerConfig.getConnection(url);
+            connection = ServerConfig.getConnection(url);
             String json = gson.toJson(student);
             assert connection != null;
-            writeJson(connection,json);
+            writeJson(json);
 
             //reading server response
             BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
@@ -53,10 +55,10 @@ public class ServerHandler implements Server{
     public boolean login(Teacher teacher) {
         try {
             String url = AUTHENTICATION_URL + "/teacher/signIn";
-            HttpURLConnection connection = ServerConfig.getConnection(url);
+            connection = ServerConfig.getConnection(url);
             String json = gson.toJson(teacher);
             assert connection != null;
-            writeJson(connection,json);
+            writeJson(json);
 
             BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
             String response = reader.readLine();
@@ -70,11 +72,11 @@ public class ServerHandler implements Server{
     @Override
     public boolean register(Student student) {
         try {
-            String url = AUTHENTICATION_URL + "/student/singUp";
-            HttpURLConnection connection = ServerConfig.getConnection(url);
+            String url = AUTHENTICATION_URL + "/student/signUp";
+            connection = ServerConfig.getConnection(url);
             assert connection != null;
             String json = gson.toJson(student);
-            writeJson(connection,json);
+            writeJson(json);
 
             BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
             String response = reader.readLine();
@@ -88,11 +90,11 @@ public class ServerHandler implements Server{
     @Override
     public boolean register(Teacher teacher) {
         try {
-            String url = AUTHENTICATION_URL + "/teacher/singUp";
-            HttpURLConnection connection = ServerConfig.getConnection(url);
+            String url = AUTHENTICATION_URL + "/teacher/signUp";
+            connection = ServerConfig.getConnection(url);
             assert connection != null;
             String json = gson.toJson(teacher);
-            writeJson(connection,json);
+            writeJson(json);
 
             BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
             String response = reader.readLine();
@@ -107,10 +109,10 @@ public class ServerHandler implements Server{
     public boolean createTeam(Team team) {
         try {
             String url = TEAM_URL + "/create-team";
-            HttpURLConnection connection = ServerConfig.getConnection(url);
+            connection = ServerConfig.getConnection(url);
             assert connection != null;
             String json = gson.toJson(team);
-            writeJson(connection,json);
+            writeJson(json);
 
             BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
             String response = reader.readLine();
@@ -125,10 +127,10 @@ public class ServerHandler implements Server{
     public boolean addStudent(BelongTo belongTo) {
         try {
             String url = TEAM_URL + "/add-student";
-            HttpURLConnection connection = ServerConfig.getConnection(url);
+            connection = ServerConfig.getConnection(url);
             assert connection != null;
             String json = gson.toJson(belongTo);
-            writeJson(connection,json);
+            writeJson(json);
 
             BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
             String response = reader.readLine();
@@ -143,10 +145,10 @@ public class ServerHandler implements Server{
     public boolean createExam(Exam exam) {
         try {
             String url = EXAM_URL + "/create-exam";
-            HttpURLConnection connection = ServerConfig.getConnection(url);
+            connection = ServerConfig.getConnection(url);
             assert connection != null;
             String json = gson.toJson(exam);
-            writeJson(connection,json);
+            writeJson(json);
 
             BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
             String response = reader.readLine();
@@ -158,8 +160,9 @@ public class ServerHandler implements Server{
     }
 
     //method for writing object in request body
-    private void writeJson(HttpURLConnection connection,String json){
+    private void writeJson(String json){
         try {
+            System.out.println(json);
             connection.setFixedLengthStreamingMode(json.length());
             OutputStream os = connection.getOutputStream();
             os.write(json.getBytes());

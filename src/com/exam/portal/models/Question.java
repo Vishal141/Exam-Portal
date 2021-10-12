@@ -4,103 +4,102 @@ import java.util.ArrayList;
 import java.util.StringTokenizer;
 
 public class Question {
-    private String QuestionId;
-    private String Question;
-    private String Options;
-    private boolean IsQuestionImg;
-    private boolean IsOptionsImg;
-    private String Answer;
-    private double Point;
-    private double NegPoint;
-    private int OptionCount;
+    private String questionId;
+    private String question;
+    private String options;
+    private boolean isQuestionImg;
+    private boolean isOptionsImg;
+    private String answer;
+    private double point;
+    private double negPoint;
+    private int optionCount;
 
     public Question(){
-        Question = "";
-        Options = "";
-        Point = 1.0;
-        NegPoint = 0.0;
-        IsOptionsImg = false;
-        IsQuestionImg = false;
-        OptionCount = 0;
+        question = "";
+        options = "";
+        point = 1.0;
+        negPoint = 0.0;
+        isOptionsImg = false;
+        isQuestionImg = false;
+        optionCount = 0;
     }
 
-    public Question(String questionId,String question,boolean isQuestionImg,
-                    boolean isOptionsImg,String answer,double point,double negPoint){
-        QuestionId = questionId;
-        Question = question;
-        IsQuestionImg = isQuestionImg;
-        IsOptionsImg = isOptionsImg;
-        Answer = answer;
-        Point = point;
-        NegPoint = negPoint;
-        OptionCount = 0;
+    public Question(String questionId, String question, boolean isQuestionImg, boolean isOptionsImg,
+                    double point, double negPoint) {
+        this.questionId = questionId;
+        this.question = question;
+        this.isQuestionImg = isQuestionImg;
+        this.isOptionsImg = isOptionsImg;
+        this.point = point;
+        this.negPoint = negPoint;
+        optionCount = 0;
     }
 
     public String getQuestionId() {
-        return QuestionId;
+        return questionId;
     }
 
     public void setQuestionId(String questionId) {
-        QuestionId = questionId;
+        this.questionId = questionId;
     }
 
     public String getQuestion() {
-        return Question;
+        return question;
     }
 
     public void setQuestion(String question) {
-        Question = question;
+        this.question = question;
     }
 
     public boolean isQuestionImg() {
-        return IsQuestionImg;
+        return isQuestionImg;
     }
 
     public void setQuestionImg(boolean questionImg) {
-        IsQuestionImg = questionImg;
+        isQuestionImg = questionImg;
     }
 
     public boolean isOptionsImg() {
-        return IsOptionsImg;
+        return isOptionsImg;
     }
 
     public void setOptionsImg(boolean optionsImg) {
-        IsOptionsImg = optionsImg;
+        isOptionsImg = optionsImg;
     }
 
     public String getAnswer() {
-        return Answer;
+        return answer;
     }
 
     public void setAnswer(String answer) {
-        Answer = answer;
+        this.answer = answer;
     }
 
     public double getPoint() {
-        return Point;
+        return point;
     }
 
     public void setPoint(double point) {
-        Point = point;
+        this.point = point;
     }
 
     public double getNegPoint() {
-        return NegPoint;
+        return negPoint;
     }
 
     public void setNegPoint(double negPoint) {
-        NegPoint = negPoint;
+        this.negPoint = negPoint;
     }
 
     public void addOption(String option){
-        OptionCount++;
-        option = "("+OptionCount+")"+" "+option;
+        optionCount++;
+        option = "("+optionCount+")"+" "+option;
         option += "\n";
-        Options += option;
+        options += option;
     }
 
     private ArrayList<String> extractOptions(){
-        StringTokenizer tokenizer = new StringTokenizer(Options,"\n");
+        StringTokenizer tokenizer = new StringTokenizer(options,"\n");
         ArrayList<String> options = new ArrayList<>();
         while(tokenizer.hasMoreTokens())
             options.add(tokenizer.nextToken());

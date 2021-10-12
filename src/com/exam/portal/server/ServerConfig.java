@@ -10,9 +10,8 @@ public class ServerConfig {
         try {
             URL url = new URL(BASE_URL+path);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("GET");
             connection.setDoOutput(true);
-            connection.setRequestProperty("Content-Type","application/json; charset=UTF-8");
+            connection.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
             return connection;
         } catch (Exception e) {
             e.printStackTrace();
