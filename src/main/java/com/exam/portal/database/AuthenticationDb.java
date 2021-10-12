@@ -36,7 +36,7 @@ public class AuthenticationDb {
     public boolean register(Student student) {
         PreparedStatement preparedStatement = null;
         // connection=null;
-        String query = "INSERT INTO Teacher values(?,?,?,?,?)";
+        String query = "INSERT INTO Student values(?,?,?,?,?)";
         try {
             preparedStatement = connection.prepareStatement(query);
             preparedStatement.setString(1, student.getStudentId());
@@ -55,10 +55,10 @@ public class AuthenticationDb {
     public boolean login(Student student){
         ResultSet rs;
         PreparedStatement preparedStatement=null;
-        String query="SELECT PASSWORD FROM STUDENT WHERE STUDENTID=?";
+        String query="SELECT PASSWORD FROM STUDENT WHERE EMAIL=?";
         try{
             preparedStatement=connection.prepareStatement(query);
-            preparedStatement.setString(1,student.getStudentId());
+            preparedStatement.setString(1,student.getEmail());
             rs=preparedStatement.executeQuery();
             if(rs.next()){
                 String checkPass=rs.getString(1);
@@ -75,10 +75,10 @@ public class AuthenticationDb {
     public boolean login(Teacher teacher){
         ResultSet rs;
         PreparedStatement preparedStatement=null;
-        String query="SELECT PASSWORD FROM TEACHER WHERE TEACHERID=?";
+        String query="SELECT PASSWORD FROM TEACHER WHERE EMAIL=?";
         try{
             preparedStatement=connection.prepareStatement(query);
-            preparedStatement.setString(1,teacher.getPassword());
+            preparedStatement.setString(1,teacher.getEmail());
             rs=preparedStatement.executeQuery();
             if(rs.next()){
                 String checkPass=rs.getString(1);

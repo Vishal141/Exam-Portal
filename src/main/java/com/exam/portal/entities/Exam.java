@@ -4,69 +4,62 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class Exam {
-    private String ExamId;
-    private String TeamId;
-    private String CreatorId;
-    private Date ExamDate;
-    private int Duration;
+    private String examId;
+    private String teamId;
+    private String creatorId;
+    private Date examDate;
+    private int duration;
 
-    private ArrayList<Question> Questions;
+    private ArrayList<Question> questions;
 
-    public Exam(){}
-
-    public Exam(String examId, String teamId, String creatorId, Date examDate, int duration) {
-        ExamId = examId;
-        TeamId = teamId;
-        CreatorId = creatorId;
-        ExamDate = examDate;
-        Duration = duration;
+    public Exam(){
     }
 
     public String getExamId() {
-        return ExamId;
+        return examId;
     }
 
     public void setExamId(String examId) {
-        ExamId = examId;
+        this.examId = examId;
     }
 
     public String getTeamId() {
-        return TeamId;
+        return teamId;
     }
 
     public void setTeamId(String teamId) {
-        TeamId = teamId;
+        this.teamId = teamId;
     }
 
     public String getCreatorId() {
-        return CreatorId;
+        return creatorId;
     }
 
     public void setCreatorId(String creatorId) {
-        CreatorId = creatorId;
+        this.creatorId = creatorId;
     }
 
     public Date getExamDate() {
-        return ExamDate;
+        return examDate;
     }
 
     public void setExamDate(Date examDate) {
-        ExamDate = examDate;
+        this.examDate = examDate;
     }
 
     public int getDuration() {
-        return Duration;
+        return duration;
     }
 
     public void setDuration(int duration) {
-        Duration = duration;
+        this.duration = duration;
     }
 
-    public void setQuestions(ArrayList<Question> questions){
-        Questions = questions;
+    public ArrayList<Question> getQuestions() {
+        return questions;
     }
 
-    public ArrayList<Question> getQuestions(){
-        return Questions;
+    public void setQuestions(ArrayList<Question> questions) {
+        this.questions = questions;
     }
 }

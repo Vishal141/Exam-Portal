@@ -1,59 +1,60 @@
 package com.exam.portal.entities;
 
 public class Teacher {
-    private String TeacherId;
-    private String Name;
-    private String Email;
-    private String ContactNo;
-    private String Password;
+    private String teacherId;
+    private String name;
+    private String email;
+    private String contactNo;
+    private String password;
 
-    public Teacher(){}
+    public Teacher() {
+    }
 
     public Teacher(String teacherId, String name, String email, String contactNo, String password) {
-        TeacherId = teacherId;
-        Name = name;
-        Email = email;
-        ContactNo = contactNo;
-        Password = password;
+        this.teacherId = teacherId;
+        this.name = name;
+        this.email = email;
+        this.contactNo = contactNo;
+        this.password = password;
     }
 
     public String getTeacherId() {
-        return TeacherId;
+        return teacherId;
     }
 
     public void setTeacherId(String teacherId) {
-        TeacherId = teacherId;
+        this.teacherId = teacherId;
     }
 
     public String getName() {
-        return Name;
+        return name;
     }
 
     public void setName(String name) {
-        Name = name;
+        this.name = name;
     }
 
     public String getEmail() {
-        return Email;
+        return email;
     }
 
     public void setEmail(String email) {
-        Email = email;
+        this.email = email;
     }
 
     public String getContactNo() {
-        return ContactNo;
+        return contactNo;
     }
 
     public void setContactNo(String contactNo) {
-        ContactNo = contactNo;
+        this.contactNo = contactNo;
     }
 
     public String getPassword() {
-        return Password;
+        return password;
     }
 
     public void setPassword(String password) {
-        Password = password;
+        this.password = password;
     }
 }

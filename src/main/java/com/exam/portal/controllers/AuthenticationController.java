@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/exam-portal/authentication")
 public class AuthenticationController {
+
     private final Authentication authentication;
 
     public AuthenticationController(){
@@ -33,6 +34,7 @@ public class AuthenticationController {
 
     @RequestMapping("/teacher/signUp")
     public String teacherRegister(@RequestBody Teacher teacher){
+       // System.out.println(teacher);
         if(authentication.register(teacher))
             return "SUCCESSFUL";
         return "FAILED";
