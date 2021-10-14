@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXListView?>
+<?import com.jfoenix.controls.JFXTextArea?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import com.jfoenix.controls.JFXToggleButton?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+
+<AnchorPane prefHeight="637.0" prefWidth="706.0" style="-fx-background-color: #e3f2fd;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.exam.portal.exams.AddQuestionController">
+   <children>
+      <Label layoutX="37.0" layoutY="31.0" text="Enter Question" textFill="#0e0404">
+         <font>
+            <Font name="System Bold Italic" size="14.0" />
+         </font>
+      </Label>
+      <JFXButton layoutX="223.0" layoutY="105.0" prefHeight="26.0" prefWidth="98.0" style="-fx-background-color: white; -fx-border-color: black; -fx-border-radius: 5;" text="Choose File">
+         <font>
+            <Font name="System Bold Italic" size="12.0" />
+         </font>
+      </JFXButton>
+      <JFXListView layoutX="37.0" layoutY="174.0" prefHeight="342.0" prefWidth="539.0" />
+      <Label layoutX="37.0" layoutY="154.0" text="Options">
+         <font>
+            <Font name="System Bold Italic" size="14.0" />
+         </font>
+      </Label>
+      <JFXToggleButton layoutX="26.0" layoutY="90.0" prefHeight="50.0" prefWidth="167.0" text="Quesion is Image">
+         <font>
+            <Font name="System Bold Italic" size="12.0" />
+         </font>
+      </JFXToggleButton>
+      <JFXButton layoutX="594.0" layoutY="138.0" style="-fx-background-color: white; -fx-border-color: black; -fx-border-radius: 5;" text="Add Option">
+         <font>
+            <Font name="System Bold Italic" size="14.0" />
+         </font>
+      </JFXButton>
+      <Label layoutX="37.0" layoutY="543.0" text="Answers">
+         <font>
+            <Font name="System Bold Italic" size="14.0" />
+         </font>
+      </Label>
+      <JFXTextField layoutX="37.0" layoutY="572.0" prefHeight="26.0" prefWidth="285.0" />
+      <JFXTextArea focusColor="#2661ba" layoutX="37.0" layoutY="54.0" prefHeight="32.0" prefWidth="620.0" unFocusColor="#2b2e87" />
+      <Label layoutX="380.0" layoutY="577.0" text="Options are in form 1,2,3 etc.">
+         <font>
+            <Font name="System Bold Italic" size="12.0" />
+         </font>
+      </Label>
+   </children>
+</AnchorPane>

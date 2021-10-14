@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="417.0" prefWidth="313.0" style="-fx-background-color: purple;" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.exam.portal.teams.CreateTeam">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="417.0" prefWidth="313.0" style="-fx-background-color: purple;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.exam.portal.teams.CreateTeam">
    <children>
       <AnchorPane layoutX="31.0" layoutY="22.0" prefHeight="374.0" prefWidth="237.0" style="-fx-background-color: white; -fx-border-color: black; -fx-border-width: 0px 0px 3px 3px;">
          <children>
@@ -20,11 +20,16 @@
                   <Font size="18.0" />
                </font>
             </TextField>
-            <Button fx:id="createTeamBtn" alignment="CENTER" layoutX="89.0" layoutY="237.0" mnemonicParsing="false" onAction="#createTeam" prefHeight="36.0" prefWidth="119.0" style="-fx-font: italic small-caps bold 12px/30px Georgia, serif; -fx-background-color: Black;" text="Create" textFill="WHITE">
+            <Button fx:id="createTeamBtn" alignment="CENTER" layoutX="89.0" layoutY="237.0" mnemonicParsing="false" onAction="#createTeam" prefHeight="36.0" prefWidth="119.0" style="-fx-font: italic small-caps bold 12px/30px Georgia, serif;" stylesheets="@../cssFiles/style.css" text="Create" textFill="WHITE">
                <font>
                   <Font size="18.0" />
                </font>
             </Button>
+            <Label layoutX="29.0" layoutY="118.0" text="Team Name">
+               <font>
+                  <Font name="System Bold Italic" size="14.0" />
+               </font>
+            </Label>
          </children>
       </AnchorPane>
    </children>

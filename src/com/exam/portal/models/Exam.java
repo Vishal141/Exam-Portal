@@ -1,7 +1,7 @@
 package com.exam.portal.models;
 
 import java.util.ArrayList;
-import java.util.Date;
+import java.sql.Date;
 
 public class Exam {
     private String examId;

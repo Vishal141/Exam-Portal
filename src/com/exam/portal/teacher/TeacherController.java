@@ -13,7 +13,10 @@ import javafx.scene.control.*;
 
 import javafx.stage.Stage;
 
+import java.math.BigInteger;
 import java.net.URL;
+import java.security.MessageDigest;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class TeacherController implements Initializable {
@@ -27,9 +30,6 @@ public class TeacherController implements Initializable {
 
     @FXML
      Label lblTPhone;
-
-    @FXML
-     Label lblTId;
 
     @FXML
      Button btnTeams;
@@ -46,14 +46,12 @@ public class TeacherController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        if(lblTId != null){
+        if(lblTName != null){
             lblTName.setText(teacher.getName());
             lblTMail.setText(teacher.getEmail());
             lblTPhone.setText(teacher.getContactNo());
-            lblTId.setText(teacher.getTeacherId());
         }else{
             newName.setText(teacher.getName());
-            newId.setText(teacher.getTeacherId());
             newMail.setText(teacher.getEmail());
             newNo.setText(teacher.getContactNo());
         }
@@ -77,7 +75,7 @@ public class TeacherController implements Initializable {
 
     @FXML
     void teamsClicked(ActionEvent event) {
-        System.out.println("teams");
+        changeStage("../teams/Teams.fxml","Teams");
     }
 
    // Edit details
@@ -91,9 +89,6 @@ public class TeacherController implements Initializable {
      TextField newNo;
 
     @FXML
-     TextField newId;
-
-    @FXML
      PasswordField newPass;
 
     @FXML
@@ -101,21 +96,27 @@ public class TeacherController implements Initializable {
     @FXML
     void EditSubmitted(ActionEvent event) {
         if(newMail.getText().equals("") || newName.getText().equals("") || newNo.getText().equals("")){
-
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setHeaderText(null);
+            alert.setTitle("Warning");
+            alert.setContentText("All fields are mandatory.");
+            alert.showAndWait();
         }else{
             Teacher teacher1 = new Teacher();
             teacher1.setTeacherId(teacher.getTeacherId());
             teacher1.setName(newName.getText());
             teacher1.setEmail(newMail.getText());
             teacher1.setContactNo(newNo.getText());
-            teacher1.setPassword(newPass.getText());
+            teacher1.setPassword(getHash(newPass.getText()));
 
             Server server = ServerHandler.getInstance();
             if(server.updateTeacher(teacher1)){
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setHeaderText(null);
-                alert.setTitle("Update Successful");
+                alert.setContentText("Update Successful.");
                 alert.showAndWait();
+                Stage stage = (Stage) newName.getScene().getWindow();
+                stage.close();
             }else{
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setHeaderText(null);
@@ -131,7 +132,7 @@ public class TeacherController implements Initializable {
             Stage stage = new Stage();
             Parent parent = FXMLLoader.load(getClass().getResource("Edit.fxml"));
             stage.setTitle("Edit Details");
-            stage.setScene(new Scene(parent,500,600));
+            stage.setScene(new Scene(parent,500,500));
             stage.show();
         }catch (Exception e){
             e.printStackTrace();
@@ -139,11 +140,44 @@ public class TeacherController implements Initializable {
     }
 
     public void gotoCreateTeam(ActionEvent actionEvent) {
+        changeStage("../teams/CreateTeam.fxml","Create Team");
     }
 
     public void gotoConductExam(ActionEvent actionEvent) {
     }
 
     public void gotoAddStudent(ActionEvent actionEvent) {
+    }
+
+    public void changeStage(String path,String title){
+        try{
+            Stage stage;
+            if(title.equals("Create Team"))
+                stage = new Stage();
+            else
+                stage = (Stage) lblTName.getScene().getWindow();
+            Parent parent = FXMLLoader.load(Objects.requireNonNull(getClass().getResource(path)));
+            stage.setTitle(title);
+            stage.setScene(new Scene(parent,600,600));
+            stage.show();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    private String getHash(String text){
+        try {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            byte[] messageDigest = md.digest(text.getBytes());
+            BigInteger number = new BigInteger(1,messageDigest);
+            String hash=number.toString();
+            while (hash.length()<32){
+                hash = "v"+hash;
+            }
+            return hash;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

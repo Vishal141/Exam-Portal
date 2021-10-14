@@ -4,6 +4,7 @@ import com.exam.portal.models.Student;
 import com.exam.portal.models.Teacher;
 import com.exam.portal.server.Server;
 import com.exam.portal.server.ServerHandler;
+import com.exam.portal.student.StudentController;
 import com.exam.portal.teacher.TeacherController;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -52,7 +53,8 @@ public class LoginController implements Initializable {
                 student.setEmail(UserEmailId.getText());
                 student.setPassword(getHash(enteredPassword.getText()));
                 if(server.login(student)){
-                    System.out.println("successful");
+                    StudentController.student = student;
+                    gotoDashboard("../student/StudentDashboard.fxml");
                 }else{
                     showWarning("Invalid Credentials", Alert.AlertType.ERROR);
                 }
@@ -111,7 +113,8 @@ public class LoginController implements Initializable {
                 student.setPassword(getHash(pPassword.getText()));
 
                 if(server.register(student)){
-                    System.out.println("successful");
+                    StudentController.student = student;
+                    gotoDashboard("../student/StudentDashboard.fxml");
                 }else{
                     showWarning("Email is already registered.", Alert.AlertType.ERROR);
                 }
@@ -182,7 +185,7 @@ public class LoginController implements Initializable {
             Stage stage = (Stage) isStudent.getScene().getWindow();
             Parent root = FXMLLoader.load(getClass().getResource(path));
             stage.setTitle("Dashboard");
-            stage.setScene(new Scene(root,500,600));
+            stage.setScene(new Scene(root,700,500));
             stage.show();
         }catch (Exception e){
             e.printStackTrace();

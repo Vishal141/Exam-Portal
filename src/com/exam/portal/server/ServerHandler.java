@@ -2,6 +2,7 @@ package com.exam.portal.server;
 
 import com.exam.portal.models.*;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.BufferedReader;
@@ -26,7 +27,7 @@ public class ServerHandler implements Server{
     private static ServerHandler serverHandler=null;
 
     private ServerHandler(){
-        gson = new Gson();
+        gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
     }
 
     public static ServerHandler getInstance(){
@@ -183,7 +184,7 @@ public class ServerHandler implements Server{
     @Override
     public Student getStudent(String email) {
         try{
-            String url = AUTHENTICATION_URL + "/student/get?"+email;
+            String url = AUTHENTICATION_URL + "/student/get/"+email;
             connection = ServerConfig.getConnection(url);
             assert connection != null;
 
@@ -200,7 +201,7 @@ public class ServerHandler implements Server{
     @Override
     public ArrayList<Teacher> searchTeacher(String text) {
         try{
-            String url = AUTHENTICATION_URL + "/teacher/search?q="+text;
+            String url = AUTHENTICATION_URL + "/teacher/search/q="+text;
             connection = ServerConfig.getConnection(url);
             assert connection != null;
 
@@ -217,7 +218,7 @@ public class ServerHandler implements Server{
     @Override
     public ArrayList<Student> searchStudent(String text) {
         try{
-            String url = AUTHENTICATION_URL + "/student/search?q="+text;
+            String url = AUTHENTICATION_URL + "/student/search/q="+text;
             connection = ServerConfig.getConnection(url);
             assert connection != null;
 
@@ -234,7 +235,7 @@ public class ServerHandler implements Server{
     @Override
     public ArrayList<Team> getStudentsTeams(String Id) {
         try{
-            String url = TEAM_URL + "/get/all/student?id="+Id;
+            String url = TEAM_URL + "/get/all/student/id="+Id;
             connection = ServerConfig.getConnection(url);
             assert connection != null;
 
@@ -251,7 +252,7 @@ public class ServerHandler implements Server{
     @Override
     public ArrayList<Team> getTeachersTeams(String Id) {
         try{
-            String url = TEAM_URL + "/get/all/teacher?id="+Id;
+            String url = TEAM_URL + "/get/all/teacher/id="+Id;
             connection = ServerConfig.getConnection(url);
             assert connection != null;
 

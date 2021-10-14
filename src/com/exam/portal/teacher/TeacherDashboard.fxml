@@ -19,17 +19,12 @@
                   <Font name="Serif Regular" size="20.0" />
                </font>
             </Label>
-            <Hyperlink fx:id="lblTMail" layoutX="14.0" layoutY="78.0" prefHeight="35.0" prefWidth="131.0" style="-fx-background-color: transparent; -fx-font: italic small-caps bold 17px/30px Georgia, serif;" text="email" textFill="#f8e4e4">
+            <Hyperlink fx:id="lblTMail" layoutX="14.0" layoutY="78.0" prefHeight="35.0" prefWidth="233.0" style="-fx-background-color: transparent; -fx-font: italic small-caps bold 17px/30px Georgia, serif;" text="email" textFill="#f8e4e4">
                <font>
                   <Font name="Serif Regular" size="22.0" />
                </font>
             </Hyperlink>
-            <Label fx:id="lblTPhone" alignment="CENTER" contentDisplay="CENTER" layoutX="172.0" layoutY="72.0" lineSpacing="2.0" prefHeight="48.0" prefWidth="180.0" style="-fx-background-color: transparent; -fx-font: italic small-caps bold 17px/30px Georgia, serif;" text="Phone Number" textAlignment="CENTER" textFill="WHITE">
-               <font>
-                  <Font name="Serif Regular" size="22.0" />
-               </font>
-            </Label>
-            <Label fx:id="lblTId" alignment="CENTER" contentDisplay="CENTER" layoutX="350.0" layoutY="72.0" lineSpacing="2.0" prefHeight="48.0" prefWidth="180.0" style="-fx-background-color: transparent; -fx-font: italic small-caps bold 17px/30px Georgia, serif;" text="ID" textAlignment="CENTER" textFill="WHITE">
+            <Label fx:id="lblTPhone" alignment="CENTER" contentDisplay="CENTER" layoutX="283.0" layoutY="72.0" lineSpacing="2.0" prefHeight="48.0" prefWidth="225.0" style="-fx-background-color: transparent; -fx-font: italic small-caps bold 17px/30px Georgia, serif;" text="Phone Number" textAlignment="CENTER" textFill="WHITE">
                <font>
                   <Font name="Serif Regular" size="22.0" />
                </font>

@@ -1,16 +1,14 @@
 package com.exam.portal.models;
 
-import java.util.Date;
-
 public class Team {
     private String teamId;
     private String name;
     private String creatorId;
-    private Date dateCreated;
+    private String dateCreated;
 
     public Team(){}
 
-    public Team(String teamId, String name, String creatorId, Date dateCreated) {
+    public Team(String teamId, String name, String creatorId, String dateCreated) {
         this.teamId = teamId;
         this.name = name;
         this.creatorId = creatorId;
@@ -41,11 +39,11 @@ public class Team {
         this.creatorId = creatorId;
     }
 
-    public Date getDateCreated() {
+    public String getDateCreated() {
         return dateCreated;
     }
 
-    public void setDateCreated(Date dateCreated) {
+    public void setDateCreated(String dateCreated) {
         this.dateCreated = dateCreated;
     }
 }
