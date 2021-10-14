@@ -1,38 +1,35 @@
 package com.exam.portal.models;
 
-import java.util.ArrayList;
-import java.util.StringTokenizer;
+import java.io.File;
+import java.util.ArrayList;;
 
 public class Question {
     private String questionId;
     private String question;
-    private String options;
-    private boolean isQuestionImg;
-    private boolean isOptionsImg;
-    private String answer;
+    private boolean isImage;
+    private File file;
+
     private double point;
     private double negPoint;
-    private int optionCount;
+
+    private ArrayList<Option> options;
+    private String ansIndices;
 
     public Question(){
-        question = "";
-        options = "";
         point = 1.0;
         negPoint = 0.0;
-        isOptionsImg = false;
-        isQuestionImg = false;
-        optionCount = 0;
     }
 
-    public Question(String questionId, String question, boolean isQuestionImg, boolean isOptionsImg,
-                    double point, double negPoint) {
-        this.questionId = questionId;
+    public Question(String question){
+        this();
         this.question = question;
-        this.isQuestionImg = isQuestionImg;
-        this.isOptionsImg = isOptionsImg;
-        this.point = point;
-        this.negPoint = negPoint;
-        optionCount = 0;
+        this.isImage = false;
+    }
+
+    public Question(File file){
+        this();
+        this.isImage = true;
+        this.file = file;
     }
 
     public String getQuestionId() {
@@ -51,28 +48,20 @@ public class Question {
         this.question = question;
     }
 
-    public boolean isQuestionImg() {
-        return isQuestionImg;
+    public boolean isImage() {
+        return isImage;
     }
 
-    public void setQuestionImg(boolean questionImg) {
-        isQuestionImg = questionImg;
+    public void setImage(boolean image) {
+        isImage = image;
     }
 
-    public boolean isOptionsImg() {
-        return isOptionsImg;
+    public File getFile() {
+        return file;
     }
 
-    public void setOptionsImg(boolean optionsImg) {
-        isOptionsImg = optionsImg;
-    }
-
-    public String getAnswer() {
-        return answer;
-    }
-
-    public void setAnswer(String answer) {
-        this.answer = answer;
+    public void setFile(File file) {
+        this.file = file;
     }
 
     public double getPoint() {
@@ -91,23 +80,33 @@ public class Question {
         this.negPoint = negPoint;
     }
 
-    public void addOption(String option){
-        optionCount++;
-        option = "("+optionCount+")"+" "+option;
-        option += "\n";
-        options += option;
+    public void addOption(Option option){
+        option.setIndex(options.size());
+        options.add(option);
     }
 
-    private ArrayList<String> extractOptions(){
-        StringTokenizer tokenizer = new StringTokenizer(options,"\n");
-        ArrayList<String> options = new ArrayList<>();
-        while(tokenizer.hasMoreTokens())
-            options.add(tokenizer.nextToken());
+    public Option undoOption(){
+        int idx = options.size();
+        if(idx==0)
+            return null;
+        Option res = options.get(idx-1);
+        options.remove(idx-1);
+        return res;
+    }
+
+    public void setOptions(ArrayList<Option> options){
+        this.options = options;
+    }
+
+    public ArrayList<Option> getOptions(){
         return options;
     }
 
-    public ArrayList<String> getOptions(){
-        return extractOptions();
+    public int getOptionCount(){
+        return options.size();
     }
 
+    public Option getLatestOptionAdded(){
+        return options.get(options.size()-1);
+    }
 }

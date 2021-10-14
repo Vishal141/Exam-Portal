@@ -9,31 +9,30 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-
-<AnchorPane prefHeight="637.0" prefWidth="706.0" style="-fx-background-color: #e3f2fd;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.exam.portal.exams.AddQuestionController">
+<AnchorPane prefHeight="755.0" prefWidth="724.0" style="-fx-background-color: #e3f2fd;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.exam.portal.exams.AddQuestionController">
    <children>
       <Label layoutX="37.0" layoutY="31.0" text="Enter Question" textFill="#0e0404">
          <font>
             <Font name="System Bold Italic" size="14.0" />
          </font>
       </Label>
-      <JFXButton layoutX="223.0" layoutY="105.0" prefHeight="26.0" prefWidth="98.0" style="-fx-background-color: white; -fx-border-color: black; -fx-border-radius: 5;" text="Choose File">
+      <JFXButton fx:id="chooseFileBtn" layoutX="223.0" layoutY="105.0" onAction="#chooseFile" prefHeight="26.0" prefWidth="98.0" styleClass="questionBtn" stylesheets="@../cssFiles/style.css" text="Choose File">
          <font>
             <Font name="System Bold Italic" size="12.0" />
          </font>
       </JFXButton>
-      <JFXListView layoutX="37.0" layoutY="174.0" prefHeight="342.0" prefWidth="539.0" />
+      <JFXListView fx:id="options" layoutX="37.0" layoutY="174.0" prefHeight="342.0" prefWidth="539.0" />
       <Label layoutX="37.0" layoutY="154.0" text="Options">
          <font>
             <Font name="System Bold Italic" size="14.0" />
          </font>
       </Label>
-      <JFXToggleButton layoutX="26.0" layoutY="90.0" prefHeight="50.0" prefWidth="167.0" text="Quesion is Image">
+      <JFXToggleButton fx:id="isImage" layoutX="26.0" layoutY="90.0" prefHeight="50.0" prefWidth="167.0" text="Quesion is Image">
          <font>
             <Font name="System Bold Italic" size="12.0" />
          </font>
       </JFXToggleButton>
-      <JFXButton layoutX="594.0" layoutY="138.0" style="-fx-background-color: white; -fx-border-color: black; -fx-border-radius: 5;" text="Add Option">
+      <JFXButton layoutX="594.0" layoutY="174.0" onAction="#addOption" styleClass="questionBtn" stylesheets="@../cssFiles/style.css" text="Add Option">
          <font>
             <Font name="System Bold Italic" size="14.0" />
          </font>
@@ -43,12 +42,39 @@
             <Font name="System Bold Italic" size="14.0" />
          </font>
       </Label>
-      <JFXTextField layoutX="37.0" layoutY="572.0" prefHeight="26.0" prefWidth="285.0" />
-      <JFXTextArea focusColor="#2661ba" layoutX="37.0" layoutY="54.0" prefHeight="32.0" prefWidth="620.0" unFocusColor="#2b2e87" />
+      <JFXTextField fx:id="answers" layoutX="37.0" layoutY="572.0" prefHeight="26.0" prefWidth="285.0" />
+      <JFXTextArea fx:id="questionText" focusColor="#2661ba" layoutX="37.0" layoutY="54.0" prefHeight="32.0" prefWidth="620.0" unFocusColor="#2b2e87" />
       <Label layoutX="380.0" layoutY="577.0" text="Options are in form 1,2,3 etc.">
          <font>
             <Font name="System Bold Italic" size="12.0" />
          </font>
       </Label>
+      <JFXButton layoutX="594.0" layoutY="224.0" onAction="#undoOption" prefHeight="32.0" prefWidth="97.0" styleClass="questionBtn" stylesheets="@../cssFiles/style.css" text="Undo">
+         <font>
+            <Font name="System Bold Italic" size="14.0" />
+         </font>
+      </JFXButton>
+      <JFXButton layoutX="594.0" layoutY="278.0" onAction="#redoOption" prefHeight="32.0" prefWidth="97.0" styleClass="questionBtn" stylesheets="@../cssFiles/style.css" text="Redo">
+         <font>
+            <Font name="System Bold Italic" size="14.0" />
+         </font>
+      </JFXButton>
+      <Label layoutX="37.0" layoutY="645.0" text="Point">
+         <font>
+            <Font name="System Bold Italic" size="14.0" />
+         </font>
+      </Label>
+      <JFXTextField fx:id="point" layoutX="86.0" layoutY="643.0" />
+      <Label layoutX="347.0" layoutY="646.0" text="Negative Point">
+         <font>
+            <Font name="System Bold Italic" size="14.0" />
+         </font>
+      </Label>
+      <JFXTextField fx:id="negPoint" layoutX="469.0" layoutY="642.0" />
+      <JFXButton layoutX="594.0" layoutY="709.0" onAction="#Done" prefHeight="32.0" prefWidth="98.0" styleClass="questionBtn" stylesheets="@../cssFiles/style.css" text="Done">
+         <font>
+            <Font name="System Bold Italic" size="14.0" />
+         </font>
+      </JFXButton>
    </children>
 </AnchorPane>

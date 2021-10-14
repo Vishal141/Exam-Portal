@@ -147,15 +147,12 @@ public class TeacherController implements Initializable {
     }
 
     public void gotoAddStudent(ActionEvent actionEvent) {
+        changeStage("../teams/AddStudent.fxml","Add Student");
     }
 
     public void changeStage(String path,String title){
         try{
-            Stage stage;
-            if(title.equals("Create Team"))
-                stage = new Stage();
-            else
-                stage = (Stage) lblTName.getScene().getWindow();
+            Stage stage = new Stage();
             Parent parent = FXMLLoader.load(Objects.requireNonNull(getClass().getResource(path)));
             stage.setTitle(title);
             stage.setScene(new Scene(parent,600,600));

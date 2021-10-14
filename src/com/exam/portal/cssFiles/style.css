@@ -39,3 +39,13 @@
     -fx-pref-width: 150;
     -fx-alignment: center;
 }
+
+.questionBtn{
+    -fx-background-color: white;
+    -fx-border-color: black;
+    -fx-border-radius: 5;
+}
+
+.questionBtn:hover{
+    -fx-background-color: #6db4ac;
+}
