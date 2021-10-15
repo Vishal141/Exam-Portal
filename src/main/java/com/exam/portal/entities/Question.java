@@ -1,38 +1,32 @@
 package com.exam.portal.entities;
 
-import java.util.ArrayList;
-import java.util.StringTokenizer;
+import javax.persistence.Transient;
+import java.io.File;
+import java.util.ArrayList;;
 
 public class Question {
+    private String examId;
     private String questionId;
     private String question;
-    private String options;
-    private boolean isQuestionImg;
-    private boolean isOptionsImg;
-    private String answer;
+    private boolean isImage;
+    private String file;
+
     private double point;
     private double negPoint;
-    private int optionCount;
+
+    private ArrayList<Option> options;
+    private String ansIndices;
 
     public Question(){
-        question = "";
-        options = "";
         point = 1.0;
         negPoint = 0.0;
-        isOptionsImg = false;
-        isQuestionImg = false;
-        optionCount = 0;
+        options = new ArrayList<>();
     }
 
-    public Question(String questionId, String question, boolean isQuestionImg, boolean isOptionsImg,
-                    double point, double negPoint) {
-        this.questionId = questionId;
+    public Question(String question){
+        this();
         this.question = question;
-        this.isQuestionImg = isQuestionImg;
-        this.isOptionsImg = isOptionsImg;
-        this.point = point;
-        this.negPoint = negPoint;
-        optionCount = 0;
+        this.isImage = false;
     }
 
     public String getQuestionId() {
@@ -43,6 +37,14 @@ public class Question {
         this.questionId = questionId;
     }
 
+    public String getExamId() {
+        return examId;
+    }
+
+    public void setExamId(String examId) {
+        this.examId = examId;
+    }
+
     public String getQuestion() {
         return question;
     }
@@ -51,28 +53,20 @@ public class Question {
         this.question = question;
     }
 
-    public boolean isQuestionImg() {
-        return isQuestionImg;
+    public boolean isImage() {
+        return isImage;
     }
 
-    public void setQuestionImg(boolean questionImg) {
-        isQuestionImg = questionImg;
+    public void setIsImage(boolean image) {
+        isImage = image;
     }
 
-    public boolean isOptionsImg() {
-        return isOptionsImg;
+    public String getFile() {
+        return file;
     }
 
-    public void setOptionsImg(boolean optionsImg) {
-        isOptionsImg = optionsImg;
-    }
-
-    public String getAnswer() {
-        return answer;
-    }
-
-    public void setAnswer(String answer) {
-        this.answer = answer;
+    public void setFile(String file) {
+        this.file = file;
     }
 
     public double getPoint() {
@@ -91,23 +85,41 @@ public class Question {
         this.negPoint = negPoint;
     }
 
-    public void addOption(String option){
-        optionCount++;
-        option = "("+optionCount+")"+" "+option;
-        option += "\n";
-        options += option;
+    public String getAnsIndices() {
+        return ansIndices;
     }
 
-    private ArrayList<String> extractOptions(){
-        StringTokenizer tokenizer = new StringTokenizer(options,"\n");
-        ArrayList<String> options = new ArrayList<>();
-        while(tokenizer.hasMoreTokens())
-            options.add(tokenizer.nextToken());
+    public void setAnsIndices(String ansIndices) {
+        this.ansIndices = ansIndices;
+    }
+
+    public void addOption(Option option){
+        option.setIndex(options.size()+"");
+        options.add(option);
+    }
+
+    public Option undoOption(){
+        int idx = options.size();
+        if(idx==0)
+            return null;
+        Option res = options.get(idx-1);
+        options.remove(idx-1);
+        return res;
+    }
+
+    public void setOptions(ArrayList<Option> options){
+        this.options = options;
+    }
+
+    public ArrayList<Option> getOptions(){
         return options;
     }
 
-    public ArrayList<String> getOptions(){
-        return extractOptions();
+    public int getOptionCount(){
+        return options.size();
     }
 
+    public Option getLastQuestion(){
+        return options.get(options.size()-1);
+    }
 }

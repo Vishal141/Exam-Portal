@@ -1,18 +1,22 @@
 package com.exam.portal.entities;
 
+import java.sql.Date;
+import java.sql.Time;
 import java.util.ArrayList;
-import java.util.Date;
 
 public class Exam {
     private String examId;
     private String teamId;
     private String creatorId;
+    private String title;
     private Date examDate;
-    private int duration;
+    private Time time;
+    private String duration;
 
     private ArrayList<Question> questions;
 
-    public Exam(){
+    public Exam() {
+        questions = new ArrayList<>();
     }
 
     public String getExamId() {
@@ -39,19 +43,35 @@ public class Exam {
         this.creatorId = creatorId;
     }
 
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
     public Date getExamDate() {
         return examDate;
     }
 
-    public void setExamDate(Date examDate) {
-        this.examDate = examDate;
+    public void setExamDate(Date examString) {
+        this.examDate = examString;
     }
 
-    public int getDuration() {
+    public Time getTime() {
+        return time;
+    }
+
+    public void setTime(Time time) {
+        this.time = time;
+    }
+
+    public String getDuration() {
         return duration;
     }
 
-    public void setDuration(int duration) {
+    public void setDuration(String duration) {
         this.duration = duration;
     }
 

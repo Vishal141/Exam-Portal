@@ -40,17 +40,17 @@ public class TeamUtilsController {
         return FAILED;
     }
 
-    @RequestMapping("/get/all/student?id={Id}")
+    @RequestMapping("/get/all/student/id={Id}")
     public ArrayList<Team> getStudentTeams(@PathVariable String Id){
         return teamUtils.findStudentTeamsById(Id);
     }
 
-    @RequestMapping("/get/all/teacher?id={Id}")
+    @RequestMapping("/get/all/teacher/id={Id}")
     public ArrayList<Team> getTeacherTeams(@PathVariable String Id){
         return teamUtils.findTeacherTeamsById(Id);
     }
 
-    @RequestMapping("/teacher/make-admin?team-id={teamId}&teacher-id={teacherId}")
+    @RequestMapping("/teacher/make-admin/team-id={teamId}&teacher-id={teacherId}")
     public String makeAdmin(@PathVariable String teacherId, @PathVariable String teamId){
         if(teamUtils.makeAdmin(teamId,teacherId))
             return SUCCESSFUL;

@@ -1,11 +1,15 @@
 package com.exam.portal.entities;
 
-import java.util.Date;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import java.sql.Date;
 
 public class Team {
     private String teamId;
     private String name;
     private String creatorId;
+
+    @Temporal(TemporalType.DATE)
     private Date dateCreated;
 
     public Team(){}

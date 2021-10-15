@@ -58,17 +58,17 @@ public class AuthenticationController {
         return authentication.findTeacherByEmail(email);
     }
 
-    @RequestMapping("/student/get?{email}")
+    @RequestMapping("/student/get/{email}")
     public Student getStudent(@PathVariable String email){
         return authentication.findStudentByEmail(email);
     }
 
-    @RequestMapping("/teacher/search?q={prefix}")
+    @RequestMapping("/teacher/search/q={prefix}")
     public ArrayList<Teacher> searchTeacher(@PathVariable String prefix){
         return authentication.searchTeacher(prefix);
     }
 
-    @RequestMapping("/student/search?q={prefix}")
+    @RequestMapping("/student/search/q={prefix}")
     public ArrayList<Student> searchStudent(@PathVariable String prefix){
         return authentication.searchStudent(prefix);
     }

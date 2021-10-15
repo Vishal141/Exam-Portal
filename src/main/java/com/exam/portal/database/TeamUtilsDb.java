@@ -18,14 +18,13 @@ public class TeamUtilsDb {
 
     public boolean createTeam(Team team){
         PreparedStatement preparedStatement=null;
-        String query = "INSERT INTO Team values(?,?,?,?)";
+        String query = "INSERT INTO Teams values(?,?,?,?)";
         try{
             preparedStatement = connection.prepareStatement(query);
             preparedStatement.setString(1, team.getTeamId());
             preparedStatement.setString(2, team.getName());
             preparedStatement.setString(3, team.getCreatorId());
-            java.sql.Date sqlDate=new java.sql.Date(team.getDateCreated().getTime());
-            preparedStatement.setDate(4,sqlDate );
+            preparedStatement.setDate(4,team.getDateCreated());
             preparedStatement.execute();
             return makeAdminOf(team.getCreatorId(),team.getTeamId());
         }catch(Exception e){
@@ -70,19 +69,19 @@ public class TeamUtilsDb {
         PreparedStatement preparedStatement=null;
         ResultSet rs=null;
         ArrayList<Team> teams;
-        String query = "SELECT * FROM TEAMS WHERE TEAMS.Team_Id IN (SELECT Team_Id FROM ? WHERE ?=?)";
+        String query = "SELECT * FROM TEAMS WHERE TEAMS.Team_Id IN (SELECT Team_Id FROM "+relationName+" WHERE "+relationId+"=?)";
         try {
             preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setString(1,relationName);
-            preparedStatement.setString(2,relationId);
-            preparedStatement.setString(3,Id);
+//            preparedStatement.setString(1,relationName);
+//            preparedStatement.setString(2,relationId);
+            preparedStatement.setString(1,Id);
             rs = preparedStatement.executeQuery();
             teams = new ArrayList<>();
             while(rs.next()){
                 Team team = new Team();
                 team.setTeamId(rs.getString(1));
-                team.setCreatorId(rs.getString(2));
-                team.setName(rs.getString(3));
+                team.setCreatorId(rs.getString(3));
+                team.setName(rs.getString(2));
                 team.setDateCreated(rs.getDate(4));
                 teams.add(team);
             }

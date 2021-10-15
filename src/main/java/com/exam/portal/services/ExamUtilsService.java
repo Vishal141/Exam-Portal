@@ -16,6 +16,6 @@ public class ExamUtilsService implements ExamUtils {
 
     @Override
     public boolean createExam(Exam exam, ArrayList<Question> questions) {
-        return examUtilsDb.createExam(exam) && examUtilsDb.addQuestions(exam.getExamId(), questions);
+        return examUtilsDb.createExam(exam) && examUtilsDb.addQuestions(questions);
     }
 }
