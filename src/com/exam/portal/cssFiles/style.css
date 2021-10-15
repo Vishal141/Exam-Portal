@@ -36,7 +36,6 @@
 .jfx-list-view {
     -fx-background-insets: 0;
     -fx-cell-vertical-margin: 10px;
-    -fx-pref-width: 150;
     -fx-alignment: center;
 }
 

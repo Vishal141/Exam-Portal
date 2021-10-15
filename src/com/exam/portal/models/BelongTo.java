@@ -1,16 +1,14 @@
 package com.exam.portal.models;
 
-import java.util.Date;
-
 public class BelongTo {
     private String studentId;
     private String teamId;
-    private Date date;
+    private String date;
 
     public BelongTo() {
     }
 
-    public BelongTo(String studentId, String teamId, Date date) {
+    public BelongTo(String studentId, String teamId, String date) {
         this.studentId = studentId;
         this.teamId = teamId;
         this.date = date;
@@ -32,11 +30,11 @@ public class BelongTo {
         this.teamId = teamId;
     }
 
-    public Date getDate() {
+    public String getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(String date) {
         this.date = date;
     }
 }
