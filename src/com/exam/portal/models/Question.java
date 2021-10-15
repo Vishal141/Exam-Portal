@@ -1,13 +1,13 @@
 package com.exam.portal.models;
 
-import java.io.File;
 import java.util.ArrayList;;
 
 public class Question {
+    private String examId;
     private String questionId;
     private String question;
     private boolean isImage;
-    private File file;
+    private String file;
 
     private double point;
     private double negPoint;
@@ -18,6 +18,7 @@ public class Question {
     public Question(){
         point = 1.0;
         negPoint = 0.0;
+        options = new ArrayList<>();
     }
 
     public Question(String question){
@@ -26,18 +27,20 @@ public class Question {
         this.isImage = false;
     }
 
-    public Question(File file){
-        this();
-        this.isImage = true;
-        this.file = file;
-    }
-
     public String getQuestionId() {
         return questionId;
     }
 
     public void setQuestionId(String questionId) {
         this.questionId = questionId;
+    }
+
+    public String getExamId() {
+        return examId;
+    }
+
+    public void setExamId(String examId) {
+        this.examId = examId;
     }
 
     public String getQuestion() {
@@ -56,11 +59,11 @@ public class Question {
         isImage = image;
     }
 
-    public File getFile() {
+    public String getFile() {
         return file;
     }
 
-    public void setFile(File file) {
+    public void setFile(String file) {
         this.file = file;
     }
 
@@ -80,8 +83,16 @@ public class Question {
         this.negPoint = negPoint;
     }
 
+    public String getAnsIndices() {
+        return ansIndices;
+    }
+
+    public void setAnsIndices(String ansIndices) {
+        this.ansIndices = ansIndices;
+    }
+
     public void addOption(Option option){
-        option.setIndex(options.size());
+        option.setIndex(options.size()+"");
         options.add(option);
     }
 
@@ -106,7 +117,7 @@ public class Question {
         return options.size();
     }
 
-    public Option getLatestOptionAdded(){
+    public Option getLastQuestion(){
         return options.get(options.size()-1);
     }
 }

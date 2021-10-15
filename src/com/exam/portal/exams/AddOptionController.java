@@ -12,7 +12,10 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.net.URL;
+import java.util.Base64;
 import java.util.ResourceBundle;
 
 public class AddOptionController implements Initializable {
@@ -53,7 +56,8 @@ public class AddOptionController implements Initializable {
             }else{
                 flag = true;
                 option.setImage(true);
-                option.setFile(file);
+                option.setText(file.getAbsolutePath());
+                option.setFile(encodeImageToBase64Binary(file));
             }
         }else{
             if(optionText.getText().equals("")){
@@ -75,5 +79,16 @@ public class AddOptionController implements Initializable {
             Stage stage = (Stage) isImage.getScene().getWindow();
             stage.close();
         }
+    }
+
+    public String encodeImageToBase64Binary(File file){
+        try{
+            FileInputStream fis = new FileInputStream(file);
+            String encodedFile = Base64.getEncoder().encodeToString(fis.readAllBytes());
+            return encodedFile;
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
     }
 }

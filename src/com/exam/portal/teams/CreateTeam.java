@@ -60,9 +60,9 @@ public class CreateTeam {
     private String generateId(){
         String id = UUID.randomUUID().toString();
         Random random = new Random();
-        int start = random.nextInt(id.length()-10);
-        id = "Team#"+id.substring(start,start+4);
-        id = id.replace('-', (char) (97+random.nextInt()%26));
+        int start = Math.abs(random.nextInt(id.length()-15));
+        id = "Team#"+id.substring(start,start+6);
+        id = id.replace('-', (char) (97+Math.abs(random.nextInt())%26));
         return id;
     }
 

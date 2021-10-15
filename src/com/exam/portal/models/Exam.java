@@ -1,18 +1,20 @@
 package com.exam.portal.models;
 
 import java.util.ArrayList;
-import java.sql.Date;
 
 public class Exam {
     private String examId;
     private String teamId;
     private String creatorId;
-    private Date examDate;
-    private int duration;
+    private String title;
+    private String examDate;
+    private String time;
+    private String duration;
 
     private ArrayList<Question> questions;
 
     public Exam(){
+        questions = new ArrayList<>();
     }
 
     public String getExamId() {
@@ -39,19 +41,35 @@ public class Exam {
         this.creatorId = creatorId;
     }
 
-    public Date getExamDate() {
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getExamDate() {
         return examDate;
     }
 
-    public void setExamDate(Date examDate) {
-        this.examDate = examDate;
+    public void setExamDate(String examString) {
+        this.examDate = examString;
     }
 
-    public int getDuration() {
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
+    }
+
+    public String getDuration() {
         return duration;
     }
 
-    public void setDuration(int duration) {
+    public void setDuration(String duration) {
         this.duration = duration;
     }
 
@@ -61,5 +79,33 @@ public class Exam {
 
     public void setQuestions(ArrayList<Question> questions) {
         this.questions = questions;
+    }
+
+    public void addQuestion(Question question){
+        question.setQuestionId(questions.size()+"");
+        question.setExamId(this.examId);
+        questions.add(question);
+        for(Option option:question.getOptions()){
+            option.setExamId(this.examId);
+            option.setQuestionId(question.getQuestionId());
+        }
+    }
+
+    public int getQuestionCount(){
+        return questions.size();
+    }
+
+    public Question undoQuestion(){
+        if(questions.size()==0)
+            return null;
+        Question question = questions.get(questions.size()-1);
+        questions.remove(question);
+        return question;
+    }
+
+    public Question getLastQuestion(){
+        if(questions.size()==0)
+            return null;
+        return questions.get(questions.size()-1);
     }
 }

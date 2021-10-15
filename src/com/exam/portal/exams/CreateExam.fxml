@@ -1,22 +1,52 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.DatePicker?>
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXComboBox?>
+<?import com.jfoenix.controls.JFXDatePicker?>
+<?import com.jfoenix.controls.JFXListView?>
+<?import com.jfoenix.controls.JFXTimePicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="507.0" prefWidth="504.0" style="-fx-background-color: purple;" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.exam.portal.exams.CreateExamController">
+<AnchorPane prefHeight="768.0" prefWidth="791.0" style="-fx-background-color: #b3e5fc;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.exam.portal.exams.CreateExamController">
    <children>
-      <Label fx:id="lblTitle" alignment="CENTER" layoutX="61.0" layoutY="104.0" prefHeight="44.0" prefWidth="142.0" style="-fx-font: italic small-caps bold 15px/30px Georgia, serif; -fx-background-color: white;" text="Title" />
-      <Label fx:id="lblDate" alignment="CENTER" layoutX="61.0" layoutY="159.0" prefHeight="44.0" prefWidth="142.0" style="-fx-font: italic small-caps bold 15px/30px Georgia, serif; -fx-background-color: white;" text="Date" />
-      <Label fx:id="lblTime" alignment="CENTER" layoutX="61.0" layoutY="216.0" prefHeight="44.0" prefWidth="150.0" style="-fx-font: italic small-caps bold 15px/30px Georgia, serif; -fx-background-color: white;" text="time" />
-      <Label fx:id="lblDuration" alignment="CENTER" layoutX="17.0" layoutY="346.0" prefHeight="44.0" prefWidth="301.0" style="-fx-font: italic small-caps bold 15px/30px Georgia, serif; -fx-background-color: white;" text="Exam Duration (in Minutes) " />
-      <Button fx:id="lblAddQuestion" layoutX="61.0" layoutY="277.0" mnemonicParsing="false" prefHeight="44.0" prefWidth="150.0" style="-fx-font: italic small-caps bold 15px/30px Georgia, serif; -fx-background-color: white;" text="Add Questions" />
-      <Button fx:id="btnFinish" layoutX="241.0" layoutY="458.0" mnemonicParsing="false" onAction="#createExam" prefHeight="35.0" prefWidth="124.0" style="-fx-font: italic small-caps bold 19px/30px Georgia, serif;" text="Finish" />
-      <TextField fx:id="tfTitle" layoutX="303.0" layoutY="104.0" prefHeight="44.0" />
-      <TextField fx:id="tfDuration" layoutX="338.0" layoutY="346.0" prefHeight="44.0" />
-      <DatePicker fx:id="tfDate" layoutX="305.0" layoutY="159.0" prefHeight="44.0" prefWidth="149.0" />
-      <Label alignment="CENTER" layoutX="75.0" layoutY="20.0" prefHeight="44.0" prefWidth="301.0" style="-fx-font: italic small-caps bold 15px/30px Georgia, serif; -fx-background-color: purple;" text="Enter Your Exam Details" />
+      <Label fx:id="lblTitle" alignment="CENTER" layoutX="67.0" layoutY="141.0" prefHeight="44.0" prefWidth="142.0" style="-fx-font: italic small-caps bold 15px/30px Georgia, serif; -fx-background-color: white;" text="Title" />
+      <Label fx:id="lblDate" alignment="CENTER" layoutX="61.0" layoutY="202.0" prefHeight="44.0" prefWidth="142.0" style="-fx-font: italic small-caps bold 15px/30px Georgia, serif; -fx-background-color: white;" text="Date" />
+      <Label fx:id="lblTime" alignment="CENTER" layoutX="63.0" layoutY="279.0" prefHeight="44.0" prefWidth="150.0" style="-fx-font: italic small-caps bold 15px/30px Georgia, serif; -fx-background-color: white;" text="time" />
+      <Label fx:id="lblDuration" alignment="CENTER" layoutX="63.0" layoutY="340.0" prefHeight="44.0" prefWidth="301.0" style="-fx-font: italic small-caps bold 15px/30px Georgia, serif; -fx-background-color: white;" text="Exam Duration (in Minutes) " />
+      <TextField fx:id="tfTitle" layoutX="382.0" layoutY="141.0" prefHeight="44.0" promptText="Title" />
+      <TextField fx:id="tfDuration" layoutX="382.0" layoutY="340.0" prefHeight="44.0" promptText="duration" stylesheets="@../cssFiles/style.css" />
+      <Label alignment="CENTER" layoutX="214.0" prefHeight="44.0" prefWidth="301.0" style="-fx-font: italic small-caps bold 15px/30px Georgia, serif; -fx-background-color: purple;" text="Enter Exam Details" textFill="#e8e1e1" />
+      <JFXDatePicker fx:id="datePicker" defaultColor="#20c5b1" layoutX="381.0" layoutY="205.0" prefHeight="38.0" prefWidth="150.0" promptText="dd/mm/yyyy" style="-fx-background-color: white;" />
+      <JFXTimePicker fx:id="timePicker" layoutX="382.0" layoutY="269.0" prefHeight="44.0" prefWidth="150.0" promptText="hh:mm" style="-fx-background-color: white;" />
+      <JFXListView fx:id="questionList" layoutX="61.0" layoutY="433.0" prefHeight="334.0" prefWidth="511.0" />
+      <JFXButton layoutX="625.0" layoutY="433.0" onAction="#addQuestion" prefHeight="26.0" prefWidth="119.0" styleClass="questionBtn" stylesheets="@../cssFiles/style.css" text="Add Question">
+         <font>
+            <Font name="System Bold Italic" size="14.0" />
+         </font>
+      </JFXButton>
+      <JFXButton layoutX="625.0" layoutY="476.0" onAction="#undo" prefHeight="26.0" prefWidth="119.0" styleClass="questionBtn" stylesheets="@../cssFiles/style.css" text="Undo">
+         <font>
+            <Font name="System Bold Italic" size="14.0" />
+         </font>
+      </JFXButton>
+      <JFXButton layoutX="625.0" layoutY="518.0" onAction="#redo" prefHeight="26.0" prefWidth="119.0" styleClass="questionBtn" stylesheets="@../cssFiles/style.css" text="Redo">
+         <font>
+            <Font name="System Bold Italic" size="14.0" />
+         </font>
+      </JFXButton>
+      <JFXButton layoutX="625.0" layoutY="715.0" onAction="#createExam" prefHeight="26.0" prefWidth="119.0" styleClass="questionBtn" stylesheets="@../cssFiles/style.css" text="Finish">
+         <font>
+            <Font name="System Bold Italic" size="14.0" />
+         </font>
+      </JFXButton>
+      <Label layoutX="60.0" layoutY="407.0" text="Questions">
+         <font>
+            <Font name="System Bold Italic" size="14.0" />
+         </font>
+      </Label>
+      <JFXComboBox fx:id="selectedTeam" layoutX="64.0" layoutY="80.0" prefHeight="26.0" prefWidth="467.0" promptText="Select Team" />
    </children>
 </AnchorPane>

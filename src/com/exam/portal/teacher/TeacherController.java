@@ -60,7 +60,6 @@ public class TeacherController implements Initializable {
     @FXML
     void complainClicked(ActionEvent event) {
         System.out.println("complain");
-
     }
 
     @FXML
@@ -75,7 +74,7 @@ public class TeacherController implements Initializable {
 
     @FXML
     void teamsClicked(ActionEvent event) {
-        changeStage("../teams/Teams.fxml","Teams");
+        changeStage("../teams/Teams.fxml","Teams",500,500);
     }
 
    // Edit details
@@ -140,22 +139,23 @@ public class TeacherController implements Initializable {
     }
 
     public void gotoCreateTeam(ActionEvent actionEvent) {
-        changeStage("../teams/CreateTeam.fxml","Create Team");
+        changeStage("../teams/CreateTeam.fxml","Create Team",500,500);
     }
 
     public void gotoConductExam(ActionEvent actionEvent) {
+        changeStage("../exams/CreateExam.fxml","Create Exam",800,800);
     }
 
     public void gotoAddStudent(ActionEvent actionEvent) {
-        changeStage("../teams/AddStudent.fxml","Add Student");
+        changeStage("../teams/AddStudent.fxml","Add Student",700,500);
     }
 
-    public void changeStage(String path,String title){
+    public void changeStage(String path,String title,int width,int height){
         try{
             Stage stage = new Stage();
             Parent parent = FXMLLoader.load(Objects.requireNonNull(getClass().getResource(path)));
             stage.setTitle(title);
-            stage.setScene(new Scene(parent,600,600));
+            stage.setScene(new Scene(parent,width,height));
             stage.show();
         }catch (Exception e){
             e.printStackTrace();

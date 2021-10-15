@@ -3,21 +3,19 @@ package com.exam.portal.models;
 import java.io.File;
 
 public class Option {
+    private String examId;
+    private String questionId;
+    private String index;
+
     private boolean isImage;
     private String text;
-    private File file;
-    private int index;
+    private String  file;
 
     public Option(){}
 
     public Option(String text){
         this.text = text;
         this.isImage = false;
-    }
-
-    public Option(File file){
-        this.file = file;
-        this.isImage = true;
     }
 
     public boolean isImage() {
@@ -36,19 +34,35 @@ public class Option {
         this.text = text;
     }
 
-    public File getFile() {
+    public String getFile() {
         return file;
     }
 
-    public void setFile(File file) {
+    public void setFile(String file) {
         this.file = file;
     }
 
-    public int getIndex() {
+    public String getIndex() {
         return index;
     }
 
-    public void setIndex(int index) {
+    public void setIndex(String index) {
         this.index = index;
+    }
+
+    public String getExamId() {
+        return examId;
+    }
+
+    public void setExamId(String examId) {
+        this.examId = examId;
+    }
+
+    public String getQuestionId() {
+        return questionId;
+    }
+
+    public void setQuestionId(String questionId) {
+        this.questionId = questionId;
     }
 }

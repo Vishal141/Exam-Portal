@@ -16,7 +16,10 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.net.URL;
+import java.util.Base64;
 import java.util.ResourceBundle;
 import java.util.Stack;
 
@@ -68,8 +71,11 @@ public class AddQuestionController implements Initializable {
 
     public void undoOption(ActionEvent actionEvent) {
         Option option = question.undoOption();
-        if(option != null)
+        if(option != null){
+            optionCount = optionCount-1;
             stack.push(option);
+            options.getItems().remove(optionCount);
+        }
     }
 
     public void redoOption(ActionEvent actionEvent) {
@@ -93,7 +99,8 @@ public class AddQuestionController implements Initializable {
                 }else{
                     flag = true;
                     question.setImage(true);
-                    question.setFile(file);
+                    question.setQuestion(file.getAbsolutePath());
+                    question.setFile(encodeImageToBase64Binary(file));
                 }
             }else{
                 if(questionText.getText().equals("")){
@@ -108,7 +115,10 @@ public class AddQuestionController implements Initializable {
         }
 
         if(flag){
-
+            question.setAnsIndices(answers.getText());
+            question.setPoint(Double.parseDouble(point.getText()));
+            question.setNegPoint(Double.parseDouble(negPoint.getText()));
+            CreateExamController.addQuestion(question);
             stopThread();
             Stage stage = (Stage) questionText.getScene().getWindow();
             stage.close();
@@ -138,15 +148,12 @@ public class AddQuestionController implements Initializable {
     //thread which update option list.
     private void runThread(){
         isThreadRunning = true;
-        Platform.runLater(()->{
+        new Thread(()->{
             while(isThreadRunning){
                 if(question.getOptionCount() != optionCount){
-                    Option option = question.getLatestOptionAdded();
+                    Option option = question.getLastQuestion();
                     Label label = new Label();
-                    if(option.isImage())
-                        label.setText(option.getFile().getAbsolutePath());
-                    else
-                        label.setText(option.getText());
+                    label.setText(option.getText());
                     options.getItems().add(label);
                     optionCount = question.getOptionCount();
                 }else{
@@ -157,10 +164,21 @@ public class AddQuestionController implements Initializable {
                     }
                 }
             }
-        });
+        }).start();
     }
 
     private void stopThread(){
         isThreadRunning = false;
+    }
+
+    private String encodeImageToBase64Binary(File file) {
+        try{
+            FileInputStream fis = new FileInputStream(file);
+            String encodedFile = Base64.getEncoder().encodeToString(fis.readAllBytes());
+            return encodedFile;
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
     }
 }
