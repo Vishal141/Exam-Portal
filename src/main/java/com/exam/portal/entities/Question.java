@@ -1,7 +1,5 @@
 package com.exam.portal.entities;
 
-import javax.persistence.Transient;
-import java.io.File;
 import java.util.ArrayList;;
 
 public class Question {

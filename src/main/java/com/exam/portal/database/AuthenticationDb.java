@@ -134,12 +134,9 @@ public class AuthenticationDb {
         ResultSet rs;
         PreparedStatement preparedStatement=null;
         ArrayList<Student> students;
-        String query="SELECT * FROM Student WHERE Student_Id=%?% OR Name=%?% OR Email=%?%";
+        String query="SELECT * FROM Student WHERE Name LIKE '%"+prefix+"%' OR Email LIKE '%"+prefix+"%'";
         try{
             preparedStatement=connection.prepareStatement(query);
-            preparedStatement.setString(1,prefix);
-            preparedStatement.setString(2,prefix);
-            preparedStatement.setString(3,prefix);
             rs=preparedStatement.executeQuery();
             students = new ArrayList<>();
             while (rs.next()){
@@ -156,12 +153,9 @@ public class AuthenticationDb {
         ResultSet rs;
         PreparedStatement preparedStatement=null;
         ArrayList<Teacher> teachers;
-        String query="SELECT * FROM Teacher WHERE Teacher_Id=%?% OR Name=%?% OR Email=%?%";
+        String query="SELECT * FROM Teacher WHERE Name LIKE '%"+prefix+"%' OR Email LIKE '%"+prefix+"%'";
         try{
             preparedStatement=connection.prepareStatement(query);
-            preparedStatement.setString(1,prefix);
-            preparedStatement.setString(2,prefix);
-            preparedStatement.setString(3,prefix);
             rs=preparedStatement.executeQuery();
             teachers= new ArrayList<>();
             while (rs.next()){

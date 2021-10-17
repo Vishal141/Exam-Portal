@@ -18,4 +18,14 @@ public class ExamUtilsService implements ExamUtils {
     public boolean createExam(Exam exam, ArrayList<Question> questions) {
         return examUtilsDb.createExam(exam) && examUtilsDb.addQuestions(questions);
     }
+
+    @Override
+    public ArrayList<Exam> getExamsScheduledBy(String teacherId) {
+        return examUtilsDb.getExamsScheduledBy(teacherId);
+    }
+
+    @Override
+    public Exam getExamById(String examId) {
+        return examUtilsDb.getExamById(examId);
+    }
 }

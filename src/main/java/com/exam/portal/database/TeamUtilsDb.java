@@ -55,8 +55,7 @@ public class TeamUtilsDb {
             preparedStatement = connection.prepareStatement(query);
             preparedStatement.setString(1, belongTo.getStudentId());
             preparedStatement.setString(2, belongTo.getTeamId());
-            java.sql.Date sqlDate=new java.sql.Date(belongTo.getDate().getTime());
-            preparedStatement.setDate(3,sqlDate );
+            preparedStatement.setDate(3,belongTo.getDate());
             preparedStatement.execute();
             return true;
         }catch(Exception e){
@@ -72,8 +71,6 @@ public class TeamUtilsDb {
         String query = "SELECT * FROM TEAMS WHERE TEAMS.Team_Id IN (SELECT Team_Id FROM "+relationName+" WHERE "+relationId+"=?)";
         try {
             preparedStatement = connection.prepareStatement(query);
-//            preparedStatement.setString(1,relationName);
-//            preparedStatement.setString(2,relationId);
             preparedStatement.setString(1,Id);
             rs = preparedStatement.executeQuery();
             teams = new ArrayList<>();

@@ -1,6 +1,6 @@
 package com.exam.portal.entities;
 
-import java.util.Date;
+import java.sql.Date;
 
 public class BelongTo {
     private String studentId;
