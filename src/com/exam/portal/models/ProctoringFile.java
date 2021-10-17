@@ -1,16 +1,20 @@
 package com.exam.portal.models;
 
-import java.io.File;
+import com.exam.portal.proctoring.ProctorResult;
 
 public class ProctoringFile {
     private String examId;
     private String studentId;
-    private File file;
+    private String file;
     private String type;
+
+    private ProctorResult result;
+
+    private ProctorResult proctorResult;
 
     public ProctoringFile(){}
 
-    public ProctoringFile(String examId, String studentId, File file,String type) {
+    public ProctoringFile(String examId, String studentId, String file,String type) {
         this.examId = examId;
         this.studentId = studentId;
         this.file = file;
@@ -33,11 +37,11 @@ public class ProctoringFile {
         this.studentId = studentId;
     }
 
-    public File getFile() {
+    public String getFile() {
         return file;
     }
 
-    public void setFile(File file) {
+    public void setFile(String file) {
         this.file = file;
     }
 
@@ -47,5 +51,21 @@ public class ProctoringFile {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public ProctorResult getProctorResult() {
+        return proctorResult;
+    }
+
+    public void setProctorResult(ProctorResult proctorResult) {
+        this.proctorResult = proctorResult;
+    }
+
+    public ProctorResult getResult() {
+        return result;
+    }
+
+    public void setResult(ProctorResult result) {
+        this.result = result;
     }
 }

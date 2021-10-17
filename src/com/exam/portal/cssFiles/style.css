@@ -48,3 +48,7 @@
 .questionBtn:hover{
     -fx-background-color: #6db4ac;
 }
+
+.tabBtn{
+    -fx-background-color: #a3bdc4;
+}

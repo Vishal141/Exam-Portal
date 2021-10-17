@@ -284,6 +284,85 @@ public class ServerHandler implements Server{
         return  false;
     }
 
+    @Override
+    public boolean checkProctor() {
+        try{
+            String url = EXAM_URL+"/check-proctor";
+            connection = ServerConfig.getConnection(url);
+            assert connection != null;
+            BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            String response = reader.readLine();
+            return response.equals(SUCCESSFUL);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    @Override
+    public int detectFace(String bytes) {
+        try{
+            String url = EXAM_URL+"/"+bytes;
+            connection = ServerConfig.getConnection(url);
+            assert connection != null;
+            BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            int faces = Integer.parseInt(reader.readLine());
+            return faces;
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return  0;
+    }
+
+    @Override
+    public void sendProctorFile(ProctoringFile file) {
+        try{
+            String url = EXAM_URL+"/upload-proctor-file";
+            connection = ServerConfig.getConnection(url);
+            assert connection!=null;
+            String json = gson.toJson(file);
+            writeJson(json);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public ArrayList<Exam> getExamScheduledBy(String teacherId) {
+        ArrayList<Exam> exams;
+        try {
+            String url = EXAM_URL+"/scheduled-by/"+teacherId;
+            connection = ServerConfig.getConnection(url);
+            assert connection!=null;
+            BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            String response = reader.readLine();
+            exams = gson.fromJson(response,new TypeToken<List<Exam>>(){}.getType());
+            return exams;
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    @Override
+    public Exam getExamById(String examId) {
+        try{
+            String url = EXAM_URL + "/get-exam/id="+examId;
+            System.out.println(url);
+            connection = ServerConfig.getConnection(url);
+            assert connection!=null;
+            BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            Exam exam = gson.fromJson(reader,Exam.class);
+            return exam;
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     //method for writing object in request body
     private void writeJson(String json){
         try {

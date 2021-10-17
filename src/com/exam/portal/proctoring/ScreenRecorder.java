@@ -9,6 +9,8 @@ import javafx.application.Platform;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileInputStream;
+import java.util.Base64;
 import java.util.concurrent.TimeUnit;
 
 public class ScreenRecorder {
@@ -61,7 +63,7 @@ public class ScreenRecorder {
 
     private void start(){
         isThreadRunning = true;
-        Platform.runLater(()->{
+        new Thread(()->{
             IMediaWriter writer = ToolFactory.makeWriter(file.getAbsolutePath());
             writer.addVideoStream(0,0, ICodec.ID.CODEC_ID_H264,width,height);
             long startTime = System.nanoTime();
@@ -88,11 +90,11 @@ public class ScreenRecorder {
             writer.close();
             System.out.println("finished");
             finish();
-        });
+        }).start();
     }
 
     public void finish(){
-        ProctoringFile screenFile = new ProctoringFile(examId,studentId,file,"Screen");
+        ProctoringFile screenFile = new ProctoringFile(examId,studentId,encodeFileToBase64(file),"Screen");
         //function call for uploading file.
     }
 
@@ -110,17 +112,14 @@ public class ScreenRecorder {
         this.start();
     }
 
-//    public static void main(String args[]){
-//        ScreenRecorder recorder = new ScreenRecorder(60000,"","");
-//        Thread thread = new Thread(()->{
-//            try{
-//                Thread.sleep(recorder.recordTime);
-//            }catch (Exception e){
-//                e.printStackTrace();
-//            }
-//            recorder.isThreadRunning = false;
-//        });
-//        thread.start();
-//        recorder.start();
-//    }
+    private String encodeFileToBase64(File file){
+        try{
+            FileInputStream fis = new FileInputStream(file);
+            String encoded = Base64.getEncoder().encodeToString(fis.readAllBytes());
+            return encoded;
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
 }

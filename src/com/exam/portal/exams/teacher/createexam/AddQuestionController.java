@@ -1,9 +1,8 @@
-package com.exam.portal.exams;
+package com.exam.portal.exams.teacher.createexam;
 
 import com.exam.portal.models.Option;
 import com.exam.portal.models.Question;
 import com.jfoenix.controls.*;
-import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -17,7 +16,6 @@ import javafx.stage.Stage;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.net.URL;
 import java.util.Base64;
 import java.util.ResourceBundle;

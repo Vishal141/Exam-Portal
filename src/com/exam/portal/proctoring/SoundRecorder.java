@@ -5,6 +5,7 @@ import javafx.application.Platform;
 
 import javax.sound.sampled.*;
 import java.io.*;
+import java.util.Base64;
 
 public class SoundRecorder {
     private int recordTime;
@@ -91,37 +92,24 @@ public class SoundRecorder {
         line.close();
         System.out.println("Finished");
 
-        ProctoringFile audioFile = new ProctoringFile(examId,studentId,wavFile,"Audio");
+        ProctoringFile audioFile = new ProctoringFile(examId,studentId,encodeFileToBase64(wavFile),"Audio");
         //function call for uploading file.
     }
 
     public boolean isProctorAvailable(){
         AudioFormat format = getAudioFormat();
         DataLine.Info info = new DataLine.Info(TargetDataLine.class, format);
-        // checks if system supports the data line
-        //System.exit(0);
         return AudioSystem.isLineSupported(info);
     }
 
-//    public static void main(String[] args) {
-//        final SoundRecorder recorder = new SoundRecorder();
-//
-//        // creates a new thread that waits for a specified
-//        // of time before stopping
-//        Thread stopper = new Thread(new Runnable() {
-//            public void run() {
-//                try {
-//                    Thread.sleep(recordTime);
-//                } catch (InterruptedException ex) {
-//                    ex.printStackTrace();
-//                }
-//                recorder.finish();
-//            }
-//        });
-//
-//        stopper.start();
-//
-//        // start recording
-//        recorder.start();
-//    }
+    private String encodeFileToBase64(File file){
+        try{
+            FileInputStream fis = new FileInputStream(file);
+            String encoded = Base64.getEncoder().encodeToString(fis.readAllBytes());
+            return encoded;
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
 }

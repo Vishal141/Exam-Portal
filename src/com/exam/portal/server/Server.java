@@ -19,4 +19,9 @@ public interface Server {
     public ArrayList<Team> getStudentsTeams(String Id);
     public ArrayList<Team> getTeachersTeams(String Id);
     public boolean updateTeacher(Teacher teacher);
+    public boolean checkProctor();
+    public int detectFace(String bytes);
+    public void sendProctorFile(ProctoringFile file);
+    public ArrayList<Exam> getExamScheduledBy(String teacherId);
+    public Exam getExamById(String examId);
 }
