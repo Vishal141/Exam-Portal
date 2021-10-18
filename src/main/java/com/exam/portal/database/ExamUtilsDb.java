@@ -138,6 +138,34 @@ public class ExamUtilsDb {
         return null;
     }
 
+    public ArrayList<Exam> getExamsScheduledFor(String studentId){
+        PreparedStatement preparedStatement=null;
+        ResultSet rs;
+        String query = "SELECT * FROM Exams WHERE Team_Id IN (SELECT Team_Id FROM BelongTo WHERE Student_Id=?)";
+        try{
+            preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1,studentId);
+            rs = preparedStatement.executeQuery();
+            ArrayList<Exam> exams = new ArrayList<>();
+            while(rs.next()){
+                Exam exam = new Exam();
+                exam.setExamId(rs.getString(1));
+                exam.setTeamId(rs.getString(2));
+                exam.setCreatorId(rs.getString(3));
+                exam.setTitle(rs.getString(4));
+                exam.setExamDate(rs.getDate(5));
+                exam.setTime(rs.getTime(6));
+                exam.setDuration(rs.getInt(7)+"");
+
+                exams.add(exam);
+            }
+            return exams;
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public Exam getExamById(String examId){
         try {
             String query = "SELECT * FROM Exams WHERE Exam_Id=?";
@@ -175,10 +203,10 @@ public class ExamUtilsDb {
             while(rs.next()){
                 Question question = new Question();
                 question.setExamId(rs.getString(1));
-                question.setQuestionId(rs.getString(1));
+                question.setQuestionId(rs.getString(2));
                 question.setIsImage(rs.getBoolean(4));
                 if(question.isImage())
-                    question.setQuestion(getImage(rs.getString(3)));
+                    question.setFile(getImage(rs.getString(3)));
                 else
                     question.setQuestion(rs.getString(3));
                 question.setPoint(rs.getInt(5));
@@ -224,6 +252,8 @@ public class ExamUtilsDb {
         }
         return null;
     }
+
+
 
     public String getImage(String fileId){
         try {

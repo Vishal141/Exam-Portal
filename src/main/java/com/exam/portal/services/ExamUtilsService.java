@@ -25,6 +25,11 @@ public class ExamUtilsService implements ExamUtils {
     }
 
     @Override
+    public ArrayList<Exam> getExamsScheduledFor(String studentId) {
+        return examUtilsDb.getExamsScheduledFor(studentId);
+    }
+
+    @Override
     public Exam getExamById(String examId) {
         return examUtilsDb.getExamById(examId);
     }

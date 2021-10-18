@@ -40,5 +40,10 @@ public class TeamUtilsService implements TeamUtils {
         return teamUtilsDb.makeAdminOf(teacherId,teamId);
     }
 
+    @Override
+    public Team findTeamById(String id) {
+        return teamUtilsDb.findTeamById(id);
+    }
+
 
 }

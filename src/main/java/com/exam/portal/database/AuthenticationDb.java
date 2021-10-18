@@ -188,6 +188,25 @@ public class AuthenticationDb {
         return false;
     }
 
+    public boolean updateStudent(Student student){
+        PreparedStatement preparedStatement = null;
+        String query = "UPDATE Student SET Email=?,Name=?,ContactNo=? WHERE Student_Id=? AND Password=?";
+        try{
+            preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1,student.getEmail());
+            preparedStatement.setString(2,student.getName());
+            preparedStatement.setString(3,student.getContactNo());
+            preparedStatement.setString(4, student.getStudentId());
+            preparedStatement.setString(5,student.getPassword());
+            if(preparedStatement.executeUpdate()>0)
+                return true;
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
     private Teacher extractTeacher(ResultSet rs) throws SQLException {
         Teacher teacher = new Teacher();
         teacher.setTeacherId(rs.getString(1));

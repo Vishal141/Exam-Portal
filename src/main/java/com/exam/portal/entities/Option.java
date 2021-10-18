@@ -1,8 +1,5 @@
 package com.exam.portal.entities;
 
-import javax.persistence.Transient;
-import java.io.File;
-
 public class Option {
     private String examId;
     private String questionId;

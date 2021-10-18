@@ -16,15 +16,6 @@ public class Question {
     private String ansIndices;
 
     public Question(){
-        point = 1.0;
-        negPoint = 0.0;
-        options = new ArrayList<>();
-    }
-
-    public Question(String question){
-        this();
-        this.question = question;
-        this.isImage = false;
     }
 
     public String getQuestionId() {
@@ -91,33 +82,11 @@ public class Question {
         this.ansIndices = ansIndices;
     }
 
-    public void addOption(Option option){
-        option.setIndex(options.size()+"");
-        options.add(option);
-    }
-
-    public Option undoOption(){
-        int idx = options.size();
-        if(idx==0)
-            return null;
-        Option res = options.get(idx-1);
-        options.remove(idx-1);
-        return res;
-    }
-
     public void setOptions(ArrayList<Option> options){
         this.options = options;
     }
 
     public ArrayList<Option> getOptions(){
         return options;
-    }
-
-    public int getOptionCount(){
-        return options.size();
-    }
-
-    public Option getLastQuestion(){
-        return options.get(options.size()-1);
     }
 }

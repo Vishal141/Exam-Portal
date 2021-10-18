@@ -15,4 +15,5 @@ public interface Authentication {
     public ArrayList<Teacher> searchTeacher(String prefix);
     public ArrayList<Student> searchStudent(String prefix);
     public boolean updateTeacher(Teacher teacher);
+    public boolean updateStudent(Student student);
 }

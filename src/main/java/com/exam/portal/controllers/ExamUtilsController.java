@@ -56,9 +56,14 @@ public class ExamUtilsController{
         return examUtils.getExamsScheduledBy(teacherId);
     }
 
+    @RequestMapping("/scheduled-for/{studentId}")
+    public ArrayList<Exam> getExamScheduledFor(@PathVariable String studentId){
+        return examUtils.getExamsScheduledFor(studentId);
+    }
+
     @RequestMapping("/get-exam/id={examId}")
     public Exam getExamById(@PathVariable String examId){
-        System.out.println(examId);
+        examId = "Exam#"+examId;
         return examUtils.getExamById(examId);
     }
 }

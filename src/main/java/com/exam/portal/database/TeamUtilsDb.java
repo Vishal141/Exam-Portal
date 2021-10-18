@@ -89,5 +89,26 @@ public class TeamUtilsDb {
         return null;
     }
 
+    public Team findTeamById(String teamId){
+        PreparedStatement preparedStatement=null;
+        try {
+            String query = "SELECT * FROM Teams WHERE Team_Id=?";
+            preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1,teamId);
+            ResultSet rs = preparedStatement.executeQuery();
+            if(rs.next()){
+                Team team = new Team();
+                team.setTeamId(teamId);
+                team.setCreatorId(rs.getString(3));
+                team.setName(rs.getString(2));
+                team.setDateCreated(rs.getDate(4));
+
+                return team;
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
 
 }

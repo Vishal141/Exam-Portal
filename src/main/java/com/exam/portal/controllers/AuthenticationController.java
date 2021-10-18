@@ -79,4 +79,11 @@ public class AuthenticationController {
             return SUCCESSFUL;
         return FAILED;
     }
+
+    @RequestMapping("/student/update")
+    public String updateStudentDetails(@RequestBody Student student){
+        if(authentication.updateStudent(student))
+            return SUCCESSFUL;
+        return FAILED;
+    }
 }

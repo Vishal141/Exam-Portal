@@ -12,4 +12,5 @@ public interface TeamUtils {
     public ArrayList<Team> findStudentTeamsById(String Id);
     public ArrayList<Team> findTeacherTeamsById(String Id);
     public boolean makeAdmin(String teamId,String teacherId);
+    public Team findTeamById(String id);
 }

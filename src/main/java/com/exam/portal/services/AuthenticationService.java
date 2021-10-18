@@ -58,4 +58,9 @@ public class AuthenticationService implements Authentication {
     public boolean updateTeacher(Teacher teacher) {
         return authentication.updateTeacher(teacher);
     }
+
+    @Override
+    public boolean updateStudent(Student student){
+        return authentication.updateStudent(student);
+    }
 }
