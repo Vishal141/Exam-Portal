@@ -105,7 +105,7 @@ public class AddStudentController implements Initializable {
                 Stage stage = (Stage) searchText.getScene().getWindow();
                 stage.close();
             }else{
-                String message = "Not avail to add student in this team.\nMay be student already added to this.team";
+                String message = "Not able to add student in this team.\nMay be student already exist int this team.";
                 showAlert(message,"Warning", Alert.AlertType.WARNING);
             }
         }

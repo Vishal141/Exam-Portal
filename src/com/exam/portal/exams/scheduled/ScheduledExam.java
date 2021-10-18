@@ -1,8 +1,10 @@
-package com.exam.portal.exams.teacher;
+package com.exam.portal.exams.scheduled;
 
 import com.exam.portal.models.Exam;
+import com.exam.portal.models.Team;
 import com.exam.portal.server.Server;
 import com.exam.portal.server.ServerHandler;
+import com.exam.portal.student.StudentController;
 import com.exam.portal.teacher.TeacherController;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -22,6 +24,8 @@ public class ScheduledExam implements Initializable {
     @FXML
     VBox vBox;
 
+    public static boolean fromTeacher;
+
     private ArrayList<Exam> exams;
 
     @Override
@@ -32,19 +36,27 @@ public class ScheduledExam implements Initializable {
 
     private void fetchExams(){
         Server server = ServerHandler.getInstance();
-        exams = server.getExamScheduledBy(TeacherController.teacher.getTeacherId());
+        if(fromTeacher)
+            exams = server.getExamScheduledBy(TeacherController.teacher.getTeacherId());
+        else
+            exams = server.getExamScheduledFor(StudentController.student.getStudentId());
         if(exams == null)
             exams = new ArrayList<>();
     }
 
     private void addExamsToVBox(ArrayList<Exam> examArrayList){
+        Server server = ServerHandler.getInstance();
         try{
            for(Exam exam:examArrayList) {
-               FXMLLoader loader = FXMLLoader.load(getClass().getResource("ExamItem.fxml"));
+               FXMLLoader loader = new FXMLLoader(getClass().getResource("ExamItem.fxml"));
                Node node = loader.load();
-               ExamItem examItem = loader.getController();
+               ExamItem examItem =(ExamItem) loader.getController();
                examItem.setTitle(exam.getTitle());
                examItem.setDate(exam.getExamDate());
+               examItem.setExam(exam);
+               Team team = server.getTeamById(exam.getTeamId());
+               examItem.setTeamName(team.getName());
+               examItem.setTeam(team);
                vBox.getChildren().add(node);
            }
         }catch (Exception e){
@@ -53,12 +65,12 @@ public class ScheduledExam implements Initializable {
     }
 
     public void allExams(ActionEvent actionEvent) {
-        vBox.getChildren().removeAll();
+        vBox.getChildren().clear();
         addExamsToVBox(exams);
     }
 
     public void upcomingExams(ActionEvent actionEvent) {
-        vBox.getChildren().removeAll();
+        vBox.getChildren().clear();
         try{
             ArrayList<Exam> upcomingExam = new ArrayList<>();
             for(Exam exam:exams){
@@ -74,7 +86,7 @@ public class ScheduledExam implements Initializable {
     }
 
     public void archivedExams(ActionEvent actionEvent) {
-        vBox.getChildren().removeAll();
+        vBox.getChildren().clear();
         try{
             ArrayList<Exam> archivedExam = new ArrayList<>();
             for(Exam exam:exams){
@@ -92,9 +104,9 @@ public class ScheduledExam implements Initializable {
     private boolean after(Date examDate,String time){
         Date date = new Date();
         if(date.after(examDate))
-            return true;
-        if(date.before(examDate))
             return false;
+        if(date.before(examDate))
+            return true;
         int h = Integer.parseInt(time.substring(0,1));
         int m = Integer.parseInt(time.substring(3,4));
         if(date.getHours()>h)

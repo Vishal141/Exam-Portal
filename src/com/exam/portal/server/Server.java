@@ -24,4 +24,7 @@ public interface Server {
     public void sendProctorFile(ProctoringFile file);
     public ArrayList<Exam> getExamScheduledBy(String teacherId);
     public Exam getExamById(String examId);
+    public Team getTeamById(String id);
+    public boolean updateStudent(Student student);
+    public ArrayList<Exam> getExamScheduledFor(String studentId);
 }

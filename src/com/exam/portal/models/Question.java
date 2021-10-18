@@ -55,7 +55,7 @@ public class Question {
         return isImage;
     }
 
-    public void setImage(boolean image) {
+    public void setIsImage(boolean image) {
         isImage = image;
     }
 

@@ -54,7 +54,7 @@ public class AddOptionController implements Initializable {
                 flag = false;
             }else{
                 flag = true;
-                option.setImage(true);
+                option.setIsImage(true);
                 option.setText(file.getAbsolutePath());
                 option.setFile(encodeImageToBase64Binary(file));
             }
@@ -68,7 +68,7 @@ public class AddOptionController implements Initializable {
                 flag = false;
             }else{
                 flag = true;
-                option.setImage(false);
+                option.setIsImage(false);
                 option.setText(optionText.getText());
             }
         }

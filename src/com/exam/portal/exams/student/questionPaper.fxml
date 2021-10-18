@@ -1,27 +1,53 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXTextField?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="670.0" prefWidth="819.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.exam.portal.exams.student.QuestionPaper">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="770.0" prefWidth="952.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.exam.portal.exams.student.QuestionPaper">
    <children>
-      <Label fx:id="testTitle" alignment="CENTER" contentDisplay="CENTER" layoutX="-5.0" layoutY="-3.0" prefHeight="42.0" prefWidth="826.0" text="Test Title" textAlignment="CENTER" underline="true">
-         <font>
-            <Font name="System Bold Italic" size="18.0" />
-         </font>
-      </Label>
-      <VBox fx:id="vBox" layoutY="97.0" prefHeight="573.0" prefWidth="819.0" spacing="30.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="97.0" />
-      <Label fx:id="studentName" layoutX="65.0" layoutY="46.0" text="Student Name">
+      <AnchorPane layoutX="-5.0" layoutY="-3.0" prefHeight="83.0" prefWidth="945.0" style="-fx-background-color: #aed581;">
+         <children>
+            <Label fx:id="testTitle" alignment="CENTER" contentDisplay="CENTER" layoutY="-8.0" prefHeight="42.0" prefWidth="934.0" text="Test Title" textAlignment="CENTER" underline="true">
+               <font>
+                  <Font name="System Bold Italic" size="18.0" />
+               </font>
+            </Label>
+            <Label fx:id="studentName" layoutX="70.0" layoutY="49.0" text="Student Name">
+               <font>
+                  <Font name="System Bold Italic" size="12.0" />
+               </font>
+            </Label>
+            <Label fx:id="timer" layoutX="791.0" layoutY="49.0" text="timer">
+               <font>
+                  <Font name="System Bold Italic" size="12.0" />
+               </font>
+            </Label>
+         </children>
+      </AnchorPane>
+      <VBox layoutX="14.0" layoutY="93.0" prefHeight="595.0" prefWidth="702.0" style="-fx-background-color: #aed581;" />
+      <JFXTextField labelFloat="true" layoutX="14.0" layoutY="703.0" promptText=" Answer e.g 1,2,3">
          <font>
             <Font name="System Bold Italic" size="12.0" />
          </font>
-      </Label>
-      <Label fx:id="timer" layoutX="649.0" layoutY="46.0" text="timer">
+      </JFXTextField>
+      <JFXButton layoutX="178.0" layoutY="702.0" prefHeight="26.0" prefWidth="101.0" stylesheets="@../../cssFiles/style.css" text="Save" textFill="#faecec">
          <font>
             <Font name="System Bold Italic" size="12.0" />
          </font>
-      </Label>
+      </JFXButton>
+      <JFXButton layoutX="476.0" layoutY="702.0" prefHeight="26.0" prefWidth="101.0" stylesheets="@../../cssFiles/style.css" text="Previos" textFill="#faecec">
+         <font>
+            <Font name="System Bold Italic" size="12.0" />
+         </font>
+      </JFXButton>
+      <JFXButton layoutX="614.0" layoutY="702.0" prefHeight="26.0" prefWidth="101.0" stylesheets="@../../cssFiles/style.css" text="Next" textFill="#faecec">
+         <font>
+            <Font name="System Bold Italic" size="12.0" />
+         </font>
+      </JFXButton>
    </children>
 </AnchorPane>

@@ -37,7 +37,6 @@ public class QuestionPaper implements Initializable {
         exam.setExamId("Exam#en4f68");
         fetchExam();
         testTitle.setText(exam.getTitle());
-        setQuestions();
     }
 
     private void fetchExam(){
@@ -50,49 +49,8 @@ public class QuestionPaper implements Initializable {
         }
     }
 
-    private void setQuestions(){
-        for(Question question:exam.getQuestions())
-            vBox.getChildren().add(getQuestionNode(question));
-    }
 
-    private Node getQuestionNode(Question question){
-        try{
-            FXMLLoader loader = FXMLLoader.load(getClass().getResource("questionItem.fxml"));
-            VBox node = loader.load();
-            QuestionItem item = loader.getController();
-            if(question.isImage()){
-                item.setImageView(decodeImage(question.getFile()));
-                item.setText(question.getQuestionId());
-            }else
-                item.setText(question.getQuestion());
 
-            for(Option option:question.getOptions())
-                node.getChildren().add(getOptionNode(option));
-
-            return node;
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    private Node getOptionNode(Option option){
-        try {
-            FXMLLoader loader = FXMLLoader.load(getClass().getResource("questionItem.fxml"));
-            Node node = loader.load();
-            QuestionItem item = loader.getController();
-            if(option.isImage()){
-                item.setImageView(decodeImage(option.getFile()));
-                item.setText(option.getIndex());
-            }
-            else
-                item.setText(option.getText());
-            return node;
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-        return null;
-    }
 
     private Image decodeImage(String bytes){
         byte[] bytes1 = Base64.getDecoder().decode(bytes);

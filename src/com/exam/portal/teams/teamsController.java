@@ -85,22 +85,6 @@ public class teamsController implements Initializable {
         changeStage(path,"Dashboard",700,500);
     }
 
-    public void changeStage(String path,String title,int width,int height){
-        try {
-            Stage stage;
-            if(title.equals("Create Team"))
-                stage = new Stage();
-            else
-                stage = (Stage) btnBack.getScene().getWindow();
-            Parent parent = FXMLLoader.load(Objects.requireNonNull(getClass().getResource(path)));
-            stage.setTitle(title);
-            stage.setScene(new Scene(parent,width,height));
-            stage.show();
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-    }
-
     //fetching all teams associated with teacher from server
     private void fetchTeams(){
         Server server = ServerHandler.getInstance();
@@ -118,6 +102,29 @@ public class teamsController implements Initializable {
         }
     }
 
+    private void teamListItemClicked(MouseEvent mouseEvent) {
+        String path = "SelectTeamTeacher.fxml";
+        Team team = teams.get(teamList.getSelectionModel().getSelectedIndex());
+        SelectTeamTeacherController.team = team;
+        changeStage(path,team.getName(),800,800);
+    }
+
+    public void changeStage(String path,String title,int width,int height){
+        try {
+            Stage stage;
+            if(title.equals("Create Team"))
+                stage = new Stage();
+            else
+                stage = (Stage) btnBack.getScene().getWindow();
+            Parent parent = FXMLLoader.load(Objects.requireNonNull(getClass().getResource(path)));
+            stage.setTitle(title);
+            stage.setScene(new Scene(parent,width,height));
+            stage.show();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
     private void generateRandomColor(){
         Random random = new Random();
         int c = random.nextInt();
@@ -125,9 +132,5 @@ public class teamsController implements Initializable {
         g = (c>>>8)&255;
         b = (c>>>16)&255;
         op = (c>>>24)/255.0;
-    }
-
-    private void teamListItemClicked(MouseEvent mouseEvent) {
-
     }
 }

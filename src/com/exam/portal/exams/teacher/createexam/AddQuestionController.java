@@ -96,7 +96,7 @@ public class AddQuestionController implements Initializable {
                     showAlert("Question image is not selected.");
                 }else{
                     flag = true;
-                    question.setImage(true);
+                    question.setIsImage(true);
                     question.setQuestion(file.getAbsolutePath());
                     question.setFile(encodeImageToBase64Binary(file));
                 }
@@ -106,7 +106,7 @@ public class AddQuestionController implements Initializable {
                     showAlert("Question text is not entered.");
                 }else{
                     flag = true;
-                    question.setImage(false);
+                    question.setIsImage(false);
                     question.setQuestion(questionText.getText());
                 }
             }

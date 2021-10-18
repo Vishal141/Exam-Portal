@@ -40,7 +40,7 @@ public class LoginController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        UserEmailId.requestFocus();
+      //  UserEmailId.requestFocus();
     }
     @FXML
     void signIn(ActionEvent event) {
@@ -53,7 +53,7 @@ public class LoginController implements Initializable {
                 student.setEmail(UserEmailId.getText());
                 student.setPassword(getHash(enteredPassword.getText()));
                 if(server.login(student)){
-                    StudentController.student = student;
+                    StudentController.student = server.getStudent(UserEmailId.getText());
                     gotoDashboard("../student/StudentDashboard.fxml");
                 }else{
                     showWarning("Invalid Credentials", Alert.AlertType.ERROR);

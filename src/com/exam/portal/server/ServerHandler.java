@@ -285,6 +285,24 @@ public class ServerHandler implements Server{
     }
 
     @Override
+    public boolean updateStudent(Student student) {
+        try {
+            String url = AUTHENTICATION_URL + "/student/update";
+            connection = ServerConfig.getConnection(url);
+            assert connection != null;
+            String json = gson.toJson(student);
+            writeJson(json);
+
+            BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            String response = reader.readLine();
+            return response.equals(SUCCESSFUL);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return  false;
+    }
+
+    @Override
     public boolean checkProctor() {
         try{
             String url = EXAM_URL+"/check-proctor";
@@ -348,15 +366,50 @@ public class ServerHandler implements Server{
     }
 
     @Override
+    public ArrayList<Exam> getExamScheduledFor(String studentId){
+        ArrayList<Exam> exams;
+        try {
+            String url = EXAM_URL+"/scheduled-for/"+studentId;
+            connection = ServerConfig.getConnection(url);
+            assert connection!=null;
+            BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            String response = reader.readLine();
+            exams = gson.fromJson(response,new TypeToken<List<Exam>>(){}.getType());
+            return exams;
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    @Override
     public Exam getExamById(String examId) {
         try{
-            String url = EXAM_URL + "/get-exam/id="+examId;
+            String url = EXAM_URL + "/get-exam/id="+(examId.substring(examId.indexOf('#')+1));
             System.out.println(url);
             connection = ServerConfig.getConnection(url);
             assert connection!=null;
             BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-            Exam exam = gson.fromJson(reader,Exam.class);
+            String response = reader.readLine();
+            System.out.println(response);
+            Exam exam = gson.fromJson(response,Exam.class);
             return exam;
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public Team getTeamById(String id) {
+        try{
+            String url = TEAM_URL+"/get/id="+(id.substring(id.indexOf('#')+1));
+            connection = ServerConfig.getConnection(url);
+            assert connection!=null;
+            BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            Team team = gson.fromJson(reader,Team.class);
+            return team;
         }catch (Exception e){
             e.printStackTrace();
         }

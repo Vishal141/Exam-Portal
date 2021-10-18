@@ -1,5 +1,6 @@
 package com.exam.portal.teacher;
 
+import com.exam.portal.exams.scheduled.ScheduledExam;
 import com.exam.portal.models.Teacher;
 import com.exam.portal.server.Server;
 import com.exam.portal.server.ServerHandler;
@@ -69,12 +70,50 @@ public class TeacherController implements Initializable {
 
     @FXML
     void examsClicked(ActionEvent event) {
-        System.out.println("exam");
+        String path = "../exams/scheduled/ScheduledExam.fxml";
+        ScheduledExam.fromTeacher = true;
+        changeStage(path,"Scheduled Exams",800,600);
     }
 
     @FXML
     void teamsClicked(ActionEvent event) {
         changeStage("../teams/Teams.fxml","Teams",500,500);
+    }
+
+    public void gotoCreateTeam(ActionEvent actionEvent) {
+        changeStage("../teams/CreateTeam.fxml","Create Team",500,500);
+    }
+
+    public void gotoConductExam(ActionEvent actionEvent) {
+        changeStage("../exams/teacher/createexam/CreateExam.fxml","Create Exam",800,800);
+    }
+
+    public void gotoAddStudent(ActionEvent actionEvent) {
+        changeStage("../teams/AddStudent.fxml","Add Student",700,500);
+    }
+
+    public void editDetails(ActionEvent actionEvent) {
+        try {
+            Stage stage = new Stage();
+            Parent parent = FXMLLoader.load(getClass().getResource("Edit.fxml"));
+            stage.setTitle("Edit Details");
+            stage.setScene(new Scene(parent,500,500));
+            stage.show();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public void changeStage(String path,String title,int width,int height){
+        try{
+            Stage stage = new Stage();
+            Parent parent = FXMLLoader.load(Objects.requireNonNull(getClass().getResource(path)));
+            stage.setTitle(title);
+            stage.setScene(new Scene(parent,width,height));
+            stage.show();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
    // Edit details
@@ -94,7 +133,7 @@ public class TeacherController implements Initializable {
      Button btnEditSubmit;
     @FXML
     void EditSubmitted(ActionEvent event) {
-        if(newMail.getText().equals("") || newName.getText().equals("") || newNo.getText().equals("")){
+        if(newMail.getText().equals("") || newName.getText().equals("") || newNo.getText().equals("") || newPass.getText().equals("")){
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setHeaderText(null);
             alert.setTitle("Warning");
@@ -123,42 +162,6 @@ public class TeacherController implements Initializable {
                 alert.setContentText("Check you password or email.");
                 alert.showAndWait();
             }
-        }
-    }
-
-    public void editDetails(ActionEvent actionEvent) {
-        try {
-            Stage stage = new Stage();
-            Parent parent = FXMLLoader.load(getClass().getResource("Edit.fxml"));
-            stage.setTitle("Edit Details");
-            stage.setScene(new Scene(parent,500,500));
-            stage.show();
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-    }
-
-    public void gotoCreateTeam(ActionEvent actionEvent) {
-        changeStage("../teams/CreateTeam.fxml","Create Team",500,500);
-    }
-
-    public void gotoConductExam(ActionEvent actionEvent) {
-        changeStage("../exams/CreateExam.fxml","Create Exam",800,800);
-    }
-
-    public void gotoAddStudent(ActionEvent actionEvent) {
-        changeStage("../teams/AddStudent.fxml","Add Student",700,500);
-    }
-
-    public void changeStage(String path,String title,int width,int height){
-        try{
-            Stage stage = new Stage();
-            Parent parent = FXMLLoader.load(Objects.requireNonNull(getClass().getResource(path)));
-            stage.setTitle(title);
-            stage.setScene(new Scene(parent,width,height));
-            stage.show();
-        }catch (Exception e){
-            e.printStackTrace();
         }
     }
 

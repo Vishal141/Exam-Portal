@@ -1,43 +1,60 @@
 package com.exam.portal.teams;
 
+import com.exam.portal.exams.scheduled.ScheduledExam;
+import com.exam.portal.models.Team;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.stage.Stage;
 
-public class SelectTeamTeacherController {
+import java.net.URL;
+import java.util.ResourceBundle;
 
-
-    @FXML
-    private Label lblTeamName;
-
-    @FXML
-    private Button btnShowStudents;
+public class SelectTeamTeacherController implements Initializable {
+    public static Team team;
 
     @FXML
-    private Button btnAddStudent;
+    Label lblTeamName;
 
     @FXML
-    private Button btnSheduleExam;
+    Button btnShowStudents;
 
     @FXML
-    private Button btnGoBcak;
+    Button btnAddStudent;
 
     @FXML
-    private TextField tfMassage;
+    Button btnScheduledExam;
 
     @FXML
-    private Button btnSend;
+    Button btnGoBack;
+
+    @FXML
+    TextField tfMassage;
+
+    @FXML
+    Button btnSend;
+
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        lblTeamName.setText(team.getName());
+    }
 
     @FXML
     void addStudent(ActionEvent event) {
-
+        String path = "AddStudent.fxml";
+        changeStage(path,"Add Student",600,650);
     }
 
     @FXML
     void goBack(ActionEvent event) {
-
+        String path = "Teams.fxml";
+        changeStage(path,"Teams",700,600);
     }
 
     @FXML
@@ -46,8 +63,10 @@ public class SelectTeamTeacherController {
     }
 
     @FXML
-    void sheduleExam(ActionEvent event) {
-
+    void scheduledExam(ActionEvent event) {
+        String path = "../exams/scheduled/ScheduledExam.fxml";
+        ScheduledExam.fromTeacher = true;
+        changeStage(path,"Scheduled Exams",700,600);
     }
 
     @FXML
@@ -55,4 +74,15 @@ public class SelectTeamTeacherController {
 
     }
 
+    public void changeStage(String path,String title,int width,int height){
+        try{
+            Stage stage = (Stage) lblTeamName.getScene().getWindow();
+            Parent parent = FXMLLoader.load(getClass().getResource(path));
+            stage.setTitle(title);
+            stage.setScene(new Scene(parent,width,height));
+            stage.show();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
 }
