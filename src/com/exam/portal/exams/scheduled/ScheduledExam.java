@@ -6,6 +6,7 @@ import com.exam.portal.server.Server;
 import com.exam.portal.server.ServerHandler;
 import com.exam.portal.student.StudentController;
 import com.exam.portal.teacher.TeacherController;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -13,6 +14,7 @@ import javafx.fxml.Initializable;
 
 import javafx.scene.Node;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 
 import java.net.URL;
 import java.text.SimpleDateFormat;
@@ -24,6 +26,7 @@ public class ScheduledExam implements Initializable {
     @FXML
     VBox vBox;
 
+    //variable used for determining that it is student or teacher.
     public static boolean fromTeacher;
 
     private ArrayList<Exam> exams;
@@ -31,26 +34,31 @@ public class ScheduledExam implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         fetchExams();
-        addExamsToVBox(exams);
     }
 
+    //fetching only details of exams (without questions).
     private void fetchExams(){
-        Server server = ServerHandler.getInstance();
-        if(fromTeacher)
-            exams = server.getExamScheduledBy(TeacherController.teacher.getTeacherId());
-        else
-            exams = server.getExamScheduledFor(StudentController.student.getStudentId());
-        if(exams == null)
-            exams = new ArrayList<>();
+        Platform.runLater(()->{
+            Server server = ServerHandler.getInstance();
+            if(fromTeacher)
+                exams = server.getExamScheduledBy(TeacherController.teacher.getTeacherId());
+            else
+                exams = server.getExamScheduledFor(StudentController.student.getStudentId());
+            if(exams == null)
+                exams = new ArrayList<>();
+            addExamsToVBox(exams);
+        });
     }
 
+    //displaying all exams.
     private void addExamsToVBox(ArrayList<Exam> examArrayList){
+        ExamItem.stage = (Stage)vBox.getScene().getWindow();
         Server server = ServerHandler.getInstance();
         try{
            for(Exam exam:examArrayList) {
                FXMLLoader loader = new FXMLLoader(getClass().getResource("ExamItem.fxml"));
                Node node = loader.load();
-               ExamItem examItem =(ExamItem) loader.getController();
+               ExamItem examItem = loader.getController();
                examItem.setTitle(exam.getTitle());
                examItem.setDate(exam.getExamDate());
                examItem.setExam(exam);
@@ -58,17 +66,20 @@ public class ScheduledExam implements Initializable {
                examItem.setTeamName(team.getName());
                examItem.setTeam(team);
                vBox.getChildren().add(node);
+               examItem.addEventListener();
            }
         }catch (Exception e){
             e.printStackTrace();
         }
     }
 
+    //display all the exams.
     public void allExams(ActionEvent actionEvent) {
         vBox.getChildren().clear();
         addExamsToVBox(exams);
     }
 
+    //display all exams which has not been finished yet.
     public void upcomingExams(ActionEvent actionEvent) {
         vBox.getChildren().clear();
         try{
@@ -85,6 +96,7 @@ public class ScheduledExam implements Initializable {
         }
     }
 
+    //display all finished exams.
     public void archivedExams(ActionEvent actionEvent) {
         vBox.getChildren().clear();
         try{
@@ -101,6 +113,7 @@ public class ScheduledExam implements Initializable {
         }
     }
 
+    //compare dates.
     private boolean after(Date examDate,String time){
         Date date = new Date();
         if(date.after(examDate))

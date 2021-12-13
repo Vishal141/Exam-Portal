@@ -22,6 +22,7 @@ public class ServerHandler implements Server{
     private static final String SUCCESSFUL = "SUCCESSFUL";
 
     private static Gson gson;
+    //connection which link to the specific url on server.
     private HttpURLConnection connection;
 
     private static ServerHandler serverHandler=null;
@@ -30,12 +31,14 @@ public class ServerHandler implements Server{
         gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
     }
 
+    //returns the singleton object of ServerHandler
     public static ServerHandler getInstance(){
         if(serverHandler == null)
             serverHandler = new ServerHandler();
         return serverHandler;
     }
 
+    //sending login request to the server.
     @Override
     public boolean login(Student student) {
         try{
@@ -56,6 +59,7 @@ public class ServerHandler implements Server{
         return false;
     }
 
+    //sending login request to the server.
     @Override
     public boolean login(Teacher teacher) {
         try {
@@ -74,6 +78,7 @@ public class ServerHandler implements Server{
         return  false;
     }
 
+    //sending sign up request to the server.
     @Override
     public boolean register(Student student) {
         try {
@@ -92,6 +97,7 @@ public class ServerHandler implements Server{
         return  false;
     }
 
+    //sending sign up request to the server.
     @Override
     public boolean register(Teacher teacher) {
         try {
@@ -110,6 +116,7 @@ public class ServerHandler implements Server{
         return  false;
     }
 
+    //sending request for creating a new team.
     @Override
     public boolean createTeam(Team team) {
         try {
@@ -128,6 +135,7 @@ public class ServerHandler implements Server{
         return  false;
     }
 
+    //sending request to add student in team,belongTo consist student and team object.
     @Override
     public boolean addStudent(BelongTo belongTo) {
         try {
@@ -146,6 +154,7 @@ public class ServerHandler implements Server{
         return  false;
     }
 
+    //sending request for creating new exam.
     @Override
     public boolean createExam(Exam exam) {
         try {
@@ -164,6 +173,7 @@ public class ServerHandler implements Server{
         return  false;
     }
 
+    //fetching teacher details via email id.
     @Override
     public Teacher getTeacher(String email) {
         try{
@@ -181,6 +191,7 @@ public class ServerHandler implements Server{
         return null;
     }
 
+    //fetching student details via email id.
     @Override
     public Student getStudent(String email) {
         try{
@@ -198,6 +209,7 @@ public class ServerHandler implements Server{
         return null;
     }
 
+    //fetching teachers whose name or email contains text as a substring.
     @Override
     public ArrayList<Teacher> searchTeacher(String text) {
         try{
@@ -215,6 +227,7 @@ public class ServerHandler implements Server{
         return null;
     }
 
+    //fetching students whose name or email contains text as a substring.
     @Override
     public ArrayList<Student> searchStudent(String text) {
         try{
@@ -232,6 +245,7 @@ public class ServerHandler implements Server{
         return null;
     }
 
+    //fetching all teams who contains one student with given id.
     @Override
     public ArrayList<Team> getStudentsTeams(String Id) {
         try{
@@ -249,6 +263,7 @@ public class ServerHandler implements Server{
         return null;
     }
 
+    //fetching all teams who contains one admin with given id.
     @Override
     public ArrayList<Team> getTeachersTeams(String Id) {
         try{
@@ -266,6 +281,7 @@ public class ServerHandler implements Server{
         return null;
     }
 
+    //sending request for updating teacher's details.
     @Override
     public boolean updateTeacher(Teacher teacher) {
         try {
@@ -284,6 +300,7 @@ public class ServerHandler implements Server{
         return  false;
     }
 
+    //sending request for updating student's details.
     @Override
     public boolean updateStudent(Student student) {
         try {
@@ -302,6 +319,7 @@ public class ServerHandler implements Server{
         return  false;
     }
 
+    //checking that proctor is available or not.
     @Override
     public boolean checkProctor() {
         try{
@@ -318,6 +336,7 @@ public class ServerHandler implements Server{
         return false;
     }
 
+    //detecting number of faces in given image.
     @Override
     public int detectFace(String bytes) {
         try{
@@ -334,6 +353,7 @@ public class ServerHandler implements Server{
         return  0;
     }
 
+    //sending students cheating status.
     @Override
     public void sendProctorFile(ProctoringFile file) {
         try{
@@ -347,6 +367,7 @@ public class ServerHandler implements Server{
         }
     }
 
+    //fetching all the exams scheduled by teacher with id teacherId
     @Override
     public ArrayList<Exam> getExamScheduledBy(String teacherId) {
         ArrayList<Exam> exams;
@@ -365,6 +386,7 @@ public class ServerHandler implements Server{
         return null;
     }
 
+    //fetching all exams scheduled in teams in which student with id studentId exist.
     @Override
     public ArrayList<Exam> getExamScheduledFor(String studentId){
         ArrayList<Exam> exams;
@@ -383,6 +405,7 @@ public class ServerHandler implements Server{
         return null;
     }
 
+    //fetching exam with given Id.
     @Override
     public Exam getExamById(String examId) {
         try{
@@ -401,6 +424,7 @@ public class ServerHandler implements Server{
         return null;
     }
 
+    //fetching team with given id.
     @Override
     public Team getTeamById(String id) {
         try{

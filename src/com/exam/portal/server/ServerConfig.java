@@ -6,6 +6,7 @@ import java.net.URL;
 public class ServerConfig {
     private static final String BASE_URL = "http://localhost:8080/exam-portal";
 
+    //this returns the http connection object which point to the given url.
     public static HttpURLConnection getConnection(String path){
         try {
             URL url = new URL(BASE_URL+path);

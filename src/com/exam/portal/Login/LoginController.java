@@ -6,6 +6,7 @@ import com.exam.portal.server.Server;
 import com.exam.portal.server.ServerHandler;
 import com.exam.portal.student.StudentController;
 import com.exam.portal.teacher.TeacherController;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -112,12 +113,14 @@ public class LoginController implements Initializable {
                 student.setContactNo(pNumber.getText());
                 student.setPassword(getHash(pPassword.getText()));
 
-                if(server.register(student)){
-                    StudentController.student = student;
-                    gotoDashboard("../student/StudentDashboard.fxml");
-                }else{
-                    showWarning("Email is already registered.", Alert.AlertType.ERROR);
-                }
+                Platform.runLater(()->{
+                    if(server.register(student)){
+                        StudentController.student = student;
+                        gotoDashboard("../student/StudentDashboard.fxml");
+                    }else{
+                        showWarning("Email is already registered.", Alert.AlertType.ERROR);
+                    }
+                });
             }else{
                 Teacher teacher = new Teacher();
                 teacher.setTeacherId(generateId("T"));
@@ -126,12 +129,14 @@ public class LoginController implements Initializable {
                 teacher.setContactNo(pNumber.getText());
                 teacher.setPassword(getHash(pPassword.getText()));
 
-                if(server.register(teacher)){
-                    TeacherController.teacher = server.getTeacher(teacher.getEmail());
-                    gotoDashboard("../teacher/TeacherDashboard.fxml");
-                }else {
-                    showWarning("Email is already registered.", Alert.AlertType.ERROR);
-                }
+                Platform.runLater(()->{
+                    if(server.register(teacher)){
+                        TeacherController.teacher = server.getTeacher(teacher.getEmail());
+                        gotoDashboard("../teacher/TeacherDashboard.fxml");
+                    }else {
+                        showWarning("Email is already registered.", Alert.AlertType.ERROR);
+                    }
+                });
             }
         }
     }

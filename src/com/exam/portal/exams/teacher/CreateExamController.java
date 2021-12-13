@@ -1,4 +1,4 @@
-package com.exam.portal.exams.teacher.createexam;
+package com.exam.portal.exams.teacher;
 
 import com.exam.portal.models.Exam;
 import com.exam.portal.models.Question;

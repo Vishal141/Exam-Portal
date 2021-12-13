@@ -11,7 +11,7 @@
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
             prefHeight="456.0" prefWidth="634.0" style="-fx-background-color: #b3e5fc;"
             xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.exam.portal.exams.teacher.createexam.AddOptionController">
+            fx:controller="com.exam.portal.exams.teacher.AddOptionController">
    <children>
       <Label layoutX="96.0" layoutY="106.0" text="Option Text">
          <font>

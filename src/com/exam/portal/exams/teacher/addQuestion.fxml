@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="755.0" prefWidth="724.0" style="-fx-background-color: #e3f2fd;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.exam.portal.exams.teacher.createexam.AddQuestionController">
+<AnchorPane prefHeight="755.0" prefWidth="724.0" style="-fx-background-color: #e3f2fd;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.exam.portal.exams.teacher.AddQuestionController">
    <children>
       <Label layoutX="37.0" layoutY="31.0" text="Enter Question" textFill="#0e0404">
          <font>

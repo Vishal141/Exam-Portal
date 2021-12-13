@@ -3,14 +3,15 @@ package com.exam.portal.notificatios;
 import java.awt.*;
 
 public class Notification {
-    private String title;
-    private String message;
+    private final String title;
+    private final String message;
 
     public Notification(String title,String message){
         this.title = title;
         this.message = message;
     }
 
+    //this function shows the notification with the help of system tray.
     public void show(TrayIcon.MessageType type){
         try {
             SystemTray tray = SystemTray.getSystemTray();

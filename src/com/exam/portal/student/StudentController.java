@@ -70,6 +70,7 @@ public class StudentController implements Initializable {
 
     }
 
+    //create a new stage and show it.
     public void changeStage(String path,String title,int width,int height){
         try {
             Stage stage = new Stage();
@@ -94,7 +95,7 @@ public class StudentController implements Initializable {
     TextField Pass;
 
     @FXML
-    void EditSubmitted(ActionEvent event) {
+    void editSubmitted(ActionEvent event) {
         if(newMail.getText().equals("") || newName.getText().equals("") || newNo.getText().equals("") || Pass.getText().equals("")){
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setHeaderText(null);
@@ -126,6 +127,7 @@ public class StudentController implements Initializable {
         }
     }
 
+    //generate md5 hash value using given text.
     private String getHash(String text){
         try {
             MessageDigest md = MessageDigest.getInstance("MD5");

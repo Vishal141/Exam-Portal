@@ -11,9 +11,16 @@ public class Option {
     private String text;
     private String  file;
 
-    public Option(){}
+    private boolean isSelected;
+    private boolean isCorrect;
+
+    public Option(){
+        isSelected = false;
+        isCorrect = false;
+    }
 
     public Option(String text){
+        this();
         this.text = text;
         this.isImage = false;
     }
@@ -64,5 +71,22 @@ public class Option {
 
     public void setQuestionId(String questionId) {
         this.questionId = questionId;
+    }
+
+    public boolean isCorrect() {
+        return isCorrect;
+    }
+
+    public void setCorrect(boolean correct) {
+        isCorrect = correct;
+    }
+
+    public boolean isSelected() {
+        return isSelected;
+    }
+
+    public boolean setSelected() {
+        isSelected = !isSelected;
+        return isSelected;
     }
 }

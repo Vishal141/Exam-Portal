@@ -4,6 +4,7 @@ import com.exam.portal.models.*;
 
 import java.util.ArrayList;
 
+//this interface contains all server-client communication methods.
 public interface Server {
     public boolean login(Student student);
     public boolean login(Teacher teacher);

@@ -15,18 +15,6 @@ public class Question {
     private ArrayList<Option> options;
     private String ansIndices;
 
-    public Question(){
-        point = 1.0;
-        negPoint = 0.0;
-        options = new ArrayList<>();
-    }
-
-    public Question(String question){
-        this();
-        this.question = question;
-        this.isImage = false;
-    }
-
     public String getQuestionId() {
         return questionId;
     }
@@ -51,12 +39,12 @@ public class Question {
         this.question = question;
     }
 
-    public boolean isImage() {
+    public boolean getIsImage() {
         return isImage;
     }
 
-    public void setIsImage(boolean image) {
-        isImage = image;
+    public void setIsImage(boolean isImage) {
+        this.isImage = isImage;
     }
 
     public String getFile() {

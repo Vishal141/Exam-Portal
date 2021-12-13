@@ -1,4 +1,4 @@
-package com.exam.portal.exams.teacher.createexam;
+package com.exam.portal.exams.teacher;
 
 import com.exam.portal.models.Option;
 import com.jfoenix.controls.JFXButton;
