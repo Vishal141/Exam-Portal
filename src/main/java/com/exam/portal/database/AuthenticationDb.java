@@ -13,9 +13,9 @@ public class AuthenticationDb {
         connection = DatabaseConfig.getConnection();
     }
 
+    //makes a new teacher in database and returns true if successful.
     public boolean register(Teacher teacher){
         PreparedStatement preparedStatement=null;
-        // connection=null;
         String query="INSERT INTO Teacher values(?,?,?,?,?)";
         try{
             preparedStatement=connection.prepareStatement(query);
@@ -34,6 +34,7 @@ public class AuthenticationDb {
         }
     }
 
+    //makes a new student in database and returns true if successful.
     public boolean register(Student student) {
         PreparedStatement preparedStatement = null;
         // connection=null;
@@ -53,6 +54,8 @@ public class AuthenticationDb {
             return false;
         }
     }
+
+    //check student's credentials , if match found than return true otherwise false.
     public boolean login(Student student){
         ResultSet rs;
         PreparedStatement preparedStatement=null;
@@ -63,7 +66,7 @@ public class AuthenticationDb {
             rs=preparedStatement.executeQuery();
             if(rs.next()){
                 String checkPass=rs.getString(1);
-                return checkPass.equals(student.getPassword());
+                return checkPass.equals(student.getPassword());   //checking that password is correct or not.
             }
 
         }catch (Exception e){
@@ -73,6 +76,7 @@ public class AuthenticationDb {
         return false;
     }
 
+    //check teacher's credentials , if match found than return true otherwise false.
     public boolean login(Teacher teacher){
         ResultSet rs;
         PreparedStatement preparedStatement=null;
@@ -83,7 +87,7 @@ public class AuthenticationDb {
             rs=preparedStatement.executeQuery();
             if(rs.next()){
                 String checkPass=rs.getString(1);
-                return checkPass.equals(teacher.getPassword());
+                return checkPass.equals(teacher.getPassword());   //checking that password is correct or not.
             }
 
         }catch (Exception e){
@@ -93,6 +97,7 @@ public class AuthenticationDb {
         return false;
     }
 
+    //search for the teacher in the teacher table with the help of email id and return if any teacher exist with the same.
     public Teacher findTeacherByEmail(String email){
         ResultSet rs;
         PreparedStatement preparedStatement=null;
@@ -102,7 +107,7 @@ public class AuthenticationDb {
             preparedStatement.setString(1,email);
             rs=preparedStatement.executeQuery();
             if (rs.next()){
-                return extractTeacher(rs);
+                return extractTeacher(rs);   //creating a teacher object from table's row and return it.
             }
         }catch (Exception e){
             e.printStackTrace();
@@ -111,6 +116,7 @@ public class AuthenticationDb {
         return null;
     }
 
+    //search for the student in the student table with the help of email id and return if any teacher exist with the same.
     public Student findStudentByEmail(String email){
         ResultSet rs;
         PreparedStatement preparedStatement=null;
@@ -120,7 +126,7 @@ public class AuthenticationDb {
             preparedStatement.setString(1,email);
             rs=preparedStatement.executeQuery();
             if (rs.next()){
-                Student student = extractStudent(rs);
+                Student student = extractStudent(rs);   //creating a student object from table's row and return it.
                 return student;
             }
         }catch (Exception e){
@@ -130,6 +136,7 @@ public class AuthenticationDb {
         return null;
     }
 
+    //searching for student in database , if student's name or email has prefix as a prefix than it is included in the result.
     public ArrayList<Student> searchStudent(String prefix){
         ResultSet rs;
         PreparedStatement preparedStatement=null;
@@ -149,6 +156,7 @@ public class AuthenticationDb {
         return null;
     }
 
+    //searching for teacher in database , if teacher's name or email has prefix as a prefix than it is included in the result.
     public ArrayList<Teacher> searchTeacher(String prefix){
         ResultSet rs;
         PreparedStatement preparedStatement=null;
@@ -169,6 +177,7 @@ public class AuthenticationDb {
         return null;
     }
 
+    //first authenticate teacher's credentials than update details save in the database.
     public boolean updateTeacher(Teacher teacher){
         PreparedStatement preparedStatement = null;
         String query = "UPDATE Teacher SET Email=?,Name=?,ContactNo=? WHERE Teacher_Id=? AND Password=?";
@@ -179,7 +188,7 @@ public class AuthenticationDb {
             preparedStatement.setString(3,teacher.getContactNo());
             preparedStatement.setString(4, teacher.getTeacherId());
             preparedStatement.setString(5,teacher.getPassword());
-            if(preparedStatement.executeUpdate()>0)
+            if(preparedStatement.executeUpdate()>0)         //check that if any row gets updated or not.
                 return true;
         }catch (Exception e){
             e.printStackTrace();
@@ -188,6 +197,7 @@ public class AuthenticationDb {
         return false;
     }
 
+    //first authenticate student's credentials than update details save in the database.
     public boolean updateStudent(Student student){
         PreparedStatement preparedStatement = null;
         String query = "UPDATE Student SET Email=?,Name=?,ContactNo=? WHERE Student_Id=? AND Password=?";
@@ -207,6 +217,7 @@ public class AuthenticationDb {
         return false;
     }
 
+    //create a teacher object from table's row.
     private Teacher extractTeacher(ResultSet rs) throws SQLException {
         Teacher teacher = new Teacher();
         teacher.setTeacherId(rs.getString(1));
@@ -217,6 +228,7 @@ public class AuthenticationDb {
         return teacher;
     }
 
+    //create a student object from table's row.
     private Student extractStudent(ResultSet rs) throws SQLException {
         Student student = new Student();
         student.setStudentId(rs.getString(1));

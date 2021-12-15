@@ -22,6 +22,7 @@ public class DatabaseConfig {
         return null;
     }
 
+    //returns the singleton object of connection.
     public static Connection getConnection(){
         if (connection == null)
             connection = makeConnection();

@@ -64,6 +64,8 @@ public class ExamUtilsController{
     @RequestMapping("/get-exam/id={examId}")
     public Exam getExamById(@PathVariable String examId){
         examId = "Exam#"+examId;
-        return examUtils.getExamById(examId);
+        Exam exam =  examUtils.getExamById(examId);
+       // System.out.println(exam.getQuestions().get(0).isImage());
+        return exam;
     }
 }

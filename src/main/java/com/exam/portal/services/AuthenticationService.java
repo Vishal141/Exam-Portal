@@ -4,6 +4,7 @@ import com.exam.portal.database.AuthenticationDb;
 import com.exam.portal.entities.Student;
 import com.exam.portal.entities.Teacher;
 import com.exam.portal.interfaces.Authentication;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 

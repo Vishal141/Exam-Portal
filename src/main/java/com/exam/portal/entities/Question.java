@@ -42,7 +42,7 @@ public class Question {
         this.question = question;
     }
 
-    public boolean isImage() {
+    public boolean getIsImage() {
         return isImage;
     }
 

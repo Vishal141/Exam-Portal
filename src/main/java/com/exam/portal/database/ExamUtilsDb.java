@@ -6,7 +6,6 @@ import com.exam.portal.entities.Question;
 
 import javax.sql.rowset.serial.SerialBlob;
 
-import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Base64;
@@ -19,6 +18,7 @@ public class ExamUtilsDb {
         connection = DatabaseConfig.getConnection();
     }
 
+    //creates a new exam in the team and return true if successfully created otherwise returns false.
     public boolean createExam(Exam exam){
         PreparedStatement preparedStatement=null;
         String query = "INSERT INTO Exams VALUES (?,?,?,?,?,?,?)";
@@ -39,6 +39,7 @@ public class ExamUtilsDb {
         return true;
     }
 
+    //adding all questions of a exam in questions table and map them with exam using examId.
     public boolean addQuestions(ArrayList<Question> questions){
         PreparedStatement preparedStatement=null;
         String query = "INSERT INTO Questions VALUES(?,?,?,?,?,?,?)";
@@ -50,15 +51,15 @@ public class ExamUtilsDb {
                 preparedStatement.setDouble(5,question.getPoint());
                 preparedStatement.setDouble(6,question.getNegPoint());
                 preparedStatement.setString(7,question.getAnsIndices());
-                preparedStatement.setBoolean(4,question.isImage());
-                if(question.isImage()){
-                    byte[] bytes = decodeStringToImage(question.getFile());
-                    preparedStatement.setString(3,uploadFile(bytes));
+                preparedStatement.setBoolean(4,question.getIsImage());
+                if(question.getIsImage()){                                         //checking that if question is a image or not.
+                    byte[] bytes = decodeStringToImage(question.getFile());       //decode image from encoded string.
+                    preparedStatement.setString(3,uploadFile(bytes));  //image is uploaded and its id gets returned.
                 }
                 else
                     preparedStatement.setString(3,question.getQuestion());
                 preparedStatement.execute();
-                uploadOptions(question.getOptions());
+                uploadOptions(question.getOptions());             //uploading all options in current question.
             }
             return true;
         }catch (Exception e){
@@ -67,6 +68,7 @@ public class ExamUtilsDb {
         return false;
     }
 
+    //uploading options of question.
     public boolean uploadOptions(ArrayList<Option> options){
         PreparedStatement preparedStatement=null;
         String query = "INSERT INTO Options VALUES(?,?,?,?,?)";
@@ -77,9 +79,9 @@ public class ExamUtilsDb {
                 preparedStatement.setString(2,option.getQuestionId());
                 preparedStatement.setString(3,option.getIndex());
                 preparedStatement.setBoolean(4,option.isImage());
-                if(option.isImage()){
-                    byte[] bytes = decodeStringToImage(option.getFile());
-                    preparedStatement.setString(5,uploadFile(bytes));
+                if(option.isImage()){                                       //checking that option is image or not.
+                    byte[] bytes = decodeStringToImage(option.getFile());    //decoding image from encoded string.
+                    preparedStatement.setString(5,uploadFile(bytes));  //adding image's id in column.
                 }
                 else
                     preparedStatement.setString(5,option.getText());
@@ -92,7 +94,7 @@ public class ExamUtilsDb {
         return false;
     }
 
-    //uploading files.
+    //uploading images and return its id.
     public String uploadFile(byte[] file){
         PreparedStatement preparedStatement=null;
         String query = "INSERT INTO files VALUES(?,?)";
@@ -100,7 +102,7 @@ public class ExamUtilsDb {
             String id = generateId();
             preparedStatement = connection.prepareStatement(query);
             preparedStatement.setString(1,id);
-            Blob blob = new SerialBlob(file);
+            Blob blob = new SerialBlob(file);           //creating blob from byte array.
             preparedStatement.setBlob(2,blob);
             preparedStatement.execute();
             return id;
@@ -110,6 +112,7 @@ public class ExamUtilsDb {
         return null;
     }
 
+    //return all the exams(without questions) which are scheduled by teacher having id as teacherId.
     public ArrayList<Exam> getExamsScheduledBy(String teacherId){
         PreparedStatement preparedStatement=null;
         ResultSet rs;
@@ -120,15 +123,7 @@ public class ExamUtilsDb {
             rs = preparedStatement.executeQuery();
             ArrayList<Exam> exams = new ArrayList<>();
             while(rs.next()){
-                Exam exam = new Exam();
-                exam.setExamId(rs.getString(1));
-                exam.setTeamId(rs.getString(2));
-                exam.setCreatorId(rs.getString(3));
-                exam.setTitle(rs.getString(4));
-                exam.setExamDate(rs.getDate(5));
-                exam.setTime(rs.getTime(6));
-                exam.setDuration(rs.getInt(7)+"");
-
+                Exam exam = extractExam(rs);
                 exams.add(exam);
             }
             return exams;
@@ -138,6 +133,7 @@ public class ExamUtilsDb {
         return null;
     }
 
+    //return all the exams(without questions) which are scheduled in team in which student having id studentId is included.
     public ArrayList<Exam> getExamsScheduledFor(String studentId){
         PreparedStatement preparedStatement=null;
         ResultSet rs;
@@ -148,15 +144,7 @@ public class ExamUtilsDb {
             rs = preparedStatement.executeQuery();
             ArrayList<Exam> exams = new ArrayList<>();
             while(rs.next()){
-                Exam exam = new Exam();
-                exam.setExamId(rs.getString(1));
-                exam.setTeamId(rs.getString(2));
-                exam.setCreatorId(rs.getString(3));
-                exam.setTitle(rs.getString(4));
-                exam.setExamDate(rs.getDate(5));
-                exam.setTime(rs.getTime(6));
-                exam.setDuration(rs.getInt(7)+"");
-
+                Exam exam = extractExam(rs);
                 exams.add(exam);
             }
             return exams;
@@ -166,6 +154,7 @@ public class ExamUtilsDb {
         return null;
     }
 
+    //return full detailed exam object including questions and options.
     public Exam getExamById(String examId){
         try {
             String query = "SELECT * FROM Exams WHERE Exam_Id=?";
@@ -174,16 +163,8 @@ public class ExamUtilsDb {
             ResultSet rs = preparedStatement.executeQuery();
             if(rs.next()){
                 System.out.println(examId);
-                Exam exam = new Exam();
-                exam.setExamId(rs.getString(1));
-                exam.setTeamId(rs.getString(2));
-                exam.setCreatorId(rs.getString(3));
-                exam.setTitle(rs.getString(4));
-                exam.setExamDate(rs.getDate(5));
-                exam.setTime(rs.getTime(6));
-                exam.setDuration(rs.getInt(7)+"");
-
-                exam.setQuestions(getExamQuestions(examId));
+                Exam exam = extractExam(rs);
+                exam.setQuestions(getExamQuestions(examId));    //fetching questions adding in exam.
 
                 return exam;
             }
@@ -193,6 +174,20 @@ public class ExamUtilsDb {
         return null;
     }
 
+    //creating exam object from table row and return it.
+    private Exam extractExam(ResultSet rs) throws SQLException {
+        Exam exam = new Exam();
+        exam.setExamId(rs.getString(1));
+        exam.setTeamId(rs.getString(2));
+        exam.setCreatorId(rs.getString(3));
+        exam.setTitle(rs.getString(4));
+        exam.setExamDate(rs.getDate(5));
+        exam.setTime(rs.getTime(6));
+        exam.setDuration(rs.getInt(7)+"");
+        return  exam;
+    }
+
+    //returns list of all questions included in exam with id same as examId.
     public ArrayList<Question> getExamQuestions(String examId){
         try {
             String query = "SELECT * FROM Questions WHERE Exam_Id=? ORDER  BY Q_Id";
@@ -205,14 +200,14 @@ public class ExamUtilsDb {
                 question.setExamId(rs.getString(1));
                 question.setQuestionId(rs.getString(2));
                 question.setIsImage(rs.getBoolean(4));
-                if(question.isImage())
-                    question.setFile(getImage(rs.getString(3)));
+                if(question.getIsImage())
+                    question.setFile(getImage(rs.getString(3)));   //encoding image in string setting as a file.
                 else
                     question.setQuestion(rs.getString(3));
                 question.setPoint(rs.getInt(5));
                 question.setNegPoint(rs.getInt(6));
                 question.setAnsIndices(rs.getString(7));
-                question.setOptions(getOptionsOf(examId,question.getQuestionId()));
+                question.setOptions(getOptionsOf(examId,question.getQuestionId()));   //fetching options and adding in question.
 
                 questions.add(question);
             }
@@ -224,6 +219,7 @@ public class ExamUtilsDb {
         return null;
     }
 
+    //return all the options of question with id as questionId and in same exam as examId.
     public ArrayList<Option> getOptionsOf(String examId,String questionId){
         try {
             String query = "SELECT * FROM Options WHERE Exam_Id=? AND Q_Id=? ORDER BY O_Id";
@@ -239,7 +235,7 @@ public class ExamUtilsDb {
                 option.setIndex(rs.getString(3));
                 option.setIsImage(rs.getBoolean(4));
                 if(option.isImage())
-                    option.setFile(getImage(rs.getString(5)));
+                    option.setFile(getImage(rs.getString(5)));  //encoding image as string and setting it.
                 else
                     option.setText(rs.getString(5));
 
@@ -253,8 +249,7 @@ public class ExamUtilsDb {
         return null;
     }
 
-
-
+    //getting blob of image using fileId and encode it as a string and return ti.
     public String getImage(String fileId){
         try {
             String query = "SELECT data FROM files WHERE file_Id=?";
@@ -262,7 +257,7 @@ public class ExamUtilsDb {
             preparedStatement.setString(1,fileId);
             ResultSet rs = preparedStatement.executeQuery();
             if(rs.next()){
-                return encodeImageToString(rs.getBlob(1));
+                return encodeImageToString(rs.getBlob(1));   //encoding blob.
             }
         }catch (Exception e){
             e.printStackTrace();
@@ -270,6 +265,7 @@ public class ExamUtilsDb {
         return null;
     }
 
+    //generates a unique id for fileId.
     private String generateId(){
         return UUID.randomUUID().toString();
     }
@@ -278,6 +274,8 @@ public class ExamUtilsDb {
     private byte[] decodeStringToImage(String encodedFile){
         return Base64.getDecoder().decode(encodedFile);
     }
+
+    //encoding blob as a string using base64 encoder.
     private String encodeImageToString(Blob blob){
         try {
             return Base64.getEncoder().encodeToString(blob.getBinaryStream().readAllBytes());

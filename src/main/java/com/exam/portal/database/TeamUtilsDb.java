@@ -1,7 +1,6 @@
 package com.exam.portal.database;
 
 import com.exam.portal.entities.BelongTo;
-import com.exam.portal.entities.Teacher;
 import com.exam.portal.entities.Team;
 
 import java.sql.Connection;
@@ -16,6 +15,7 @@ public class TeamUtilsDb {
         connection = DatabaseConfig.getConnection();
     }
 
+    //creates a new team in the database and returns true if successfully created otherwise returns false.
     public boolean createTeam(Team team){
         PreparedStatement preparedStatement=null;
         String query = "INSERT INTO Teams values(?,?,?,?)";
@@ -26,13 +26,14 @@ public class TeamUtilsDb {
             preparedStatement.setString(3, team.getCreatorId());
             preparedStatement.setDate(4,team.getDateCreated());
             preparedStatement.execute();
-            return makeAdminOf(team.getCreatorId(),team.getTeamId());
+            return makeAdminOf(team.getCreatorId(),team.getTeamId());    //making creator admin as well.
         }catch(Exception e){
             e.printStackTrace();
         }
         return false;
     }
 
+    //makes teacher with teacherId a admin of team with teamId.
     public boolean makeAdminOf(String teacherId,String teamId){
         PreparedStatement preparedStatement = null;
         String query = "INSERT INTO ADMIN_OF VALUES(?,?)";
@@ -48,6 +49,7 @@ public class TeamUtilsDb {
         return false;
     }
 
+    //adding student in the team , belongTo contains details of student and teams both.
     public boolean addStudent(BelongTo belongTo){
         PreparedStatement preparedStatement=null;
         String query = "INSERT INTO BelongTo values(?,?,?)";
@@ -64,6 +66,8 @@ public class TeamUtilsDb {
         return false;
     }
 
+    //returns all the teams in which student with Id included or teacher with Id is a admin.
+    //relationName is the name of table , for student's team it is belongTo and for teacher's team it is adminOf.
     public ArrayList<Team> findTeamsById(String Id,String relationName,String relationId){
         PreparedStatement preparedStatement=null;
         ResultSet rs=null;
@@ -89,6 +93,7 @@ public class TeamUtilsDb {
         return null;
     }
 
+    //return a team having id same as teamId.
     public Team findTeamById(String teamId){
         PreparedStatement preparedStatement=null;
         try {
