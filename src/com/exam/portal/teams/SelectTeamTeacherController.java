@@ -47,13 +47,13 @@ public class SelectTeamTeacherController implements Initializable {
 
     @FXML
     void addStudent(ActionEvent event) {
-        String path = "AddStudent.fxml";
+        String path = "addStudent.fxml";
         changeStage(path,"Add Student",600,650);
     }
 
     @FXML
     void goBack(ActionEvent event) {
-        String path = "Teams.fxml";
+        String path = "teams.fxml";
         changeStage(path,"Teams",700,600);
     }
 

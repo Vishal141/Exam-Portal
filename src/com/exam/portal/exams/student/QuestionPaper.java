@@ -65,15 +65,16 @@ public class QuestionPaper implements Initializable {
             if(exam==null){
                 exam = new Exam();
                 exam.setQuestions(new ArrayList<>());
+            }else if(exam.getQuestions().size()>0){
+                setQuestion(exam.getQuestions().get(0));
             }
-            setQuestion(exam.getQuestions().get(0));
         });
     }
 
     //display a specific question in the list.
     private void setQuestion(Question question){
        // System.out.println(question.getIsImage());
-        questionList.getItems().add(getVbox(question.getQuestionId(),decodeImage(question.getFile()),question.getIsImage()));
+        questionList.getItems().add(getVbox(question.getQuestion(),decodeImage(question.getFile()),question.getIsImage()));
         for(Option option:question.getOptions()){
             questionList.getItems().add(getVbox(option.getText(),decodeImage(option.getFile()),option.isImage()));
         }
@@ -133,7 +134,7 @@ public class QuestionPaper implements Initializable {
     public void prevQuestion(ActionEvent event){
         if(currQuestionIndex>0){
             currQuestionIndex--;
-            questionList.getItems().removeAll();
+            questionList.getItems().clear();
             setQuestion(exam.getQuestions().get(currQuestionIndex));
         }
     }
@@ -142,7 +143,7 @@ public class QuestionPaper implements Initializable {
     public void nextQuestion(ActionEvent event){
         if(currQuestionIndex<exam.getQuestionCount()-1){
             currQuestionIndex++;
-            questionList.getItems().removeAll();
+            questionList.getItems().clear();
             setQuestion(exam.getQuestions().get(currQuestionIndex));
         }
     }

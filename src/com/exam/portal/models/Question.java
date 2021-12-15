@@ -15,6 +15,11 @@ public class Question {
     private ArrayList<Option> options;
     private String ansIndices;
 
+    public Question(){
+        options = new ArrayList<>();
+        isImage = false;
+    }
+
     public String getQuestionId() {
         return questionId;
     }

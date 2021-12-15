@@ -27,7 +27,7 @@ public class Notification {
         }
     }
 
-    public static void main(String[] args) throws AWTException {
+    public static void main(String[] args) {
         Notification notification = new Notification("Hello world","This is my first notification");
         notification.show(TrayIcon.MessageType.INFO);
     }

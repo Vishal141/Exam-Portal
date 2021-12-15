@@ -29,7 +29,7 @@
       </AnchorPane>
    </top>
    <center>
-      <JFXListView fx:id="questionList" stylesheets="@../../cssFiles/style.css" BorderPane.alignment="CENTER">
+      <JFXListView fx:id="questionList" BorderPane.alignment="CENTER">
          <BorderPane.margin>
             <Insets bottom="5.0" left="5.0" top="5.0" />
          </BorderPane.margin>

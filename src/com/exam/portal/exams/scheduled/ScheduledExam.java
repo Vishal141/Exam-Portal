@@ -87,7 +87,7 @@ public class ScheduledExam implements Initializable {
             for(Exam exam:exams){
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
                 Date examDate = dateFormat.parse(exam.getExamDate());
-                if(after(examDate,exam.getTime()))
+                if(after(examDate,exam.getTime()))         //comparing dates.
                     upcomingExam.add(exam);
             }
             addExamsToVBox(upcomingExam);

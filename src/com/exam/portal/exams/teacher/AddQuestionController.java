@@ -42,7 +42,9 @@ public class AddQuestionController implements Initializable {
     private Stack<Option> stack;
     private File file;
 
+    //variable used for running and stopping thread.
     private volatile boolean isThreadRunning;
+    //contains option count using which thread check that option is added or not.
     private volatile int optionCount;
 
     @Override
@@ -55,6 +57,7 @@ public class AddQuestionController implements Initializable {
         runThread();
     }
 
+    //optioning another stage on which teacher can add option.
     public void addOption(ActionEvent actionEvent) {
         try{
             Stage stage = new Stage();
@@ -67,15 +70,17 @@ public class AddQuestionController implements Initializable {
         }
     }
 
+    //deleting last added question.
     public void undoOption(ActionEvent actionEvent) {
         Option option = question.undoOption();
         if(option != null){
             optionCount = optionCount-1;
-            stack.push(option);
+            stack.push(option);               //pushing option in stack for redo.
             options.getItems().remove(optionCount);
         }
     }
 
+    //restoring the last deleted option.
     public void redoOption(ActionEvent actionEvent) {
         if(!stack.isEmpty()){
             Option option = stack.pop();
@@ -83,6 +88,7 @@ public class AddQuestionController implements Initializable {
         }
     }
 
+    //adding current question in exam and closing current stage.
     public void Done(ActionEvent actionEvent) {
         boolean flag;
         if(point.getText().equals("") || negPoint.getText().equals("") ||
@@ -123,6 +129,7 @@ public class AddQuestionController implements Initializable {
         }
     }
 
+    //it open a file chooser for choosing file for question.
     public void chooseFile(ActionEvent actionEvent) {
         FileChooser chooser = new FileChooser();
         file = chooser.showOpenDialog(questionText.getScene().getWindow());
@@ -131,10 +138,12 @@ public class AddQuestionController implements Initializable {
         }
     }
 
+    //function called by add option controller for adding option.
     public static void addOption(Option option){
         question.addOption(option);
     }
 
+    //showing alert with given message.
     public void showAlert(String message){
         Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.setHeaderText(null);
@@ -147,7 +156,7 @@ public class AddQuestionController implements Initializable {
     private void runThread(){
         isThreadRunning = true;
         new Thread(()->{
-            while(isThreadRunning){
+            while(isThreadRunning){              //running an infinite loop which keeps check that any option is added or not.
                 if(question.getOptionCount() != optionCount){
                     Option option = question.getLastQuestion();
                     Label label = new Label();
@@ -156,7 +165,7 @@ public class AddQuestionController implements Initializable {
                     optionCount = question.getOptionCount();
                 }else{
                     try {
-                        Thread.sleep(1000);
+                        Thread.sleep(1000);         //sleeping thread for 1 second.
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -165,10 +174,12 @@ public class AddQuestionController implements Initializable {
         }).start();
     }
 
+    //stopping running thread by making isThreadRunning false.
     private void stopThread(){
         isThreadRunning = false;
     }
 
+    //encoding image file in string using base64 encoder.
     private String encodeImageToBase64Binary(File file) {
         try{
             FileInputStream fis = new FileInputStream(file);

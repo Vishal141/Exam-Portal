@@ -5,6 +5,7 @@ import com.exam.portal.models.Student;
 import com.exam.portal.models.Teacher;
 import com.exam.portal.server.Server;
 import com.exam.portal.server.ServerHandler;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -36,24 +37,27 @@ public class StudentController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         if(lblMail != null){
-            lblMail.setText(student.getEmail());
+            lblMail.setText(student.getEmail());    //setting student details on dashboard.
             lblName.setText(student.getName());
             lblPhone.setText(student.getContactNo());
         }else{
             newName.setText(student.getName());
-            newMail.setText(student.getEmail());
+            newMail.setText(student.getEmail());     //if current stage is of edit than setting old details on fields.
             newNo.setText(student.getContactNo());
         }
     }
 
+    //open edit details window for editing details.
     public void editDetails(ActionEvent actionEvent) {
         String path = "edit.fxml";
         changeStage(path,"Edit Details",500,500);
     }
 
+    //opening team window of selected team.
     public void teamsClicked(ActionEvent actionEvent) {
     }
 
+    //opening window which shows all the exams.
     public void examsClicked(ActionEvent actionEvent) {
         String path = "../exams/scheduled/ScheduledExam.fxml";
         ScheduledExam.fromTeacher = false;
@@ -97,7 +101,7 @@ public class StudentController implements Initializable {
     @FXML
     void editSubmitted(ActionEvent event) {
         if(newMail.getText().equals("") || newName.getText().equals("") || newNo.getText().equals("") || Pass.getText().equals("")){
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);     //checking all the fields are filled or not.
             alert.setHeaderText(null);
             alert.setTitle("Warning");
             alert.setContentText("All fields are mandatory.");
@@ -110,20 +114,22 @@ public class StudentController implements Initializable {
             student1.setContactNo(newNo.getText());student1.setPassword(getHash(Pass.getText()));
 
             Server server = ServerHandler.getInstance();
-            if(server.updateStudent(student1)){
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setHeaderText(null);
-                alert.setContentText("Update Successful.");
-                alert.showAndWait();
-                Stage stage = (Stage) newName.getScene().getWindow();
-                stage.close();
-            }else{
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setHeaderText(null);
-                alert.setTitle("Update Failed");
-                alert.setContentText("Check you password or email.");
-                alert.showAndWait();
-            }
+            Platform.runLater(()->{
+                if(server.updateStudent(student1)){                     //sending update request.
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setHeaderText(null);
+                    alert.setContentText("Update Successful.");
+                    alert.showAndWait();
+                    Stage stage = (Stage) newName.getScene().getWindow();
+                    stage.close();
+                }else{
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setHeaderText(null);
+                    alert.setTitle("Update Failed");
+                    alert.setContentText("Check you password or email.");
+                    alert.showAndWait();
+                }
+            });
         }
     }
 

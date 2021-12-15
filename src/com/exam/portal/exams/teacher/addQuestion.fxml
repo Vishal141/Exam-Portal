@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="755.0" prefWidth="724.0" style="-fx-background-color: #e3f2fd;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.exam.portal.exams.teacher.AddQuestionController">
+<AnchorPane prefHeight="755.0" prefWidth="724.0" style="-fx-background-color: #e3f2fd;" stylesheets="@../../cssFiles/style.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.exam.portal.exams.teacher.AddQuestionController">
    <children>
       <Label layoutX="37.0" layoutY="31.0" text="Enter Question" textFill="#0e0404">
          <font>
@@ -43,7 +43,7 @@
          </font>
       </Label>
       <JFXTextField fx:id="answers" layoutX="37.0" layoutY="572.0" prefHeight="26.0" prefWidth="285.0" />
-      <JFXTextArea fx:id="questionText" focusColor="#2661ba" layoutX="37.0" layoutY="54.0" prefHeight="32.0" prefWidth="620.0" unFocusColor="#2b2e87" />
+      <JFXTextArea fx:id="questionText" focusColor="#266cd5" layoutX="37.0" layoutY="54.0" prefHeight="32.0" prefWidth="620.0" unFocusColor="#272a7f" />
       <Label layoutX="380.0" layoutY="577.0" text="Options are in form 1,2,3 etc.">
          <font>
             <Font name="System Bold Italic" size="12.0" />

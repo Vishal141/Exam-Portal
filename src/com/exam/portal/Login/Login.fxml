@@ -28,7 +28,7 @@
                   <Font name="System Bold Italic" size="13.0" />
                </font>
             </Label>
-            <Button fx:id="signupBtn" layoutX="214.0" layoutY="315.0" mnemonicParsing="false" onAction="#signUp" prefHeight="44.0" prefWidth="93.0" style="-fx-background-color: black; -fx-font-size: 14px; -fx-font: italic small-caps bold 12px/30px Georgia, serif;" text="Signup" textFill="WHITE" />
+            <Button fx:id="signupBtn" layoutX="214.0" layoutY="315.0" mnemonicParsing="false" onAction="#register" prefHeight="44.0" prefWidth="93.0" style="-fx-background-color: black; -fx-font-size: 14px; -fx-font: italic small-caps bold 12px/30px Georgia, serif;" text="Signup" textFill="WHITE" />
             <RadioButton fx:id="isStudent" layoutX="63.0" layoutY="66.0" mnemonicParsing="false" text="Student">
                <font>
                   <Font name="System Bold Italic" size="12.0" />

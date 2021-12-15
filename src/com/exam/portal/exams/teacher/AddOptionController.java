@@ -34,6 +34,7 @@ public class AddOptionController implements Initializable {
         file = null;
     }
 
+    //opening a file chooser for choosing file for option.
     public void chooseFile(ActionEvent actionEvent) {
         FileChooser chooser = new FileChooser();
         file = chooser.showOpenDialog(isImage.getScene().getWindow());
@@ -42,9 +43,10 @@ public class AddOptionController implements Initializable {
         }
     }
 
+    //adding option in question and closing stage.
     public void Done(ActionEvent actionEvent) {
         boolean flag = true;
-        if(isImage.isSelected()){
+        if(isImage.isSelected()){          //checking that option is image or not.
             if(file==null){
                 Alert alert = new Alert(Alert.AlertType.WARNING);
                 alert.setHeaderText(null);
@@ -59,7 +61,7 @@ public class AddOptionController implements Initializable {
                 option.setFile(encodeImageToBase64Binary(file));
             }
         }else{
-            if(optionText.getText().equals("")){
+            if(optionText.getText().equals("")){                 //checking option text is entered or not.
                 Alert alert = new Alert(Alert.AlertType.WARNING);
                 alert.setHeaderText(null);
                 alert.setTitle("Warning");
@@ -74,12 +76,13 @@ public class AddOptionController implements Initializable {
         }
 
         if(flag){
-            AddQuestionController.addOption(option);
+            AddQuestionController.addOption(option);       //adding option in question.
             Stage stage = (Stage) isImage.getScene().getWindow();
             stage.close();
         }
     }
 
+    //encoding option file in string using base64 encoder.
     public String encodeImageToBase64Binary(File file){
         try{
             FileInputStream fis = new FileInputStream(file);

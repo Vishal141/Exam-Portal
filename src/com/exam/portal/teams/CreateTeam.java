@@ -4,6 +4,7 @@ import com.exam.portal.models.Team;
 import com.exam.portal.server.Server;
 import com.exam.portal.server.ServerHandler;
 import com.exam.portal.teacher.TeacherController;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -25,7 +26,7 @@ public class CreateTeam {
 
     @FXML
     void createTeam(ActionEvent event) {
-        if(txtFieldTeamName.getText().equals("")){
+        if(txtFieldTeamName.getText().equals("")){          //checking that teacher entered team name or not.
             Alert alert = new Alert(Alert.AlertType.WARNING);
             alert.setHeaderText(null);
             alert.setTitle("Warning");
@@ -39,24 +40,27 @@ public class CreateTeam {
             team.setDateCreated(new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
 
             Server server = ServerHandler.getInstance();
-            if(server.createTeam(team)){
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setHeaderText(null);
-                alert.setTitle("Successful");
-                alert.setContentText("Team successfully created.");
-                alert.showAndWait();
-                Stage stage = (Stage) createTeamBtn.getScene().getWindow();
-                stage.close();
-            }else{
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setHeaderText(null);
-                alert.setTitle("Failed");
-                alert.setContentText("Team creation Failed.");
-                alert.showAndWait();
-            }
+            Platform.runLater(()->{
+                if(server.createTeam(team)){                 //sending create team request to server with team details.
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setHeaderText(null);
+                    alert.setTitle("Successful");
+                    alert.setContentText("Team successfully created.");
+                    alert.showAndWait();
+                    Stage stage = (Stage) createTeamBtn.getScene().getWindow();
+                    stage.close();
+                }else{
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setHeaderText(null);
+                    alert.setTitle("Failed");
+                    alert.setContentText("Team creation Failed.");
+                    alert.showAndWait();
+                }
+            });
         }
     }
 
+    //creating unique id for every team.
     private String generateId(){
         String id = UUID.randomUUID().toString();
         Random random = new Random();

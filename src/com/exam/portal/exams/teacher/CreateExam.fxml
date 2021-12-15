@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="768.0" prefWidth="791.0" style="-fx-background-color: #b3e5fc;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.exam.portal.exams.teacher.CreateExamController">
+<AnchorPane prefHeight="768.0" prefWidth="791.0" style="-fx-background-color: #b3e5fc;" stylesheets="@../../cssFiles/style.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.exam.portal.exams.teacher.CreateExamController">
    <children>
       <Label fx:id="lblTitle" alignment="CENTER" layoutX="67.0" layoutY="141.0" prefHeight="44.0" prefWidth="142.0" style="-fx-font: italic small-caps bold 15px/30px Georgia, serif; -fx-background-color: white;" text="Title" />
       <Label fx:id="lblDate" alignment="CENTER" layoutX="61.0" layoutY="202.0" prefHeight="44.0" prefWidth="142.0" style="-fx-font: italic small-caps bold 15px/30px Georgia, serif; -fx-background-color: white;" text="Date" />
