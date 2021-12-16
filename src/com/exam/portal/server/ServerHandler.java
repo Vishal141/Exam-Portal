@@ -440,6 +440,25 @@ public class ServerHandler implements Server{
         return null;
     }
 
+    //sending student response to server.
+    @Override
+    public boolean sendExamResponse(ExamResponse response) {
+        try{
+            String url = EXAM_URL+"/student/submit-test";
+            connection = ServerConfig.getConnection(url);
+            assert connection!=null;
+            String json = gson.toJson(response);
+            writeJson(json);
+
+            BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            String res = reader.readLine();
+            return res.equals(SUCCESSFUL);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return false;
+    }
+
     //method for writing object in request body
     private void writeJson(String json){
         try {

@@ -50,7 +50,7 @@
          <children>
             <JFXButton layoutX="158.0" layoutY="20.0" onAction="#prevQuestion" prefHeight="26.0" prefWidth="128.0" text="Prev" textFill="#f2eaea" />
             <JFXButton layoutX="357.0" layoutY="20.0" onAction="#nextQuestion" prefHeight="26.0" prefWidth="128.0" text="Next" textFill="#f8f0f0" />
-            <JFXButton layoutX="553.0" layoutY="20.0" onAction="#submitTest" prefHeight="26.0" prefWidth="183.0" text="Submit" textFill="#f2ecec" />
+            <JFXButton fx:id="submitBtn" layoutX="553.0" layoutY="20.0" onAction="#submitTest" prefHeight="26.0" prefWidth="183.0" text="Submit" textFill="#f2ecec" />
          </children>
       </AnchorPane>
    </bottom>

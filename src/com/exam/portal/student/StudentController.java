@@ -55,6 +55,8 @@ public class StudentController implements Initializable {
 
     //opening team window of selected team.
     public void teamsClicked(ActionEvent actionEvent) {
+        String path = "../teams/studentTeams.fxml";
+        changeStage(path,"Exam Portal",600,600);
     }
 
     //opening window which shows all the exams.
