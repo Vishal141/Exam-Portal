@@ -453,4 +453,22 @@ public class ServerHandler implements Server{
             e.printStackTrace();
         }
     }
+
+    //join team with ID
+@Override
+    public boolean joinTeamWithId(String teamId,String studentId){
+    try {
+        String url =  TEAM_URL+ "/student/join/"+ teamId+"&"+studentId;
+        connection = ServerConfig.getConnection(url);
+        assert connection != null;
+
+
+        BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+        String response = reader.readLine();
+        return response.equals(SUCCESSFUL);
+    }catch (Exception e){
+        e.printStackTrace();
+    }
+    return  false;
+    }
 }
