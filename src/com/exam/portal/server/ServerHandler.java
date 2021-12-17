@@ -440,6 +440,24 @@ public class ServerHandler implements Server{
         return null;
     }
 
+    //fetching all the students of particular team with given id
+    @Override
+    public ArrayList<Student> getStudentsByTeamId(String Id){
+        try{
+            String url = TEAM_URL + "/get/all/student/Id="+Id;
+            connection = ServerConfig.getConnection(url);
+            assert connection != null;
+
+            BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            String response = reader.readLine();
+            ArrayList<Student> students = gson.fromJson(response,new TypeToken<List<Student>>(){}.getType());
+            return students;
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     //method for writing object in request body
     private void writeJson(String json){
         try {
