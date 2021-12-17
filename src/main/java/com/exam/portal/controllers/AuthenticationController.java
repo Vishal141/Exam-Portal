@@ -86,4 +86,5 @@ public class AuthenticationController {
             return SUCCESSFUL;
         return FAILED;
     }
+
 }

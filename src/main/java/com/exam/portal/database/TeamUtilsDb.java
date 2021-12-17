@@ -7,6 +7,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class TeamUtilsDb {
     private final Connection connection;
@@ -114,6 +115,29 @@ public class TeamUtilsDb {
             e.printStackTrace();
         }
         return null;
+    }
+
+    // join a team with team id for student
+
+    public boolean joinTeamWithId(String teamId,String studentId){
+        PreparedStatement preparedStatement=null;
+        String query = "INSERT INTO BelongTo values(?,?,?)  where Team_Id=teamId ";
+        try{
+            Team requiredTeam=findTeamById(teamId);
+            if(requiredTeam!=null){
+                preparedStatement = connection.prepareStatement(query);
+                preparedStatement.setString(1, studentId);
+                preparedStatement.setString(2, teamId);
+                preparedStatement.setDate(3, (java.sql.Date) new Date());
+                preparedStatement.execute();
+                return true;
+
+            }
+            }catch (Exception e){
+            e.printStackTrace();
+        }
+
+       return false;
     }
 
 }
