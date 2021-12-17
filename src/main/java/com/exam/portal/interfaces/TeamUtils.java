@@ -11,6 +11,7 @@ public interface TeamUtils {
     public boolean addStudent(BelongTo belongTo);
     public ArrayList<Team> findStudentTeamsById(String Id);
     public ArrayList<Team> findTeacherTeamsById(String Id);
+    public ArrayList<Student> getStudentsByTeamId(String Id);
     public boolean makeAdmin(String teamId,String teacherId);
     public Team findTeamById(String id);
 }
