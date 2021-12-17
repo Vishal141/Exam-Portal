@@ -1,5 +1,6 @@
 package com.exam.portal.notificatios;
 
+import javax.swing.*;
 import java.awt.*;
 
 public class Notification {
@@ -27,7 +28,7 @@ public class Notification {
         }
     }
 
-    public static void main(String[] args) throws AWTException {
+    public static void main(String[] args) {
         Notification notification = new Notification("Hello world","This is my first notification");
         notification.show(TrayIcon.MessageType.INFO);
     }

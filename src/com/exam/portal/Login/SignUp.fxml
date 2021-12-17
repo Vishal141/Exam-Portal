@@ -43,7 +43,7 @@
                         <Font size="21.0" />
                      </font>
                   </PasswordField>
-                  <Button fx:id="doSignUp" layoutX="45.0" layoutY="409.0" mnemonicParsing="false" onAction="#makePerson" prefHeight="51.0" prefWidth="275.0" style="-fx-background-color: black; -fx-font: italic small-caps bold 20px/30px Georgia, serif;" text="Sign Up" textFill="WHITE">
+                  <Button fx:id="doSignUp" layoutX="45.0" layoutY="409.0" mnemonicParsing="false" onAction="#signUp" prefHeight="51.0" prefWidth="275.0" style="-fx-background-color: black; -fx-font: italic small-caps bold 20px/30px Georgia, serif;" text="Sign Up" textFill="WHITE">
                      <font>
                         <Font size="22.0" />
                      </font>

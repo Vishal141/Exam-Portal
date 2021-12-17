@@ -4,6 +4,7 @@ import com.exam.portal.exams.scheduled.ScheduledExam;
 import com.exam.portal.models.Teacher;
 import com.exam.portal.server.Server;
 import com.exam.portal.server.ServerHandler;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -48,11 +49,11 @@ public class TeacherController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         if(lblTName != null){
-            lblTName.setText(teacher.getName());
+            lblTName.setText(teacher.getName());             //setting teacher details.
             lblTMail.setText(teacher.getEmail());
             lblTPhone.setText(teacher.getContactNo());
         }else{
-            newName.setText(teacher.getName());
+            newName.setText(teacher.getName());                //if current stage is of edit than setting old details.
             newMail.setText(teacher.getEmail());
             newNo.setText(teacher.getContactNo());
         }
@@ -69,29 +70,30 @@ public class TeacherController implements Initializable {
     }
 
     @FXML
-    void examsClicked(ActionEvent event) {
+    void examsClicked(ActionEvent event) {          //opening window which shows all the exam scheduled by teacher.
         String path = "../exams/scheduled/ScheduledExam.fxml";
         ScheduledExam.fromTeacher = true;
         changeStage(path,"Scheduled Exams",800,600);
     }
 
     @FXML
-    void teamsClicked(ActionEvent event) {
-        changeStage("../teams/Teams.fxml","Teams",500,500);
+    void teamsClicked(ActionEvent event) {       //opens selected team window.
+        changeStage("../teams/teams.fxml","Teams",500,500);
     }
 
-    public void gotoCreateTeam(ActionEvent actionEvent) {
-        changeStage("../teams/CreateTeam.fxml","Create Team",500,500);
+    public void gotoCreateTeam(ActionEvent actionEvent) {      //opens a new window using which teacher can create a new team.
+        changeStage("../teams/createTeam.fxml","Create Team",500,500);
     }
 
-    public void gotoConductExam(ActionEvent actionEvent) {
-        changeStage("../exams/teacher/createexam/CreateExam.fxml","Create Exam",800,800);
+    public void gotoConductExam(ActionEvent actionEvent) {     //opens a new window using which teacher can create a new exam.
+        changeStage("../exams/teacher/CreateExam.fxml","Create Exam",800,800);
     }
 
-    public void gotoAddStudent(ActionEvent actionEvent) {
-        changeStage("../teams/AddStudent.fxml","Add Student",700,500);
+    public void gotoAddStudent(ActionEvent actionEvent) {        //opens a new window using which teacher can add a new student in team.
+        changeStage("../teams/addStudent.fxml","Add Student",700,500);
     }
 
+    ////opens a new window using which teacher can edit details.
     public void editDetails(ActionEvent actionEvent) {
         try {
             Stage stage = new Stage();
@@ -104,6 +106,7 @@ public class TeacherController implements Initializable {
         }
     }
 
+    //functions which create new stage and show it.
     public void changeStage(String path,String title,int width,int height){
         try{
             Stage stage = new Stage();
@@ -134,7 +137,7 @@ public class TeacherController implements Initializable {
     @FXML
     void EditSubmitted(ActionEvent event) {
         if(newMail.getText().equals("") || newName.getText().equals("") || newNo.getText().equals("") || newPass.getText().equals("")){
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);         //checking that all fields are filled or not.
             alert.setHeaderText(null);
             alert.setTitle("Warning");
             alert.setContentText("All fields are mandatory.");
@@ -148,23 +151,26 @@ public class TeacherController implements Initializable {
             teacher1.setPassword(getHash(newPass.getText()));
 
             Server server = ServerHandler.getInstance();
-            if(server.updateTeacher(teacher1)){
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setHeaderText(null);
-                alert.setContentText("Update Successful.");
-                alert.showAndWait();
-                Stage stage = (Stage) newName.getScene().getWindow();
-                stage.close();
-            }else{
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setHeaderText(null);
-                alert.setTitle("Update Failed");
-                alert.setContentText("Check you password or email.");
-                alert.showAndWait();
-            }
+            Platform.runLater(()->{
+                if(server.updateTeacher(teacher1)){                      //sending update request to the server.
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setHeaderText(null);
+                    alert.setContentText("Update Successful.");
+                    alert.showAndWait();
+                    Stage stage = (Stage) newName.getScene().getWindow();
+                    stage.close();
+                }else{
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setHeaderText(null);
+                    alert.setTitle("Update Failed");
+                    alert.setContentText("Check you password or email.");
+                    alert.showAndWait();
+                }
+            });
         }
     }
 
+    //encode text using md5 algorithm and return encoded string.
     private String getHash(String text){
         try {
             MessageDigest md = MessageDigest.getInstance("MD5");

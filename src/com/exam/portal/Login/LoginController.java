@@ -41,40 +41,46 @@ public class LoginController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-      //  UserEmailId.requestFocus();
     }
-    @FXML
+
+    @FXML  //call login method of server interface which sends request to server.
     void signIn(ActionEvent event) {
         if(UserEmailId.getText().equals("") || enteredPassword.getText().equals("")){
-            showWarning("All fields are mandatory.", Alert.AlertType.WARNING);
+            showWarning("All fields are mandatory.", Alert.AlertType.WARNING);   //showing alert if all fields are not filled.
         }else{
             Server server = ServerHandler.getInstance();
-            if(isStudent.isSelected()){
+            if(isStudent.isSelected()){                    //checking that user is student or teacher.
                 Student student = new Student();
                 student.setEmail(UserEmailId.getText());
                 student.setPassword(getHash(enteredPassword.getText()));
-                if(server.login(student)){
-                    StudentController.student = server.getStudent(UserEmailId.getText());
-                    gotoDashboard("../student/StudentDashboard.fxml");
-                }else{
-                    showWarning("Invalid Credentials", Alert.AlertType.ERROR);
-                }
+
+                Platform.runLater(()->{   //making login asynchronous
+                    if(server.login(student)){
+                        StudentController.student = server.getStudent(UserEmailId.getText());
+                        gotoDashboard("../student/studentDashboard.fxml");    //if login is successful than go student dashboard.
+                    }else{
+                        showWarning("Invalid Credentials", Alert.AlertType.ERROR);    //showing alert if login failed.
+                    }
+                });
             }else{
                 Teacher teacher = new Teacher();
                 teacher.setEmail(UserEmailId.getText());
                 teacher.setPassword(getHash(enteredPassword.getText()));
-                if(server.login(teacher)){
-                    TeacherController.teacher = server.getTeacher(UserEmailId.getText());
-                    gotoDashboard("../teacher/TeacherDashboard.fxml");
-                }else{
-                    showWarning("Invalid Credentials", Alert.AlertType.ERROR);
-                }
+
+                Platform.runLater(()->{
+                    if(server.login(teacher)){
+                        TeacherController.teacher = server.getTeacher(UserEmailId.getText());
+                        gotoDashboard("../teacher/teacherDashboard.fxml");
+                    }else{
+                        showWarning("Invalid Credentials", Alert.AlertType.ERROR);
+                    }
+                });
             }
         }
     }
 
     @FXML
-    void signUp(ActionEvent event){
+    void register(ActionEvent event){    //change current stage to signUp stage.
         try {
             Stage stage = (Stage) signupBtn.getScene().getWindow();
             Parent root = FXMLLoader.load(getClass().getResource("SignUp.fxml"));
@@ -99,13 +105,12 @@ public class LoginController implements Initializable {
     Button doSignUp;
 
     @FXML
-    void makePerson(ActionEvent event) {
+    void signUp(ActionEvent event) {   //call register method of server interface which send signUp request to server.
         if(pName.getText().equals("") || pNumber.getText().equals("") || pMail.getText().equals("") || pPassword.getText().equals("")){
             showWarning("All fields are mandatory.", Alert.AlertType.WARNING);
         }else{
             Server server = ServerHandler.getInstance();
             if(isStudent.isSelected()){
-                System.out.println("student");
                 Student student = new Student();
                 student.setStudentId(generateId("S"));
                 student.setName(pName.getText());
@@ -116,7 +121,7 @@ public class LoginController implements Initializable {
                 Platform.runLater(()->{
                     if(server.register(student)){
                         StudentController.student = student;
-                        gotoDashboard("../student/StudentDashboard.fxml");
+                        gotoDashboard("../student/studentDashboard.fxml");  //goto dashboard if signUp request is successful.
                     }else{
                         showWarning("Email is already registered.", Alert.AlertType.ERROR);
                     }
@@ -132,7 +137,7 @@ public class LoginController implements Initializable {
                 Platform.runLater(()->{
                     if(server.register(teacher)){
                         TeacherController.teacher = server.getTeacher(teacher.getEmail());
-                        gotoDashboard("../teacher/TeacherDashboard.fxml");
+                        gotoDashboard("../teacher/teacherDashboard.fxml");
                     }else {
                         showWarning("Email is already registered.", Alert.AlertType.ERROR);
                     }
@@ -173,6 +178,7 @@ public class LoginController implements Initializable {
         return prefix+uniqueId;
     }
 
+    //closing current stage and set it as login stage.
     public void backToLogin(ActionEvent actionEvent) {
         try{
             Stage stage = (Stage) doSignUp.getScene().getWindow();
@@ -185,6 +191,7 @@ public class LoginController implements Initializable {
         }
     }
 
+    //changing current stage to dashboard according to given path.
     public void gotoDashboard(String path){
         try {
             Stage stage = (Stage) isStudent.getScene().getWindow();

@@ -12,6 +12,7 @@ import com.jfoenix.controls.JFXDatePicker;
 import com.jfoenix.controls.JFXListView;
 import com.jfoenix.controls.JFXTimePicker;
 
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -63,8 +64,6 @@ public class CreateExamController implements Initializable {
         timePicker.set24HourView(true);
         observableList = FXCollections.observableArrayList();
         setTeams();
-        setObservableList();
-        selectedTeam.getItems().addAll(observableList);
         exam = new Exam();
         exam.setExamId(generateRandomId());
         stack = new Stack<>();
@@ -74,23 +73,30 @@ public class CreateExamController implements Initializable {
         time = "";
     }
 
+    //adding teams in combobox.
     public void setObservableList(){
         for(Team team:teams){
             observableList.add(team.getName());
         }
+        selectedTeam.getItems().addAll(observableList);
     }
 
+    //setting all teams in combobox.
     public void setTeams(){
         Server server = ServerHandler.getInstance();
-        teams = server.getTeachersTeams(TeacherController.teacher.getTeacherId());
+        Platform.runLater(()->{
+            teams = server.getTeachersTeams(TeacherController.teacher.getTeacherId());
+            setObservableList();
+        });
     }
 
     @FXML
     public void createExam(ActionEvent event) {
         boolean flag;
-        setDateAndTime();
-        if(!checkCombobox())
+        setDateAndTime();   //initializing data and time.
+        if(!checkCombobox())  //checking for team selection.
             return;
+        //checking that all fields are filled or not.
         if(tfTitle.getText().equals("") || tfDuration.getText().equals("") || date.equals("") || time.equals("")){
             Alert alert = new Alert(Alert.AlertType.WARNING);
             alert.setHeaderText(null);
@@ -99,7 +105,7 @@ public class CreateExamController implements Initializable {
             alert.showAndWait();
             flag = false;
         }else{
-            flag = true;
+            flag = true;    //completing exam object.
             exam.setTitle(tfTitle.getText());
             exam.setExamDate(date);
             exam.setTime(time);
@@ -110,25 +116,28 @@ public class CreateExamController implements Initializable {
 
         if(flag){
             Server server = ServerHandler.getInstance();
-            if(server.createExam(exam)){
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setHeaderText(null);
-                alert.setTitle("Successful");
-                alert.setContentText("Exam successfully created.");
-                alert.showAndWait();
-                stopThread();
-                Stage stage = (Stage) tfTitle.getScene().getWindow();
-                stage.close();
-            }else{
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setHeaderText(null);
-                alert.setTitle("Failed");
-                alert.setContentText("Exam creation failed");
-                alert.showAndWait();
-            }
+            Platform.runLater(()->{
+                if(server.createExam(exam)){     //sending create exam request.
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setHeaderText(null);
+                    alert.setTitle("Successful");
+                    alert.setContentText("Exam successfully created.");
+                    alert.showAndWait();
+                    stopThread();
+                    Stage stage = (Stage) tfTitle.getScene().getWindow();
+                    stage.close();
+                }else{
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setHeaderText(null);
+                    alert.setTitle("Failed");
+                    alert.setContentText("Exam creation failed");
+                    alert.showAndWait();
+                }
+            });
         }
     }
 
+    //checking that teacher select any team or not.
     public boolean checkCombobox(){
         if(selectedTeam.getSelectionModel().isEmpty()){
             Alert alert = new Alert(Alert.AlertType.WARNING);
@@ -141,6 +150,7 @@ public class CreateExamController implements Initializable {
         return true;
     }
 
+    //creating new stage on which teacher can create question and add it in test.
     public void addQuestion(ActionEvent actionEvent) {
         //for running thread
         if(!isThreadRunning){
@@ -153,7 +163,7 @@ public class CreateExamController implements Initializable {
                 @Override
                 public void handle(WindowEvent windowEvent) {
                     stopThread();
-                }
+                }   //stopping thread before closing stage.
             });
         }
 
@@ -168,15 +178,17 @@ public class CreateExamController implements Initializable {
         }
     }
 
+    //deleting last added question and push it to stack for restoring.
     public void undo(ActionEvent actionEvent) {
         Question question = exam.undoQuestion();
         if(question==null)
             return;
-        questionCount--;
+        questionCount--;  //decrementing question count such that thread can check for next question.
         questionList.getItems().remove(questionCount);
         stack.push(question);
     }
 
+    //restoring undo question.
     public void redo(ActionEvent actionEvent) {
         if(!stack.isEmpty()){
             Question question = stack.pop();
@@ -184,16 +196,18 @@ public class CreateExamController implements Initializable {
         }
     }
 
+    //method called by Question Controller for adding question.
     public static void addQuestion(Question question){
         question.setExamId(exam.getExamId());
         exam.addQuestion(question);
     }
 
+    //running a thread which check every second that any question is added or not,if added that it add that question in questionList.
     public void runThread(){
         isThreadRunning = true;
         new Thread(()->{
             while (isThreadRunning){
-                if(exam.getQuestionCount() != questionCount){
+                if(exam.getQuestionCount() != questionCount){   //checking that question is added or not.
                     Question question = exam.getLastQuestion();
                     Label label = new Label();
                     label.setText(question.getQuestion());
@@ -201,7 +215,7 @@ public class CreateExamController implements Initializable {
                     questionCount = exam.getQuestionCount();
                 }else{
                     try {
-                        Thread.sleep(1000);
+                        Thread.sleep(1000);          //sleep thread for 1 second.
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -210,18 +224,30 @@ public class CreateExamController implements Initializable {
         }).start();
     }
 
+    //stopping the infinitely running thread.
     public void stopThread(){
-        isThreadRunning = false;
+        isThreadRunning = false;  //making variable false breaks the infinite loop in thread.
     }
 
+    //generating a random id for exam.
     public String generateRandomId(){
         String id = UUID.randomUUID().toString();
         int start = Math.abs((Math.abs(new Random().nextInt(id.length()))%id.length()-15));
         id = "Exam#"+id.substring(start,start+6);
-        id = id.replace('-',(char) ('a'+(new Random().nextInt())%26));
-        return id;
+        String Id = "Exam#";
+        for(int i=5;i<id.length();i++){
+            char c = id.charAt(i);
+            if(c>='0' && c<='9'){
+                Id += c;
+                continue;
+            }
+            char nc = (char) ((Math.abs(c-'a')%26)+'a');
+            Id += (nc);
+        }
+        return Id;
     }
 
+    //initialize data and time variable
     public void setDateAndTime(){
         LocalDate localDate = datePicker.getValue();
         if(localDate==null)
