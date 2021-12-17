@@ -79,6 +79,7 @@ public class StudentController implements Initializable {
         String path = "joinWithId.fxml";
         changeStage(path,"Join with Team ID",300,300);
     }
+    /*
     @FXML
     private JFXButton joinWithIdClickedBtn;
 
@@ -101,8 +102,8 @@ public class StudentController implements Initializable {
                     alert.setHeaderText(null);
                     alert.setContentText("Added Successfully");
                     alert.showAndWait();
-                    Stage stage = (Stage) newName.getScene().getWindow();
-                    stage.close();
+                    //Stage stage = (Stage) newName.getScene().getWindow();
+                   // stage.close();
                 }else{
                     Alert alert = new Alert(Alert.AlertType.INFORMATION);     //checking all the fields are filled or not.
                     alert.setHeaderText(null);
@@ -110,7 +111,7 @@ public class StudentController implements Initializable {
                     alert.setContentText("Team ID is invalid");
                     alert.showAndWait();}
             });
-}}
+}}*/
 
     //create a new stage and show it.
     public void changeStage(String path,String title,int width,int height){

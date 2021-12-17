@@ -9,7 +9,7 @@ import com.sun.jna.platform.win32.WinDef;
 import com.sun.jna.win32.StdCallLibrary;
 
 public class BgProcessesDetails {
-    interface User32 extends StdCallLibrary {
+    /*interface User32 extends StdCallLibrary {
         User32 INSTANCE = Native.loadLibrary("user32", User32.class);
 
         interface WNDENUMPROC extends StdCallCallback {
@@ -54,6 +54,8 @@ public class BgProcessesDetails {
 //            System.out.println(winName);
 //        }
 //    }
+*/
+
 }
 
 
