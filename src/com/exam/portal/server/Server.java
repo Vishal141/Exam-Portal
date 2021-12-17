@@ -28,5 +28,9 @@ public interface Server {
     public Team getTeamById(String id);
     public boolean updateStudent(Student student);
     public ArrayList<Exam> getExamScheduledFor(String studentId);
+
     public boolean joinTeamWithId(String teamId,String studentId);
+
+    public boolean sendExamResponse(ExamResponse response);
+
 }

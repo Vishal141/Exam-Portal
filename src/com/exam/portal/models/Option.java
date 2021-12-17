@@ -1,7 +1,5 @@
 package com.exam.portal.models;
 
-import java.io.File;
-
 public class Option {
     private String examId;
     private String questionId;
@@ -73,19 +71,19 @@ public class Option {
         this.questionId = questionId;
     }
 
-    public boolean isCorrect() {
+    public boolean getIsCorrect() {
         return isCorrect;
     }
 
-    public void setCorrect(boolean correct) {
+    public void setIsCorrect(boolean correct) {
         isCorrect = correct;
     }
 
-    public boolean isSelected() {
+    public boolean getIsSelected() {
         return isSelected;
     }
 
-    public boolean setSelected() {
+    public boolean setIsSelected() {
         isSelected = !isSelected;
         return isSelected;
     }

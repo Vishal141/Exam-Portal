@@ -56,6 +56,8 @@ public class StudentController implements Initializable {
 
     //opening team window of selected team.
     public void teamsClicked(ActionEvent actionEvent) {
+        String path = "../teams/studentTeams.fxml";
+        changeStage(path,"Exam Portal",600,600);
     }
 
     //opening window which shows all the exams.
@@ -101,19 +103,14 @@ public class StudentController implements Initializable {
                     alert.showAndWait();
                     Stage stage = (Stage) newName.getScene().getWindow();
                     stage.close();
-                }
-                else{
+                }else{
                     Alert alert = new Alert(Alert.AlertType.INFORMATION);     //checking all the fields are filled or not.
                     alert.setHeaderText(null);
                     alert.setTitle("Warning");
                     alert.setContentText("Team ID is invalid");
-                    alert.showAndWait();
-                }
+                    alert.showAndWait();}
             });
-
-        }
-
-    }
+}}
 
     //create a new stage and show it.
     public void changeStage(String path,String title,int width,int height){

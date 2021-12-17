@@ -25,9 +25,9 @@ public class AddQuestionController implements Initializable {
     @FXML
     JFXTextArea questionText;
     @FXML
-    JFXToggleButton isImage;
-    @FXML
     JFXListView<Label> options;
+    @FXML
+    JFXToggleButton mcq,subjective;
     @FXML
     JFXTextField answers;
     @FXML
@@ -36,6 +36,8 @@ public class AddQuestionController implements Initializable {
     JFXTextField negPoint;
     @FXML
     JFXButton chooseFileBtn;
+
+    private boolean isImage;
 
     private static Question question;
 
@@ -54,6 +56,7 @@ public class AddQuestionController implements Initializable {
         file = null;
         isThreadRunning = false;
         optionCount =0;
+        isImage = false;
         runThread();
     }
 
@@ -90,13 +93,12 @@ public class AddQuestionController implements Initializable {
 
     //adding current question in exam and closing current stage.
     public void Done(ActionEvent actionEvent) {
-        boolean flag;
-        if(point.getText().equals("") || negPoint.getText().equals("") ||
-                answers.getText().equals("") || question.getOptionCount()==0){
+        boolean flag=true;
+        if(point.getText().equals("") || negPoint.getText().equals("") || !(mcq.isSelected() || subjective.isSelected())){
             flag = false;
             showAlert("point and answer filling is mandatory.");
         }else{
-            if(isImage.isSelected()){
+            if(isImage){
                 if(file==null){
                     flag = false;
                     showAlert("Question image is not selected.");
@@ -116,10 +118,15 @@ public class AddQuestionController implements Initializable {
                     question.setQuestion(questionText.getText());
                 }
             }
+
+            if(mcq.isSelected())
+                question.setQuestionType(1);   // 1 for mcq.
+            else
+                question.setQuestionType(2);   //2 for subjective.
         }
 
         if(flag){
-            question.setAnsIndices(answers.getText());
+            question.setAnswer(answers.getText());
             question.setPoint(Double.parseDouble(point.getText()));
             question.setNegPoint(Double.parseDouble(negPoint.getText()));
             CreateExamController.addQuestion(question);
@@ -132,6 +139,7 @@ public class AddQuestionController implements Initializable {
     //it open a file chooser for choosing file for question.
     public void chooseFile(ActionEvent actionEvent) {
         FileChooser chooser = new FileChooser();
+        isImage = true;
         file = chooser.showOpenDialog(questionText.getScene().getWindow());
         if(file!=null){
             chooseFileBtn.setText(file.getAbsolutePath());

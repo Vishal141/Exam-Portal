@@ -29,7 +29,7 @@ import java.util.Objects;
 import java.util.Random;
 import java.util.ResourceBundle;
 
-public class teamsController implements Initializable {
+public class TeamsController implements Initializable {
     @FXML
     JFXListView<Label> teamList;
 

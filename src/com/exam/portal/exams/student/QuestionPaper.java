@@ -1,27 +1,27 @@
 package com.exam.portal.exams.student;
 
-import com.exam.portal.models.Exam;
-import com.exam.portal.models.Option;
-import com.exam.portal.models.Question;
+import com.exam.portal.exams.scheduled.ScheduledExam;
+import com.exam.portal.models.*;
 import com.exam.portal.server.Server;
 import com.exam.portal.server.ServerHandler;
 
+import com.exam.portal.student.StudentController;
+import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXListView;
+import com.jfoenix.controls.JFXTextArea;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
@@ -34,6 +34,7 @@ import java.util.Base64;
 import java.util.ResourceBundle;
 
 public class QuestionPaper implements Initializable {
+    private static final int SUBJECTIVE=2;
     @FXML
     Label testTitle;
     @FXML
@@ -41,7 +42,9 @@ public class QuestionPaper implements Initializable {
     @FXML
     Label timer;
     @FXML
-    JFXListView<VBox> questionList;
+    JFXButton submitBtn;
+    @FXML
+    JFXListView<Node> questionList;
 
     //it is set from scheduled exam.
     public static Exam exam;
@@ -55,6 +58,10 @@ public class QuestionPaper implements Initializable {
         setListenerToQuestionList();
         fetchExam();
         currQuestionIndex = 0;
+
+        if(ScheduledExam.fromTeacher){
+            submitBtn.setVisible(false);
+        }
     }
 
     //fetching all the questions of selected exam and display first of them.
@@ -75,6 +82,14 @@ public class QuestionPaper implements Initializable {
     private void setQuestion(Question question){
        // System.out.println(question.getIsImage());
         questionList.getItems().add(getVbox(question.getQuestion(),decodeImage(question.getFile()),question.getIsImage()));
+        if(question.getQuestionType()==SUBJECTIVE){
+            JFXTextArea textArea = new JFXTextArea();
+            textArea.setPrefHeight(40);
+            textArea.setPrefWidth(500);
+            textArea.setText(question.getResponse());
+            textArea.setPromptText("type here ");
+            questionList.getItems().add(textArea);
+        }
         for(Option option:question.getOptions()){
             questionList.getItems().add(getVbox(option.getText(),decodeImage(option.getFile()),option.isImage()));
         }
@@ -99,6 +114,7 @@ public class QuestionPaper implements Initializable {
             vBox.getChildren().add(textQ);
             vBox.setVgrow(textQ,Priority.ALWAYS);
         }
+
         return vBox;
     }
 
@@ -120,7 +136,10 @@ public class QuestionPaper implements Initializable {
                 if(index==0) //because first element of list is question itself.
                     return;
                 //making selected option as selected.
-                boolean isSelected = exam.getQuestions().get(currQuestionIndex).getOptions().get(index-1).setSelected();
+                Question question = exam.getQuestions().get(currQuestionIndex);
+                if(question.getQuestionType()==SUBJECTIVE)
+                    return;
+                boolean isSelected = question.getOptions().get(index-1).setIsSelected();
                 if(isSelected){
                     questionList.getItems().get(index).setStyle("-fx-background-color: #304ffe");
                 }else {
@@ -132,6 +151,13 @@ public class QuestionPaper implements Initializable {
 
     //shows the prev question of current.
     public void prevQuestion(ActionEvent event){
+        //if current question is subjective than saving response in textarea.
+        Question question = exam.getQuestions().get(currQuestionIndex);
+        if(question.getQuestionType()==SUBJECTIVE){
+            JFXTextArea textArea = (JFXTextArea) questionList.getItems().get(1);
+            question.setResponse(textArea.getText());
+        }
+
         if(currQuestionIndex>0){
             currQuestionIndex--;
             questionList.getItems().clear();
@@ -141,6 +167,13 @@ public class QuestionPaper implements Initializable {
 
     //shows the next question of current.
     public void nextQuestion(ActionEvent event){
+        //if current question is subjective than saving response in textarea.
+        Question question = exam.getQuestions().get(currQuestionIndex);
+        if(question.getQuestionType()==SUBJECTIVE){
+            JFXTextArea textArea = (JFXTextArea) questionList.getItems().get(1);
+            question.setResponse(textArea.getText());
+        }
+
         if(currQuestionIndex<exam.getQuestionCount()-1){
             currQuestionIndex++;
             questionList.getItems().clear();
@@ -150,6 +183,36 @@ public class QuestionPaper implements Initializable {
 
     //submit and end the test.
     public void submitTest(ActionEvent event){
+        //if current question is subjective than saving response in textarea.
+        Question question = exam.getQuestions().get(currQuestionIndex);
+        if(question.getQuestionType()==SUBJECTIVE){
+            JFXTextArea textArea = (JFXTextArea) questionList.getItems().get(1);
+            question.setResponse(textArea.getText());
+        }
+
+        //Creating exam response of student and sending it to server.
+        ExamResponse response = new ExamResponse();
+        response.setExamId(exam.getExamId());
+        response.setStudentId(StudentController.student.getStudentId());
+
+        for(Question q:exam.getQuestions()){
+            QuestionResponse questionResponse = new QuestionResponse();
+            questionResponse.setQId(q.getQuestionId());
+            if(q.getQuestionType()==SUBJECTIVE){
+                questionResponse.setResponseType("text");
+                questionResponse.setResponse(q.getResponse());
+            }
+            else{
+                questionResponse.setResponseType("options");
+                StringBuilder options = new StringBuilder();
+                for(Option option:q.getOptions()){
+                    if(option.getIsSelected())
+                        options.append(option.getIndex()).append("*");
+                }
+                options.delete(options.lastIndexOf("*"),options.lastIndexOf("*"));
+                questionResponse.setResponse(options.toString());
+            }
+        }
 
     }
 
