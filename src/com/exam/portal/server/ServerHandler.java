@@ -440,6 +440,24 @@ public class ServerHandler implements Server{
         return null;
     }
 
+    //fetching all the students of particular team with given id
+    @Override
+    public ArrayList<Student> getStudentsByTeamId(String Id) {
+        try {
+            String url = TEAM_URL + "/get/all/student/Id=" + Id;
+            connection = ServerConfig.getConnection(url);
+            assert connection != null;
+
+            BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            String response = reader.readLine();
+            ArrayList<Student> students = gson.fromJson(response, new TypeToken<List<Student>>() {
+            }.getType());
+            return students;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
     //sending student response to server.
     @Override
     public boolean sendExamResponse(ExamResponse response) {
@@ -489,5 +507,23 @@ public class ServerHandler implements Server{
         }catch (Exception e){
             e.printStackTrace();
         }
+    }
+
+    //join team with ID
+@Override
+    public boolean joinTeamWithId(String teamId,String studentId){
+    try {
+        String url =  TEAM_URL+ "/student/join/"+ teamId+"&"+studentId;
+        connection = ServerConfig.getConnection(url);
+        assert connection != null;
+
+
+        BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+        String response = reader.readLine();
+        return response.equals(SUCCESSFUL);
+    }catch (Exception e){
+        e.printStackTrace();
+    }
+    return  false;
     }
 }

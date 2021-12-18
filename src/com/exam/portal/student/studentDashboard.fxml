@@ -10,9 +10,7 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0"
-            prefWidth="600.0" stylesheets="@../cssFiles/style.css" xmlns="http://javafx.com/javafx/11.0.1"
-            xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.exam.portal.student.StudentController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" stylesheets="@../cssFiles/style.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.exam.portal.student.StudentController">
    <top>
       <AnchorPane prefHeight="131.0" prefWidth="600.0" style="-fx-background-color: #0000cd;" BorderPane.alignment="CENTER">
          <children>
@@ -73,7 +71,7 @@
    <center>
       <AnchorPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #9575cd; -fx-border-color: black;" BorderPane.alignment="CENTER">
          <children>
-            <JFXButton layoutX="89.0" layoutY="26.0" onAction="#gotoJoinTeam" prefHeight="34.0" prefWidth="262.0" styleClass="jfx-button" stylesheets="@../cssFiles/style.css" text="Join New Team" textFill="#e2d4d4">
+            <JFXButton fx:id="directJoinBtn" layoutX="89.0" layoutY="26.0" onAction="#gotoJoinTeam" prefHeight="34.0" prefWidth="262.0" styleClass="jfx-button" stylesheets="@../cssFiles/style.css" text="Join New Team" textFill="#e2d4d4">
                <font>
                   <Font name="System Bold Italic" size="12.0" />
                </font>
