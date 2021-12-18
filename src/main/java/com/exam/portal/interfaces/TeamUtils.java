@@ -1,6 +1,7 @@
 package com.exam.portal.interfaces;
 
 import com.exam.portal.entities.BelongTo;
+import com.exam.portal.entities.Massage;
 import com.exam.portal.entities.Student;
 import com.exam.portal.entities.Team;
 
@@ -13,4 +14,5 @@ public interface TeamUtils {
     public ArrayList<Team> findTeacherTeamsById(String Id);
     public boolean makeAdmin(String teamId,String teacherId);
     public Team findTeamById(String id);
+    public boolean addMassage(Massage newMassage);
 }

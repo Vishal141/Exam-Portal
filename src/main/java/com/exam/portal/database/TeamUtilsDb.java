@@ -1,6 +1,7 @@
 package com.exam.portal.database;
 
 import com.exam.portal.entities.BelongTo;
+import com.exam.portal.entities.Massage;
 import com.exam.portal.entities.Team;
 
 import java.sql.Connection;
@@ -139,5 +140,67 @@ public class TeamUtilsDb {
 
        return false;
     }
+  public boolean addMassage(Massage newMassage){
+      PreparedStatement preparedStatement=null;
+      String query = "INSERT INTO Massages values(?,?,?,?,?)";
+      try{
+          preparedStatement = connection.prepareStatement(query);
+          preparedStatement.setString(1, newMassage.getMassageId());
+          preparedStatement.setString(2, newMassage.getTeamId());
+          preparedStatement.setString(3, newMassage.getSenderId());
+          preparedStatement.setString(4, newMassage.getMassage());
+          preparedStatement.setDate(5,   newMassage.getDate());
+          preparedStatement.execute();
+          return true;
+      }catch(Exception e){
+          e.printStackTrace();
+      }
+
+      return false;
+  }
+  public  ArrayList<String> getTeamMassage(String teamId){
+        PreparedStatement preparedStatement=null;
+        PreparedStatement preparedStatement1=null;
+        ArrayList<String> massages=new ArrayList<>();
+      try{
+            String query="SELECT * FROM MASSAGES WHERE TEAM_ID=?";
+
+            preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1,teamId);
+            ResultSet rs=preparedStatement.executeQuery();
+            // rsname=null;
+            String queryname="SELECT NAME FROM ? WHERE ?_Id=?";
+            if(rs.next()){
+               String massage=rs.getString(4);
+               String storeId=rs.getString(3);
+               if(storeId!=null && storeId.charAt(0)=='T'){
+                   preparedStatement1=connection.prepareStatement(queryname);
+                   preparedStatement1.setString(1,"teacher");
+                   preparedStatement1.setString(2,"Teacher");
+                   preparedStatement1.setString(3,storeId);
+                   ResultSet rsname= preparedStatement1.executeQuery();
+                   if(rsname.next())
+                       massage+="By "+rsname.getString(1);
+
+               }
+                if(storeId!=null && storeId.charAt(0)=='S'){
+                    preparedStatement1=connection.prepareStatement(queryname);
+                    preparedStatement1.setString(1,"student");
+                    preparedStatement1.setString(2,"Student");
+                    preparedStatement1.setString(3,storeId);
+                    ResultSet rsname= preparedStatement1.executeQuery();
+                    if(rsname.next())
+                        massage+="By "+rsname.getString(1);
+
+                }
+                massage+=rs.getString(5);
+                massages.add(massage);
+            }
+            return massages;
+
+        }catch (Exception e){
+            e.printStackTrace();}
+        return massages;
+  }
 
 }

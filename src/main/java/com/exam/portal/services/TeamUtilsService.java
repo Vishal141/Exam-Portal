@@ -2,6 +2,7 @@ package com.exam.portal.services;
 
 import com.exam.portal.database.TeamUtilsDb;
 import com.exam.portal.entities.BelongTo;
+import com.exam.portal.entities.Massage;
 import com.exam.portal.entities.Student;
 import com.exam.portal.entities.Team;
 import com.exam.portal.interfaces.TeamUtils;
@@ -44,6 +45,8 @@ public class TeamUtilsService implements TeamUtils {
     public Team findTeamById(String id) {
         return teamUtilsDb.findTeamById(id);
     }
+    @Override
+    public boolean addMassage(Massage newMassage){return teamUtilsDb.addMassage(newMassage);}
 
 
 }
