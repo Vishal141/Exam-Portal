@@ -459,6 +459,24 @@ public class ServerHandler implements Server{
         return false;
     }
 
+    @Override
+    public ExamResponse getStudentExamResponse(String examId, String studentId) {
+        try{
+            examId = examId.substring(examId.indexOf('#')+1);
+            String url = EXAM_URL+"/get/submission/"+examId+"/"+studentId;
+            connection = ServerConfig.getConnection(url);
+            assert connection!= null;
+
+            BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            String res = reader.readLine();
+            ExamResponse response = gson.fromJson(res,ExamResponse.class);
+            return response;
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     //method for writing object in request body
     private void writeJson(String json){
         try {

@@ -29,4 +29,5 @@ public interface Server {
     public boolean updateStudent(Student student);
     public ArrayList<Exam> getExamScheduledFor(String studentId);
     public boolean sendExamResponse(ExamResponse response);
+    public ExamResponse getStudentExamResponse(String examId,String studentId);
 }

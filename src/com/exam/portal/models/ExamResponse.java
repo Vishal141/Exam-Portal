@@ -6,6 +6,11 @@ public class ExamResponse {
     private String examId;
     private String studentId;
     private ArrayList<QuestionResponse> responses;
+    private double marks;
+
+    public ExamResponse(){
+        responses = new ArrayList<>();
+    }
 
     public String getExamId() {
         return examId;
@@ -29,5 +34,13 @@ public class ExamResponse {
 
     public void setResponses(ArrayList<QuestionResponse> responses) {
         this.responses = responses;
+    }
+
+    public double getMarks() {
+        return marks;
+    }
+
+    public void setMarks(double marks) {
+        this.marks = marks;
     }
 }
