@@ -1,12 +1,14 @@
 package com.exam.portal.database;
 
 import com.exam.portal.entities.BelongTo;
+import com.exam.portal.entities.Student;
 import com.exam.portal.entities.Team;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class TeamUtilsDb {
     private final Connection connection;
@@ -115,5 +117,57 @@ public class TeamUtilsDb {
         }
         return null;
     }
+
+    // join a team with team id for student
+
+    public boolean joinTeamWithId(String teamId,String studentId){
+        PreparedStatement preparedStatement=null;
+        String query = "INSERT INTO BelongTo values(?,?,?)  where Team_Id=teamId ";
+        try{
+            Team requiredTeam=findTeamById(teamId);
+            if(requiredTeam!=null){
+                preparedStatement = connection.prepareStatement(query);
+                preparedStatement.setString(1, studentId);
+                preparedStatement.setString(2, teamId);
+                preparedStatement.setDate(3, (java.sql.Date) new Date());
+                preparedStatement.execute();
+                return true;
+
+            }
+            }catch (Exception e){
+            e.printStackTrace();
+        }
+
+       return false;
+    }
+
+
+
+    public ArrayList<Student>  getStudents(String teamId){
+        PreparedStatement preparedStatement=null;
+        ResultSet rs=null;
+        ArrayList<Student> students;
+        String query = "SELECT * FROM STUDENT WHERE studentId IN (SELECT studentId from belongTo where Team_Id=?)";
+        try {
+            preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1,teamId);
+            rs = preparedStatement.executeQuery();
+            students=new ArrayList<>();
+            if(rs.next()){
+                Student student= new Student();
+                //team.setTeamId(teamId);
+                student.setEmail(rs.getString(3));
+                student.setName(rs.getString(1));
+                student.setContactNo(rs.getString(2));
+                students.add(student);
+
+                return students;
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 
 }

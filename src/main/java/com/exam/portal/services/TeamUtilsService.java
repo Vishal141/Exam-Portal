@@ -45,5 +45,10 @@ public class TeamUtilsService implements TeamUtils {
         return teamUtilsDb.findTeamById(id);
     }
 
+    @Override
+    public ArrayList<Student> getStudentsByTeamId(String Id){
+        return teamUtilsDb.getStudents(Id);
+    }
+
 
 }
