@@ -79,39 +79,7 @@ public class StudentController implements Initializable {
         String path = "joinWithId.fxml";
         changeStage(path,"Join with Team ID",300,300);
     }
-    /*
-    @FXML
-    private JFXButton joinWithIdClickedBtn;
 
-    @FXML
-    private TextField joinWithId;
-
-    @FXML
-    void joinWithIdClicked(ActionEvent event) {
-        if(joinWithId.getText().equals("")){
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);     //checking all the fields are filled or not.
-            alert.setHeaderText(null);
-            alert.setTitle("Warning");
-            alert.setContentText("Team ID mendatory");
-            alert.showAndWait();
-        }else{
-            Server server = ServerHandler.getInstance();
-            Platform.runLater(()->{
-                if(server.joinTeamWithId(joinWithId.getText(), student.getStudentId())){
-                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                    alert.setHeaderText(null);
-                    alert.setContentText("Added Successfully");
-                    alert.showAndWait();
-                    //Stage stage = (Stage) newName.getScene().getWindow();
-                   // stage.close();
-                }else{
-                    Alert alert = new Alert(Alert.AlertType.INFORMATION);     //checking all the fields are filled or not.
-                    alert.setHeaderText(null);
-                    alert.setTitle("Warning");
-                    alert.setContentText("Team ID is invalid");
-                    alert.showAndWait();}
-            });
-}}*/
 
     //create a new stage and show it.
     public void changeStage(String path,String title,int width,int height){

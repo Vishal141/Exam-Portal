@@ -17,13 +17,7 @@ import javafx.stage.StageStyle;
 import static com.exam.portal.student.StudentController.student;
 
 public class JoinTeamControoler {
-   /* @FXML
-    private JFXButton directJoinBtn;
 
-    public void gotoJoinTeam(ActionEvent actionEvent) {
-        String path = "joinWithId.fxml";
-        changeStage(path,"Join with Team ID",300,300);
-    }*/
     @FXML
     private JFXButton joinWithIdClickedBtn;
 

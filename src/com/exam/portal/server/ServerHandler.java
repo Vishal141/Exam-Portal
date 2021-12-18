@@ -490,4 +490,22 @@ public class ServerHandler implements Server{
     }
     return  false;
     }
+    @Override
+    public  boolean sendMassage(Massage newMassage){
+        try{
+            String url = TEAM_URL + "/send/massage/";
+            connection = ServerConfig.getConnection(url);
+            assert connection != null;
+            String json = gson.toJson(newMassage);
+            writeJson(json);
+
+            BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            String response = reader.readLine();
+            return response.equals(SUCCESSFUL);
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return false;
+    }
 }

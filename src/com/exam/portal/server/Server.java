@@ -33,4 +33,5 @@ public interface Server {
 
     public boolean sendExamResponse(ExamResponse response);
 
+    public boolean sendMassage(Massage newMassage);
 }
