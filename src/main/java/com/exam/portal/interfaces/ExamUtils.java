@@ -1,6 +1,7 @@
 package com.exam.portal.interfaces;
 
 import com.exam.portal.entities.Exam;
+import com.exam.portal.entities.ExamResponse;
 import com.exam.portal.entities.Question;
 
 import java.util.ArrayList;
@@ -10,4 +11,6 @@ public interface ExamUtils {
     public ArrayList<Exam> getExamsScheduledBy(String teacherId);
     public ArrayList<Exam> getExamsScheduledFor(String studentId);
     public Exam getExamById(String examId);
+    public boolean submitExam(ExamResponse response);
+    public ExamResponse getStudentSubmission(String examId,String studentId);
 }

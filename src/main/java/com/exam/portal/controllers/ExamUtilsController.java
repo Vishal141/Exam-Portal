@@ -1,6 +1,7 @@
 package com.exam.portal.controllers;
 
 import com.exam.portal.entities.Exam;
+import com.exam.portal.entities.ExamResponse;
 import com.exam.portal.entities.Question;
 import com.exam.portal.interfaces.ExamUtils;
 import com.exam.portal.proctor.FaceDetector;
@@ -67,5 +68,18 @@ public class ExamUtilsController{
         Exam exam =  examUtils.getExamById(examId);
        // System.out.println(exam.getQuestions().get(0).isImage());
         return exam;
+    }
+
+    @RequestMapping("/student/submit-test")
+    public String submitExam(@RequestBody ExamResponse response){
+        if(examUtils.submitExam(response))
+            return SUCCESSFUL;
+        return FAILED;
+    }
+
+    @RequestMapping("/get/submission/{examId}/{studentId}")
+    public ExamResponse getStudentSubmission(@PathVariable String examId, @PathVariable String studentId){
+        examId = "Exam#"+examId;
+        return examUtils.getStudentSubmission(examId,studentId);
     }
 }

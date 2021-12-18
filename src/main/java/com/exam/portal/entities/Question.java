@@ -6,14 +6,16 @@ public class Question {
     private String examId;
     private String questionId;
     private String question;
-    private boolean isImage;
     private String file;
+    private boolean isImage;
+    private int questionType;
+    private String response;
 
     private double point;
     private double negPoint;
 
     private ArrayList<Option> options;
-    private String ansIndices;
+    private String answer;
 
     public Question(){
     }
@@ -74,12 +76,12 @@ public class Question {
         this.negPoint = negPoint;
     }
 
-    public String getAnsIndices() {
-        return ansIndices;
+    public String getAnswer() {
+        return answer;
     }
 
-    public void setAnsIndices(String ansIndices) {
-        this.ansIndices = ansIndices;
+    public void setAnswer(String answer) {
+        this.answer = answer;
     }
 
     public void setOptions(ArrayList<Option> options){
@@ -88,5 +90,21 @@ public class Question {
 
     public ArrayList<Option> getOptions(){
         return options;
+    }
+
+    public int getQuestionType() {
+        return questionType;
+    }
+
+    public void setQuestionType(int questionType) {
+        this.questionType = questionType;
+    }
+
+    public String getResponse() {
+        return response;
+    }
+
+    public void setResponse(String response) {
+        this.response = response;
     }
 }
