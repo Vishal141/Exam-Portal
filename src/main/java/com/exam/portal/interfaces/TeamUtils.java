@@ -15,4 +15,5 @@ public interface TeamUtils {
     public boolean makeAdmin(String teamId,String teacherId);
     public Team findTeamById(String id);
     public boolean addMassage(Massage newMassage);
+    public ArrayList<String> getTeamMassage(String teamId);
 }

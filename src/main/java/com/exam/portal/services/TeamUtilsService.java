@@ -47,6 +47,8 @@ public class TeamUtilsService implements TeamUtils {
     }
     @Override
     public boolean addMassage(Massage newMassage){return teamUtilsDb.addMassage(newMassage);}
+    @Override
+    public  ArrayList<String> getTeamMassage(String teamId){return teamUtilsDb.getTeamMassage(teamId);}
 
 
 }
