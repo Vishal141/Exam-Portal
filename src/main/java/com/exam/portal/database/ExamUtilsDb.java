@@ -1,17 +1,20 @@
 package com.exam.portal.database;
 
-import com.exam.portal.entities.Exam;
-import com.exam.portal.entities.Option;
-import com.exam.portal.entities.Question;
+import com.exam.portal.entities.*;
 
 import javax.sql.rowset.serial.SerialBlob;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.StringTokenizer;
 import java.util.UUID;
 
 public class ExamUtilsDb {
+    private static final int SUBJECTIVE=2;
+    private static final String OPTIONS = "options";
+    private static final String TEXT = "text";
+
     private final Connection connection;
 
     public ExamUtilsDb(){
@@ -42,7 +45,7 @@ public class ExamUtilsDb {
     //adding all questions of a exam in questions table and map them with exam using examId.
     public boolean addQuestions(ArrayList<Question> questions){
         PreparedStatement preparedStatement=null;
-        String query = "INSERT INTO Questions VALUES(?,?,?,?,?,?,?)";
+        String query = "INSERT INTO Questions VALUES(?,?,?,?,?,?,?,?)";
         try {
             preparedStatement = connection.prepareStatement(query);
             for(Question question:questions){
@@ -50,7 +53,7 @@ public class ExamUtilsDb {
                 preparedStatement.setString(2,question.getQuestionId());
                 preparedStatement.setDouble(5,question.getPoint());
                 preparedStatement.setDouble(6,question.getNegPoint());
-                preparedStatement.setString(7,question.getAnsIndices());
+                preparedStatement.setInt(8,question.getQuestionType());
                 preparedStatement.setBoolean(4,question.getIsImage());
                 if(question.getIsImage()){                                         //checking that if question is a image or not.
                     byte[] bytes = decodeStringToImage(question.getFile());       //decode image from encoded string.
@@ -58,6 +61,13 @@ public class ExamUtilsDb {
                 }
                 else
                     preparedStatement.setString(3,question.getQuestion());
+
+                if(question.getQuestionType()==SUBJECTIVE){       //if question is subjective than storing answer's id as answer.
+                    String id = uploadText(question.getAnswer());
+                    preparedStatement.setString(7,id);
+                }else
+                    preparedStatement.setString(7,question.getAnswer());
+
                 preparedStatement.execute();
                 uploadOptions(question.getOptions());             //uploading all options in current question.
             }
@@ -71,7 +81,7 @@ public class ExamUtilsDb {
     //uploading options of question.
     public boolean uploadOptions(ArrayList<Option> options){
         PreparedStatement preparedStatement=null;
-        String query = "INSERT INTO Options VALUES(?,?,?,?,?)";
+        String query = "INSERT INTO Options VALUES(?,?,?,?,?,?)";
         try{
             preparedStatement = connection.prepareStatement(query);
             for(Option option:options){
@@ -79,6 +89,7 @@ public class ExamUtilsDb {
                 preparedStatement.setString(2,option.getQuestionId());
                 preparedStatement.setString(3,option.getIndex());
                 preparedStatement.setBoolean(4,option.isImage());
+                preparedStatement.setBoolean(6,option.isCorrect());
                 if(option.isImage()){                                       //checking that option is image or not.
                     byte[] bytes = decodeStringToImage(option.getFile());    //decoding image from encoded string.
                     preparedStatement.setString(5,uploadFile(bytes));  //adding image's id in column.
@@ -106,6 +117,43 @@ public class ExamUtilsDb {
             preparedStatement.setBlob(2,blob);
             preparedStatement.execute();
             return id;
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public String uploadText(String text){
+        String id = checkText(text);
+        if(id != null)
+            return id;
+        PreparedStatement preparedStatement = null;
+        String query = "INSERT INTO Text_Responses VALUES (?,?)";
+        try{
+            id = generateId();
+            preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1,id);
+            preparedStatement.setString(2,text);
+            preparedStatement.execute();
+
+            return id;
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    //return textId if text is already exist in table.
+    public String checkText(String text){
+        PreparedStatement preparedStatement=null;
+        String query = "SELECT Text_Id FROM Text_Responses WHERE Text=?";
+        try{
+            preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1,text);
+            ResultSet rs = preparedStatement.executeQuery();
+            if(rs.next())
+                return rs.getString(1);
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -206,7 +254,10 @@ public class ExamUtilsDb {
                     question.setQuestion(rs.getString(3));
                 question.setPoint(rs.getInt(5));
                 question.setNegPoint(rs.getInt(6));
-                question.setAnsIndices(rs.getString(7));
+                question.setQuestionType(rs.getInt(8));
+                if(question.getQuestionType()==SUBJECTIVE){   //if question is subjective than getting the original answer.
+                    question.setAnswer(getText(rs.getString(7)));
+                }
                 question.setOptions(getOptionsOf(examId,question.getQuestionId()));   //fetching options and adding in question.
 
                 questions.add(question);
@@ -234,6 +285,7 @@ public class ExamUtilsDb {
                 option.setQuestionId(rs.getString(2));
                 option.setIndex(rs.getString(3));
                 option.setIsImage(rs.getBoolean(4));
+                option.setIsCorrect(rs.getBoolean(6));
                 if(option.isImage())
                     option.setFile(getImage(rs.getString(5)));  //encoding image as string and setting it.
                 else
@@ -249,8 +301,85 @@ public class ExamUtilsDb {
         return null;
     }
 
+    //add student submission in database.
+    public boolean submitExam(ExamResponse response){
+        String query = "INSERT INTO Exam_Response VALUES (?,?,?,?)";
+        try{
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1,response.getExamId());
+            preparedStatement.setString(2,response.getStudentId());
+            preparedStatement.setString(3,getResponse(response.getResponses()));
+            preparedStatement.setDouble(4,response.getMarks());
+            preparedStatement.execute();
+            return true;
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    //creating a single response string by concatenating all responses and separating by "|;
+    private String getResponse(ArrayList<QuestionResponse> responses){
+        StringBuilder response = new StringBuilder();
+        for(QuestionResponse questionResponse:responses){
+            if(questionResponse.getResponseType().equals(OPTIONS))
+                response.append(questionResponse.getResponse()).append("@").append(OPTIONS).append("|");
+            else if(questionResponse.getResponseType().equals(TEXT)){
+                response.append(uploadText(questionResponse.getResponse())).append("@").append(TEXT).append("|");
+            }
+        }
+        response.deleteCharAt(response.lastIndexOf("|"));
+        return response.toString();
+    }
+
+    //fetching student submissions details
+    public ExamResponse getStudentSubmissions(String examId,String studentId){
+        String query = "SELECT * FROM Exam_Response WHERE Exam_Id=? AND Student_Id=?";
+        try{
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1,examId);
+            preparedStatement.setString(2,studentId);
+            ResultSet rs = preparedStatement.executeQuery();
+            if(rs.next()){
+                ExamResponse response = new ExamResponse();
+                response.setExamId(examId);
+                response.setStudentId(studentId);
+                response.setMarks(rs.getDouble(4));
+                response.setResponses(extractQuestionResponse(rs.getString(3)));
+                return response;
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    //extracting question response from response string.
+    private ArrayList<QuestionResponse> extractQuestionResponse(String response){
+        ArrayList<QuestionResponse> responses = new ArrayList<>();
+        StringTokenizer tokenizer = new StringTokenizer(response,"|");
+        int idx=0;
+        while(tokenizer.hasMoreTokens()){
+            QuestionResponse questionResponse = new QuestionResponse();
+            String token = tokenizer.nextToken();
+            String text = token.substring(0,token.lastIndexOf('@'));
+            String type = token.substring(token.lastIndexOf('@'));
+            questionResponse.setQId(""+idx++);
+            questionResponse.setResponse(text);
+            if(type.equals(TEXT)){
+                questionResponse.setResponseType(TEXT);
+            }else{
+                questionResponse.setResponseType(OPTIONS);
+            }
+            responses.add(questionResponse);
+        }
+
+        return responses;
+    }
+
     //getting blob of image using fileId and encode it as a string and return ti.
-    public String getImage(String fileId){
+    private String getImage(String fileId){
         try {
             String query = "SELECT data FROM files WHERE file_Id=?";
             PreparedStatement preparedStatement = connection.prepareStatement(query);
@@ -259,6 +388,21 @@ public class ExamUtilsDb {
             if(rs.next()){
                 return encodeImageToString(rs.getBlob(1));   //encoding blob.
             }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    //getting actual text with the help of id.
+    private String getText(String textId){
+        try{
+            String query = "SELECT Text FROM Text_Responses WHERE Text_Id=?";
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1,textId);
+            ResultSet rs = preparedStatement.executeQuery();
+            if(rs.next())
+                return rs.getString(1);
         }catch (Exception e){
             e.printStackTrace();
         }

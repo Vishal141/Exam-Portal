@@ -9,6 +9,9 @@ public class Option {
     private String text;
     private String file;
 
+    private boolean isCorrect;
+    private boolean isSelected;
+
     public Option(){}
 
     public boolean isImage() {
@@ -57,5 +60,21 @@ public class Option {
 
     public void setQuestionId(String questionId) {
         this.questionId = questionId;
+    }
+
+    public boolean isCorrect() {
+        return isCorrect;
+    }
+
+    public void setIsCorrect(boolean correct) {
+        isCorrect = correct;
+    }
+
+    public boolean isSelected() {
+        return isSelected;
+    }
+
+    public void setIsSelected(boolean selected) {
+        isSelected = selected;
     }
 }

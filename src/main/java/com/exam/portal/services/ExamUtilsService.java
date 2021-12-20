@@ -2,6 +2,7 @@ package com.exam.portal.services;
 
 import com.exam.portal.database.ExamUtilsDb;
 import com.exam.portal.entities.Exam;
+import com.exam.portal.entities.ExamResponse;
 import com.exam.portal.entities.Question;
 import com.exam.portal.interfaces.ExamUtils;
 
@@ -32,5 +33,15 @@ public class ExamUtilsService implements ExamUtils {
     @Override
     public Exam getExamById(String examId) {
         return examUtilsDb.getExamById(examId);
+    }
+
+    @Override
+    public boolean submitExam(ExamResponse response) {
+        return examUtilsDb.submitExam(response);
+    }
+
+    @Override
+    public ExamResponse getStudentSubmission(String examId,String studentId){
+        return examUtilsDb.getStudentSubmissions(examId,studentId);
     }
 }

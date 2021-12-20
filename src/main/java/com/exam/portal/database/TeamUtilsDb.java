@@ -1,7 +1,11 @@
 package com.exam.portal.database;
 
 import com.exam.portal.entities.BelongTo;
+<<<<<<< HEAD
 import com.exam.portal.entities.Massage;
+=======
+import com.exam.portal.entities.Student;
+>>>>>>> adbfce61abebc3e93210ee547ef25a51ef13d2a4
 import com.exam.portal.entities.Team;
 
 import java.sql.Connection;
@@ -202,5 +206,34 @@ public class TeamUtilsDb {
             e.printStackTrace();}
         return massages;
   }
+
+
+
+    public ArrayList<Student>  getStudents(String teamId){
+        PreparedStatement preparedStatement=null;
+        ResultSet rs=null;
+        ArrayList<Student> students;
+        String query = "SELECT * FROM STUDENT WHERE studentId IN (SELECT studentId from belongTo where Team_Id=?)";
+        try {
+            preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1,teamId);
+            rs = preparedStatement.executeQuery();
+            students=new ArrayList<>();
+            if(rs.next()){
+                Student student= new Student();
+                //team.setTeamId(teamId);
+                student.setEmail(rs.getString(3));
+                student.setName(rs.getString(1));
+                student.setContactNo(rs.getString(2));
+                students.add(student);
+
+                return students;
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 
 }
