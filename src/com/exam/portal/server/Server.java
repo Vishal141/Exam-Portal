@@ -34,4 +34,5 @@ public interface Server {
     public boolean sendExamResponse(ExamResponse response);
 
     public boolean sendMassage(Massage newMassage);
+    public ArrayList<String> getMassages(String teamId);
 }

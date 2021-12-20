@@ -27,7 +27,7 @@ public class ServerHandler implements Server{
 
     private static ServerHandler serverHandler=null;
 
-    private ServerHandler(){
+    public ServerHandler(){
         gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
     }
 
@@ -507,5 +507,24 @@ public class ServerHandler implements Server{
             e.printStackTrace();
         }
         return false;
+    }
+    @Override
+    public ArrayList<String> getMassages(String teamId){
+        ArrayList<String>returnedMassages;
+        try{
+        String url=TEAM_URL + "get/massage/";
+        connection=ServerConfig.getConnection(url);
+        assert connection!=null;
+        String json = gson.toJson(teamId);
+        writeJson(json);
+        BufferedReader reader=new BufferedReader(new InputStreamReader(connection.getInputStream()));
+        String response = reader.readLine();
+            returnedMassages = gson.fromJson(response,new TypeToken<List<Exam>>(){}.getType());
+            return returnedMassages;
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
     }
 }
