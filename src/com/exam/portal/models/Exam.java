@@ -108,4 +108,11 @@ public class Exam {
             return null;
         return questions.get(questions.size()-1);
     }
+
+    public double getTotalMarks(){
+        double total=0.0;
+        for(Question question:this.getQuestions())
+            total += question.getPoint();
+        return total;
+    }
 }

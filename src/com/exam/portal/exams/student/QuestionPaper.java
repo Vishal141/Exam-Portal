@@ -10,11 +10,16 @@ import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXListView;
 import com.jfoenix.controls.JFXTextArea;
 import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.image.Image;
@@ -26,11 +31,15 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.Date;
 import java.util.ResourceBundle;
 
 public class QuestionPaper implements Initializable {
@@ -46,14 +55,14 @@ public class QuestionPaper implements Initializable {
     @FXML
     JFXListView<Node> questionList;
 
-    //it is set from scheduled exam.
-    public static Exam exam;
-    //index of questions which is currently showing.
-    private int currQuestionIndex;
+    public static Exam exam; //it is set from scheduled exam.
+    private int currQuestionIndex; //index of questions which is currently showing.
+    private volatile boolean runTimer;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         testTitle.setText(exam.getTitle());
+        studentName.setText(StudentController.student.getName());
         questionList.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         setListenerToQuestionList();
         fetchExam();
@@ -61,6 +70,7 @@ public class QuestionPaper implements Initializable {
 
         if(ScheduledExam.fromTeacher){
             submitBtn.setVisible(false);
+            timer.setVisible(false);
         }
     }
 
@@ -73,25 +83,90 @@ public class QuestionPaper implements Initializable {
                 exam = new Exam();
                 exam.setQuestions(new ArrayList<>());
             }else if(exam.getQuestions().size()>0){
+                startTimer();
                 setQuestion(exam.getQuestions().get(0));
             }
         });
+    }
+
+    //starting timer
+    private void startTimer(){
+        runTimer = true;
+        Task task = new Task<Void>(){
+            @Override
+            protected Void call() throws Exception {
+                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                String time = exam.getExamDate()+" "+exam.getTime();
+                Date date = format.parse(time);
+
+                long millisLeft = date.getTime()+(Long.getLong(exam.getDuration()))*60*1000;  //getting total milliseconds left in exam.
+                millisLeft -= System.currentTimeMillis();
+                int currHours = (int) (millisLeft/(60*60*1000));    //converting millis left to hours,minutes and second left.
+                millisLeft = millisLeft - currHours*(60*60*1000);
+                int currMinutes = (int) (millisLeft/(60*1000));
+                int currSeconds = (int) (millisLeft - currMinutes*60*1000);
+
+                if(currMinutes==0 && currHours>0){          //if current minutes or seconds are 0 than updating them.
+                    currMinutes = 59;
+                    currHours--;
+                }
+                if(currSeconds==0 && currMinutes>0){
+                    currMinutes--;
+                    currSeconds = 59;
+                }
+
+                while (currSeconds>0 && runTimer){
+                    int finalCurrentHours = currHours;
+                    int finalCurrMinutes = currMinutes;
+                    int finalCurrSeconds = currSeconds;
+                    Platform.runLater(()->{
+                        timer.setText("Time Left : "+finalCurrentHours+":"+finalCurrMinutes +":"+ finalCurrSeconds);
+                    });
+
+                    currSeconds--;
+                    if(currMinutes==0 && currHours>0){
+                        currMinutes = 59;
+                        currHours--;
+                    }
+                    if(currSeconds==0 && currMinutes>0){
+                        currMinutes--;
+                        currSeconds = 59;
+                    }
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                if(runTimer)
+                    submitBtn.fire();
+                return null;
+            }
+        };
+
+        new Thread(task).start();
     }
 
     //display a specific question in the list.
     private void setQuestion(Question question){
        // System.out.println(question.getIsImage());
         questionList.getItems().add(getVbox(question.getQuestion(),decodeImage(question.getFile()),question.getIsImage()));
-        if(question.getQuestionType()==SUBJECTIVE){
-            JFXTextArea textArea = new JFXTextArea();
+        if(question.getQuestionType()==SUBJECTIVE){   //if question is subjective.
+            JFXTextArea textArea = new JFXTextArea();  //adding textarea for writing answer.
             textArea.setPrefHeight(40);
             textArea.setPrefWidth(500);
             textArea.setText(question.getResponse());
             textArea.setPromptText("type here ");
             questionList.getItems().add(textArea);
         }
+        int optionIndex = 1;
         for(Option option:question.getOptions()){
             questionList.getItems().add(getVbox(option.getText(),decodeImage(option.getFile()),option.isImage()));
+            boolean isSelected = option.getSelected();
+            if(isSelected)
+                questionList.getItems().get(optionIndex).setStyle("-fx-background-color: #304ffe");
+            optionIndex++;
         }
     }
 
@@ -128,7 +203,7 @@ public class QuestionPaper implements Initializable {
     }
 
     //adding on click listener to questionList.
-    public void setListenerToQuestionList(){
+    private void setListenerToQuestionList(){
         questionList.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
@@ -139,7 +214,7 @@ public class QuestionPaper implements Initializable {
                 Question question = exam.getQuestions().get(currQuestionIndex);
                 if(question.getQuestionType()==SUBJECTIVE)
                     return;
-                boolean isSelected = question.getOptions().get(index-1).setIsSelected();
+                boolean isSelected = question.getOptions().get(index-1).setSelected();
                 if(isSelected){
                     questionList.getItems().get(index).setStyle("-fx-background-color: #304ffe");
                 }else {
@@ -183,6 +258,7 @@ public class QuestionPaper implements Initializable {
 
     //submit and end the test.
     public void submitTest(ActionEvent event){
+        runTimer = false;
         //if current question is subjective than saving response in textarea.
         Question question = exam.getQuestions().get(currQuestionIndex);
         if(question.getQuestionType()==SUBJECTIVE){
@@ -190,10 +266,14 @@ public class QuestionPaper implements Initializable {
             question.setResponse(textArea.getText());
         }
 
+        if(ScheduledExam.fromTeacher)
+            return;
+
         //Creating exam response of student and sending it to server.
         ExamResponse response = new ExamResponse();
         response.setExamId(exam.getExamId());
         response.setStudentId(StudentController.student.getStudentId());
+        ArrayList<QuestionResponse> questionResponses = new ArrayList<>();
 
         for(Question q:exam.getQuestions()){
             QuestionResponse questionResponse = new QuestionResponse();
@@ -206,12 +286,76 @@ public class QuestionPaper implements Initializable {
                 questionResponse.setResponseType("options");
                 StringBuilder options = new StringBuilder();
                 for(Option option:q.getOptions()){
-                    if(option.getIsSelected())
+                    if(option.getSelected())
                         options.append(option.getIndex()).append("*");
                 }
-                options.delete(options.lastIndexOf("*"),options.lastIndexOf("*"));
+                options.deleteCharAt(options.lastIndexOf("*"));
                 questionResponse.setResponse(options.toString());
             }
+            questionResponses.add(questionResponse);
+        }
+        response.setMarks(calculateMarks());
+        response.setResponses(questionResponses);   //adding all responses in exam response.
+
+        //sending response to server.
+        Platform.runLater(()->{
+            Server server = ServerHandler.getInstance();
+            if(server.sendExamResponse(response)){
+                String message = "Your submissions have been submitted successfully.";
+                showAlert(Alert.AlertType.INFORMATION,"Successful",message);
+            }else{
+                String message = "You have already submitted the exam.";
+                showAlert(Alert.AlertType.ERROR,"Error",message);
+            }
+            backToExams();
+        });
+    }
+
+    //calculating marks obtained by student.
+    double calculateMarks(){
+        double marks = 0.0;
+        for(Question question:exam.getQuestions()){
+            if(question.getQuestionType()==SUBJECTIVE){
+                if(question.getAnswer().equals(question.getResponse()))
+                    marks += question.getPoint();
+                else
+                    marks -= question.getNegPoint();
+            }else{
+                boolean flag=true;  //checking that all the options selected by student are correct or not.
+                for(Option option:question.getOptions()){
+                    if (option.getSelected() ^ option.getCorrect()) {       //checking that whether selected option is correct of not.
+                        flag = false;
+                        break;
+                    }
+                }
+                if(flag)
+                    marks += question.getPoint();
+                else
+                    marks -= question.getNegPoint();
+            }
+        }
+
+        return marks;
+    }
+
+    //showing alert after submission of exam.
+    private void showAlert(Alert.AlertType type,String title,String message){
+        Alert alert = new Alert(type);
+        alert.setHeaderText(null);
+        alert.setTitle(title);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
+    private void backToExams(){
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("../scheduled/ScheduledExam.fxml"));
+            Stage stage = (Stage) testTitle.getScene().getWindow();
+            stage.setTitle("Exams");
+            stage.setScene(new Scene(root,600,600));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
     }

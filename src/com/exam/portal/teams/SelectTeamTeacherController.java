@@ -163,7 +163,8 @@ private  void setMassages(){
 
     @FXML
     void showAllStudents(ActionEvent event) {
-
+        String path ="showAllStudents.fxml";
+        changeStage(path,"students",700,600);
     }
 
     public void changeStage(String path,String title,int width,int height){
