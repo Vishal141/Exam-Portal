@@ -1,6 +1,5 @@
 package com.exam.portal.proctoring;
 
-import com.exam.portal.models.ProctoringFile;
 import javafx.application.Platform;
 
 import javax.sound.sampled.*;

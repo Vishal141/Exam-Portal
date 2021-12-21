@@ -1,6 +1,5 @@
 package com.exam.portal.proctoring;
 
-import com.exam.portal.models.ProctoringFile;
 import com.xuggle.mediatool.IMediaWriter;
 import com.xuggle.mediatool.ToolFactory;
 import com.xuggle.xuggler.ICodec;

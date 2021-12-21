@@ -317,52 +317,22 @@ public class ServerHandler implements Server{
         return  false;
     }
 
-    //checking that proctor is available or not.
     @Override
-    public boolean checkProctor() {
+    public boolean getProctorResult(Image image){
         try{
-            String url = EXAM_URL+"/check-proctor";
+            String url = EXAM_URL+"/proctor/get";
             connection = ServerConfig.getConnection(url);
-            assert connection != null;
+            assert connection!=null;
+            String json = gson.toJson(image);
+            writeJson(json);
+
             BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
             String response = reader.readLine();
             return response.equals(SUCCESSFUL);
         }catch (Exception e){
             e.printStackTrace();
         }
-
-        return false;
-    }
-
-    //detecting number of faces in given image.
-    @Override
-    public int detectFace(String bytes) {
-        try{
-            String url = EXAM_URL+"/"+bytes;
-            connection = ServerConfig.getConnection(url);
-            assert connection != null;
-            BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-            int faces = Integer.parseInt(reader.readLine());
-            return faces;
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-
-        return  0;
-    }
-
-    //sending students cheating status.
-    @Override
-    public void sendProctorFile(ProctoringFile file) {
-        try{
-            String url = EXAM_URL+"/upload-proctor-file";
-            connection = ServerConfig.getConnection(url);
-            assert connection!=null;
-            String json = gson.toJson(file);
-            writeJson(json);
-        }catch (Exception e){
-            e.printStackTrace();
-        }
+        return true;
     }
 
     //fetching all the exams scheduled by teacher with id teacherId
