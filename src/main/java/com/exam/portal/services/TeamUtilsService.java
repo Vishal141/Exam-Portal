@@ -4,6 +4,7 @@ import com.exam.portal.database.TeamUtilsDb;
 import com.exam.portal.entities.BelongTo;
 import com.exam.portal.entities.Student;
 import com.exam.portal.entities.Team;
+import com.exam.portal.entities.TeamUpdate;
 import com.exam.portal.interfaces.TeamUtils;
 
 import java.util.ArrayList;
@@ -46,9 +47,17 @@ public class TeamUtilsService implements TeamUtils {
     }
 
     @Override
+    public boolean joinWithTeamId(String teamId,String studentId){
+        return teamUtilsDb.joinTeamWithId(teamId,studentId);
+    }
+
+    @Override
     public ArrayList<Student> getStudentsByTeamId(String Id){
         return teamUtilsDb.getStudents(Id);
     }
 
-
+    @Override
+    public TeamUpdate checkTeamUpdate(TeamUpdate update){
+        return teamUtilsDb.checkTeamUpdate(update);
+    }
 }

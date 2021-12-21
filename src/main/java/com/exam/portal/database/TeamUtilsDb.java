@@ -3,10 +3,9 @@ package com.exam.portal.database;
 import com.exam.portal.entities.BelongTo;
 import com.exam.portal.entities.Student;
 import com.exam.portal.entities.Team;
+import com.exam.portal.entities.TeamUpdate;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -59,7 +58,7 @@ public class TeamUtilsDb {
             preparedStatement = connection.prepareStatement(query);
             preparedStatement.setString(1, belongTo.getStudentId());
             preparedStatement.setString(2, belongTo.getTeamId());
-            preparedStatement.setDate(3,belongTo.getDate());
+            preparedStatement.setTimestamp(3,new Timestamp(new Date().getTime()));
             preparedStatement.execute();
             return true;
         }catch(Exception e){
@@ -119,55 +118,95 @@ public class TeamUtilsDb {
     }
 
     // join a team with team id for student
-
     public boolean joinTeamWithId(String teamId,String studentId){
         PreparedStatement preparedStatement=null;
-        String query = "INSERT INTO BelongTo values(?,?,?)  where Team_Id=teamId ";
+        String query = "INSERT INTO BelongTo values(?,?,?) ";
         try{
             Team requiredTeam=findTeamById(teamId);
             if(requiredTeam!=null){
                 preparedStatement = connection.prepareStatement(query);
                 preparedStatement.setString(1, studentId);
                 preparedStatement.setString(2, teamId);
-                preparedStatement.setDate(3, (java.sql.Date) new Date());
+                preparedStatement.setTimestamp(3,new Timestamp(new Date().getTime()));
                 preparedStatement.execute();
                 return true;
-
             }
-            }catch (Exception e){
+        }catch (Exception e){
             e.printStackTrace();
         }
-
-       return false;
+        return false;
     }
 
-
-
+    //selecting all student who are in the team with id teamId.
     public ArrayList<Student>  getStudents(String teamId){
         PreparedStatement preparedStatement=null;
         ResultSet rs=null;
         ArrayList<Student> students;
-        String query = "SELECT * FROM STUDENT WHERE studentId IN (SELECT studentId from belongTo where Team_Id=?)";
+        String query = "SELECT * FROM STUDENT WHERE Student_Id IN (SELECT Student_Id from belongTo where Team_Id=?)";
         try {
             preparedStatement = connection.prepareStatement(query);
             preparedStatement.setString(1,teamId);
             rs = preparedStatement.executeQuery();
             students=new ArrayList<>();
-            if(rs.next()){
+            while(rs.next()){
                 Student student= new Student();
-                //team.setTeamId(teamId);
+                student.setStudentId(rs.getString(1));
                 student.setEmail(rs.getString(3));
-                student.setName(rs.getString(1));
-                student.setContactNo(rs.getString(2));
+                student.setName(rs.getString(2));
+                student.setContactNo(rs.getString(4));
                 students.add(student);
-
-                return students;
             }
+            return students;
         }catch (Exception e){
             e.printStackTrace();
         }
         return null;
     }
 
+    //check for whether student added in new team , if added then sending new teams for notification.
+    public TeamUpdate checkTeamUpdate(TeamUpdate teamUpdate){
+        int count = getTeamCount(teamUpdate.getStudentId());
+        if(count > teamUpdate.getPrevCount()){  //if current count is greater than previous means student added in some new teams.
+            teamUpdate.setUpdate(true);
+            int diff = count-teamUpdate.getPrevCount();
+            try{
+                String query = "SELECT * FROM Teams WHERE Team_Id IN (SELECT Team_Id FROM BelongTo WHERE Student_Id=? DESC Added_Date LIMIT ?)";
+                PreparedStatement preparedStatement = connection.prepareStatement(query);
+                preparedStatement.setString(1,teamUpdate.getStudentId());
+                preparedStatement.setInt(2,diff);
+                ResultSet rs = preparedStatement.executeQuery();
+                ArrayList<Team> teams = new ArrayList<>();
+                while(rs.next()){
+                    Team team = new Team();
+                    team.setTeamId(rs.getString(1));
+                    team.setName(rs.getString(2));
+                    team.setCreatorId(rs.getString(3));
+                    team.setDateCreated(rs.getDate(4));
+                    teams.add(team);
+                }
+                teamUpdate.setTeams(teams);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }else
+            teamUpdate.setUpdate(false);
 
+        return teamUpdate;
+    }
+
+    //getting team count in which student with id studentId has been added.
+    private int getTeamCount(String studentId){
+        try {
+            String query = "SELECT COUNT(Team_Id) FROM BelongTo WHERE Student_Id=?";
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1,studentId);
+            ResultSet rs = preparedStatement.executeQuery();
+            if(rs.next())
+                return rs.getInt(1);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return 0;
+    }
 }

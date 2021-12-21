@@ -2,6 +2,7 @@ package com.exam.portal.interfaces;
 
 import com.exam.portal.entities.Exam;
 import com.exam.portal.entities.ExamResponse;
+import com.exam.portal.entities.ExamUpdate;
 import com.exam.portal.entities.Question;
 
 import java.util.ArrayList;
@@ -13,4 +14,6 @@ public interface ExamUtils {
     public Exam getExamById(String examId);
     public boolean submitExam(ExamResponse response);
     public ExamResponse getStudentSubmission(String examId,String studentId);
+    public ExamUpdate checkExamUpdate(ExamUpdate update);
+    public ExamUpdate checkExamStartUpdate(ExamUpdate update);
 }

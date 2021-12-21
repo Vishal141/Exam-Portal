@@ -7,6 +7,7 @@ import javax.sql.rowset.serial.SerialBlob;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.Date;
 import java.util.StringTokenizer;
 import java.util.UUID;
 
@@ -24,7 +25,7 @@ public class ExamUtilsDb {
     //creates a new exam in the team and return true if successfully created otherwise returns false.
     public boolean createExam(Exam exam){
         PreparedStatement preparedStatement=null;
-        String query = "INSERT INTO Exams VALUES (?,?,?,?,?,?,?)";
+        String query = "INSERT INTO Exams VALUES (?,?,?,?,?,?,?,?)";
         try{
             preparedStatement = connection.prepareStatement(query);
             preparedStatement.setString(1,exam.getExamId());
@@ -34,6 +35,7 @@ public class ExamUtilsDb {
             preparedStatement.setDate(5,exam.getExamDate());
             preparedStatement.setTime(6,exam.getTime());
             preparedStatement.setInt(7,Integer.parseInt(exam.getDuration()));
+            preparedStatement.setTimestamp(8,new Timestamp(new Date().getTime()));
             preparedStatement.execute();
             return true;
         }catch(Exception e){
@@ -376,6 +378,88 @@ public class ExamUtilsDb {
         }
 
         return responses;
+    }
+
+    //comparing prevCount of exams with current count if they are not equal than adding new exams to list in examUpdate.
+    public ExamUpdate checkExamUpdate(ExamUpdate update){
+        int count = getExamCount(update.getStudentId());
+        if(count>update.getPrevCount()){
+            update.setUpdate(true);
+            int diff = count-update.getPrevCount();
+            String query = "SELECT * FROM Exams WHERE Team_Id IN (SELECT Team_Id FROM BelongTo WHERE Student_Id=?) DESC Created_At LIMIT ?";
+            try{
+                PreparedStatement preparedStatement = connection.prepareStatement(query);
+                preparedStatement.setString(1,update.getStudentId());
+                preparedStatement.setInt(2,diff);
+                ResultSet rs = preparedStatement.executeQuery();
+                ArrayList<Exam> exams = new ArrayList<>();
+                while(rs.next()){
+                    exams.add(extractExam(rs));
+                }
+                update.setExams(exams);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+
+        }else
+            update.setUpdate(false);
+        return update;
+    }
+
+    //getting count of all exams in team in which student with id studentId has been added.
+    private int getExamCount(String studentId){
+        try {
+            String query = "SELECT COUNT(Exam_Id) WHERE Creator_Id IN (SELECT Team_Id FROM BelongTo WHERE Student_Id=?)";
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1,studentId);
+            ResultSet rs = preparedStatement.executeQuery();
+            if(rs.next())
+                return rs.getInt(1);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    //checking for exams which starts after 15 minutes.
+    public ExamUpdate checkExamStartUpdate(ExamUpdate update){
+        int count = getExamStartCount(update.getStudentId());
+        if(count>update.getPrevCount()){
+            update.setUpdate(true);
+            try{
+                int diff = count-update.getPrevCount();
+                String query = "SELECT COUNT(Exam_Id) WHERE Creator_Id IN (SELECT Team_Id FROM BelongTo WHERE Student_Id=?) AND  " +
+                               "Exam_Date=NOW() AND Exam_Time>NOW() AND Exam_Time<=NOW()+INTERVAL 15 MINUTE DESC Created_At LIMIT ?";
+                PreparedStatement preparedStatement = connection.prepareStatement(query);
+                preparedStatement.setInt(2,diff);
+                preparedStatement.setString(1,update.getStudentId());
+                ResultSet rs = preparedStatement.executeQuery();
+                ArrayList<Exam> exams = new ArrayList<>();
+                while(rs.next())
+                    exams.add(extractExam(rs));
+                update.setExams(exams);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }else
+            update.setUpdate(false);
+        return update;
+    }
+
+    //getting count of all exams in team in which student with id studentId has been added.
+    private int getExamStartCount(String studentId){
+        try {
+            String query = "SELECT COUNT(Exam_Id) WHERE Creator_Id IN (SELECT Team_Id FROM BelongTo WHERE Student_Id=?) AND  " +
+                           "Exam_Date=NOW() AND Exam_Time>NOW() AND Exam_Time<=NOW()+INTERVAL 15 MINUTE";
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1,studentId);
+            ResultSet rs = preparedStatement.executeQuery();
+            if(rs.next())
+                return rs.getInt(1);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return 0;
     }
 
     //getting blob of image using fileId and encode it as a string and return ti.

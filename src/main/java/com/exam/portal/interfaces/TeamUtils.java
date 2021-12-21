@@ -3,6 +3,7 @@ package com.exam.portal.interfaces;
 import com.exam.portal.entities.BelongTo;
 import com.exam.portal.entities.Student;
 import com.exam.portal.entities.Team;
+import com.exam.portal.entities.TeamUpdate;
 
 import java.util.ArrayList;
 
@@ -14,4 +15,6 @@ public interface TeamUtils {
     public ArrayList<Student> getStudentsByTeamId(String Id);
     public boolean makeAdmin(String teamId,String teacherId);
     public Team findTeamById(String id);
+    public boolean joinWithTeamId(String teamId,String studentId);
+    public TeamUpdate checkTeamUpdate(TeamUpdate update);
 }

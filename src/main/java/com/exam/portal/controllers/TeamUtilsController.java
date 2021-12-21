@@ -2,7 +2,9 @@ package com.exam.portal.controllers;
 
 import com.exam.portal.entities.BelongTo;
 
+import com.exam.portal.entities.Student;
 import com.exam.portal.entities.Team;
+import com.exam.portal.entities.TeamUpdate;
 import com.exam.portal.interfaces.TeamUtils;
 import com.exam.portal.services.TeamUtilsService;
 
@@ -62,5 +64,24 @@ public class TeamUtilsController {
         Id = "Team#"+Id;
         System.out.println(Id);
         return teamUtils.findTeamById(Id);
+    }
+
+    @RequestMapping("/student/join/{teamId}/{studentId}")
+    public String joinWithTeamId(@PathVariable String studentId, @PathVariable String teamId){
+        teamId = "Team#"+teamId;
+        if(teamUtils.joinWithTeamId(teamId,studentId))
+            return SUCCESSFUL;
+        return FAILED;
+    }
+
+    @RequestMapping("/get/student/all/id={teamId}")
+    public ArrayList<Student> getStudents(@PathVariable String teamId){
+        teamId = "Team#"+teamId;
+        return teamUtils.getStudentsByTeamId(teamId);
+    }
+
+    @RequestMapping("/get/update")
+    public TeamUpdate checkTeamUpdate(@RequestBody TeamUpdate update){
+        return teamUtils.checkTeamUpdate(update);
     }
 }

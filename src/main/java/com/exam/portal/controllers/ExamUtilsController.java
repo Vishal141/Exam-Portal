@@ -2,6 +2,7 @@ package com.exam.portal.controllers;
 
 import com.exam.portal.entities.Exam;
 import com.exam.portal.entities.ExamResponse;
+import com.exam.portal.entities.ExamUpdate;
 import com.exam.portal.entities.Question;
 import com.exam.portal.interfaces.ExamUtils;
 import com.exam.portal.proctor.FaceDetector;
@@ -81,5 +82,12 @@ public class ExamUtilsController{
     public ExamResponse getStudentSubmission(@PathVariable String examId, @PathVariable String studentId){
         examId = "Exam#"+examId;
         return examUtils.getStudentSubmission(examId,studentId);
+    }
+
+    @RequestMapping("/get/update")
+    public ExamUpdate checkExamUpdate(@RequestBody ExamUpdate update){
+        if(update.getType().equals("create"))
+            return examUtils.checkExamUpdate(update);
+        return examUtils.checkExamStartUpdate(update);
     }
 }
