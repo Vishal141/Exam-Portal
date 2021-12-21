@@ -5,9 +5,9 @@
 <?import javafx.scene.layout.AnchorPane?>
 
 
-<AnchorPane prefHeight="364.0" prefWidth="461.0" style="-fx-background-color: pink;" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.exam.portal.student.JoinTeamControoler">
+<AnchorPane prefHeight="364.0" prefWidth="461.0" style="-fx-background-color: #a7ffeb;" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.exam.portal.student.JoinTeamController">
    <children>
       <JFXButton fx:id="joinWithIdClickedBtn" layoutX="231.0" layoutY="199.0" onAction="#joinWithIdClicked" prefHeight="43.0" prefWidth="143.0" style="-fx-font: italic small-caps bold 20px/40px Georgia, serif; -fx-border-color: white; -fx-background-color: black;" text="Join" textFill="WHITE" />
-      <TextField fx:id="teamIdJWithId" layoutX="68.0" layoutY="120.0" prefHeight="43.0" prefWidth="280.0" promptText="Enter  Team ID Here" style="-fx-font: italic small-caps bold 20px/40px Georgia, serif; -fx-border-color: black; -fx-border-width: 2px;" />
+      <TextField fx:id="teamId" layoutX="68.0" layoutY="120.0" prefHeight="43.0" prefWidth="280.0" promptText="Enter  Team ID Here" style="-fx-font: italic small-caps bold 20px/40px Georgia, serif; -fx-border-color: black; -fx-border-width: 2px;" />
    </children>
 </AnchorPane>

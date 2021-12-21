@@ -1,29 +1,37 @@
 package com.exam.portal.teams;
 
+import com.exam.portal.models.Team;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.stage.Stage;
+
+import java.util.Stack;
 
 public class SelectTeamStudentController {
+    public static Team currentTeam;
     @FXML
-    private Label lblTeamName;
+    Label lblTeamName;
 
     @FXML
-    private Button btnShowStudents;
+    Button btnShowStudents;
 
     @FXML
-    private Button btnSheduleExam;
+    Button btnSheduleExam;
 
     @FXML
-    private Button btnGoBcak;
+    Button btnGoBcak;
 
     @FXML
-    private TextField tfMassage;
+    TextField tfMassage;
 
     @FXML
-    private Button btnSend;
+    Button btnSend;
 
     @FXML
     void checkExam(ActionEvent event) {
@@ -42,7 +50,16 @@ public class SelectTeamStudentController {
 
     @FXML
     void showAllStudents(ActionEvent event) {
-
+        try{
+            Stage stage = (Stage) btnSend.getScene().getWindow();
+            ShowAllStudents.fromTeacher = false;
+            Parent root = FXMLLoader.load(getClass().getResource("showAllStudent.fxml"));
+            stage.setTitle("All students");
+            stage.setScene(new Scene(root,600,600));
+            stage.show();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
 }

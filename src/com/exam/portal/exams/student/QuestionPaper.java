@@ -62,15 +62,23 @@ public class QuestionPaper implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         testTitle.setText(exam.getTitle());
-        studentName.setText(StudentController.student.getName());
         questionList.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         setListenerToQuestionList();
         fetchExam();
         currQuestionIndex = 0;
 
-        if(ScheduledExam.fromTeacher){
+        if(ScheduledExam.fromTeacher){     //if current user is teacher than disabling submit button .
+            studentName.setVisible(false);
             submitBtn.setVisible(false);
+            submitBtn.setDisable(true);
             timer.setVisible(false);
+        }else {
+            studentName.setText(StudentController.student.getName());
+
+            //setting screen to full scree
+            Stage stage = (Stage) timer.getScene().getWindow();
+            stage.setFullScreen(true);
+            stage.setResizable(false);
         }
     }
 
@@ -92,7 +100,7 @@ public class QuestionPaper implements Initializable {
     //starting timer
     private void startTimer(){
         runTimer = true;
-        Task task = new Task<Void>(){
+        Task<Void> task = new Task<>(){
             @Override
             protected Void call() throws Exception {
                 SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

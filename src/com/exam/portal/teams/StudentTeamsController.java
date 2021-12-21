@@ -7,14 +7,21 @@ import com.exam.portal.student.StudentController;
 import com.jfoenix.controls.JFXListView;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
+import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
@@ -33,6 +40,7 @@ public class StudentTeamsController implements Initializable {
         server = ServerHandler.getInstance();
         studentName.setText(StudentController.student.getName());
         fetchTeams();
+        setListener();
     }
 
     //fetching student teams from server.
@@ -57,8 +65,33 @@ public class StudentTeamsController implements Initializable {
         }
     }
 
-    //sending request to server for joining new team with team id.
+    //setting listener to list
+    private void setListener(){
+        teamList.setOnMouseClicked(mouseEvent -> {
+            SelectTeamStudentController.currentTeam=teams.get(teamList.getSelectionModel().getSelectedIndex());  //setting team in controller.
+            Stage stage = (Stage) teamList.getScene().getWindow();
+            try{
+                Parent root = FXMLLoader.load(getClass().getResource("selectTeamStudent.fxml"));
+                stage.setScene(new Scene(root,700,700));
+                stage.setTitle(SelectTeamStudentController.currentTeam.getName());
+                stage.show();
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        });
+    }
+
+    //opening another window for entering team id for joining new team.
     public void joinTeam(ActionEvent event) {
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("../student/joinWithId.fxml"));
+            Stage stage = new Stage();
+            stage.setTitle("Join Team");
+            stage.setScene(new Scene(root,600,600));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }

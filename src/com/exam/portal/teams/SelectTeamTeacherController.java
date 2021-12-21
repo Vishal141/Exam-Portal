@@ -78,6 +78,7 @@ public class SelectTeamTeacherController implements Initializable {
     public void changeStage(String path,String title,int width,int height){
         try{
             Stage stage = (Stage) lblTeamName.getScene().getWindow();
+            ShowAllStudents.fromTeacher = true;
             Parent parent = FXMLLoader.load(getClass().getResource(path));
             stage.setTitle(title);
             stage.setScene(new Scene(parent,width,height));

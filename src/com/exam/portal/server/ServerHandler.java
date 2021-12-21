@@ -440,24 +440,43 @@ public class ServerHandler implements Server{
         return null;
     }
 
-    //fetching all the students of particular team with given id
+    //join team with ID
     @Override
-    public ArrayList<Student> getStudentsByTeamId(String Id) {
+    public boolean joinTeamWithId(String teamId,String studentId){
         try {
-            String url = TEAM_URL + "/get/all/student/Id=" + Id;
+            teamId = teamId.substring(teamId.indexOf("#")+1);
+            String url =  TEAM_URL+ "/student/join/"+ teamId+"/"+studentId;
             connection = ServerConfig.getConnection(url);
             assert connection != null;
 
             BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
             String response = reader.readLine();
-            ArrayList<Student> students = gson.fromJson(response, new TypeToken<List<Student>>() {
-            }.getType());
+            return response.equals(SUCCESSFUL);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return  false;
+    }
+
+    //fetching all the students of particular team with given id
+    @Override
+    public ArrayList<Student> getStudentsByTeamId(String Id) {
+        try {
+            Id = Id.substring(Id.indexOf("#")+1);
+            String url = TEAM_URL + "/get/student/all/id=" + Id;
+            connection = ServerConfig.getConnection(url);
+            assert connection != null;
+
+            BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            String response = reader.readLine();
+            ArrayList<Student> students = gson.fromJson(response, new TypeToken<List<Student>>() {}.getType());
             return students;
         } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
     }
+
     //sending student response to server.
     @Override
     public boolean sendExamResponse(ExamResponse response) {
@@ -477,6 +496,7 @@ public class ServerHandler implements Server{
         return false;
     }
 
+    //requesting for student's submission of exam.
     @Override
     public ExamResponse getStudentExamResponse(String examId, String studentId) {
         try{
@@ -495,6 +515,47 @@ public class ServerHandler implements Server{
         return null;
     }
 
+    //sending request for checking that whether student has been added in new team or not.
+    public TeamUpdate checkTeamUpdate(TeamUpdate update){
+        try{
+            String url = TEAM_URL+"/get/update";
+            connection = ServerConfig.getConnection(url);
+            assert connection!=null;
+            String json = gson.toJson(update);
+            writeJson(json);
+
+            BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            String res = reader.readLine();
+            update = gson.fromJson(res,TeamUpdate.class);
+            return update;
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return update;
+    }
+
+    //sending request for checking whether a new exam has been scheduled or ready to start within 15
+    // minutes in teams in which student is present.
+    public ExamUpdate checkExamUpdate(ExamUpdate update){
+        try{
+            String url = EXAM_URL+"/get/update";
+            connection = ServerConfig.getConnection(url);
+            assert connection!=null;
+            String json = gson.toJson(update);
+            writeJson(json);
+
+            BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            String res = reader.readLine();
+            update = gson.fromJson(res,ExamUpdate.class);
+            return update;
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return update;
+    }
+
     //method for writing object in request body
     private void writeJson(String json){
         try {
@@ -507,23 +568,5 @@ public class ServerHandler implements Server{
         }catch (Exception e){
             e.printStackTrace();
         }
-    }
-
-    //join team with ID
-@Override
-    public boolean joinTeamWithId(String teamId,String studentId){
-    try {
-        String url =  TEAM_URL+ "/student/join/"+ teamId+"&"+studentId;
-        connection = ServerConfig.getConnection(url);
-        assert connection != null;
-
-
-        BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-        String response = reader.readLine();
-        return response.equals(SUCCESSFUL);
-    }catch (Exception e){
-        e.printStackTrace();
-    }
-    return  false;
     }
 }

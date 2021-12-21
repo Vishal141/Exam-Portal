@@ -111,7 +111,10 @@ public class ScheduledExam implements Initializable {
                 if(diff<0)
                     upcomingExam.add(exam);
             }
-            addExamsToVBox(upcomingExam,"upcoming");
+            if(fromTeacher)
+                addExamsToVBox(upcomingExam,QUESTION_PAPER_PATH);
+            else
+                addExamsToVBox(upcomingExam,"upcoming");
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -129,7 +132,10 @@ public class ScheduledExam implements Initializable {
                 if(diff>0)
                     archivedExam.add(exam);
             }
-            addExamsToVBox(archivedExam,SUBMISSION_PATH);
+            if(fromTeacher)
+                addExamsToVBox(archivedExam,QUESTION_PAPER_PATH);
+            else
+                addExamsToVBox(archivedExam,SUBMISSION_PATH);
         }catch (Exception e){
             e.printStackTrace();
         }
