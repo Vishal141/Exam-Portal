@@ -3,14 +3,10 @@ package com.exam.portal.controllers;
 import com.exam.portal.entities.Exam;
 import com.exam.portal.entities.ExamResponse;
 import com.exam.portal.entities.ExamUpdate;
-import com.exam.portal.entities.Question;
+import com.exam.portal.entities.Image;
 import com.exam.portal.interfaces.ExamUtils;
-import com.exam.portal.proctor.FaceDetector;
+import com.exam.portal.proctor.Proctor;
 import com.exam.portal.services.ExamUtilsService;
-import org.opencv.core.Mat;
-import org.opencv.core.MatOfByte;
-import org.opencv.imgcodecs.Imgcodecs;
-import org.springframework.transaction.ReactiveTransaction;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,19 +34,12 @@ public class ExamUtilsController{
         return FAILED;
     }
 
-    @RequestMapping("/check-proctor")
-    public String checkProctor(){
-        FaceDetector detector = new FaceDetector();
-        if(detector.checkProctor())
+    @RequestMapping("/proctor/get")
+    public String getProctorResult(@RequestBody Image image){
+        Proctor proctor = Proctor.getInstance();
+        if(proctor.getResult(image))
             return SUCCESSFUL;
         return FAILED;
-    }
-
-    @RequestMapping("/detect-face/{image}")
-    public int detectFace(@PathVariable String image){
-        FaceDetector detector = new FaceDetector();
-        byte[] bytes = Base64.getDecoder().decode(image);
-        return detector.detectFace(bytes);
     }
 
     @RequestMapping("/scheduled-by/{teacherId}")
