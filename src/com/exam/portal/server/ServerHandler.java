@@ -8,9 +8,7 @@ import com.google.gson.reflect.TypeToken;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,7 +25,7 @@ public class ServerHandler implements Server{
 
     private static ServerHandler serverHandler=null;
 
-    private ServerHandler(){
+    public ServerHandler(){
         gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
     }
 
@@ -554,6 +552,47 @@ public class ServerHandler implements Server{
         }
 
         return update;
+    }
+
+    //sending message in team.
+    @Override
+    public  boolean sendMassage(Message newMassage){
+        try{
+            String url = TEAM_URL + "/send/message/";
+            connection = ServerConfig.getConnection(url);
+            assert connection != null;
+            String json = gson.toJson(newMassage);
+            writeJson(json);
+
+            BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            String response = reader.readLine();
+            return response.equals(SUCCESSFUL);
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    //fetching all messages sent in the team.
+    @Override
+    public ArrayList<Message> getMassages(String teamId){
+        ArrayList<Message>returnedMassages;
+        try{
+            teamId = teamId.substring(teamId.indexOf('#')+1);
+            String url=TEAM_URL + "get/all/messages/"+teamId;
+            connection=ServerConfig.getConnection(url);
+            assert connection!=null;
+
+            BufferedReader reader=new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            String response = reader.readLine();
+            returnedMassages = gson.fromJson(response,new TypeToken<List<Message>>(){}.getType());
+            return returnedMassages;
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
     }
 
     //method for writing object in request body
