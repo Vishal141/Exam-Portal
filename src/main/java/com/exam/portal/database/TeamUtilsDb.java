@@ -1,7 +1,9 @@
 package com.exam.portal.database;
 
 import com.exam.portal.entities.BelongTo;
+import com.exam.portal.entities.Message;
 import com.exam.portal.entities.Student;
+
 import com.exam.portal.entities.Team;
 import com.exam.portal.entities.TeamUpdate;
 
@@ -136,6 +138,51 @@ public class TeamUtilsDb {
         }
         return false;
     }
+  public boolean addMessage(Message message){
+      PreparedStatement preparedStatement=null;
+      String query = "INSERT INTO Massages values(?,?,?,?,?,?)";
+      try{
+          preparedStatement = connection.prepareStatement(query);
+          preparedStatement.setString(1, message.getMassageId());
+          preparedStatement.setString(2, message.getTeamId());
+          preparedStatement.setString(3, message.getSenderId());
+          preparedStatement.setString(4,message.getSenderName());
+          preparedStatement.setString(5, message.getMassage());
+          preparedStatement.setTimestamp(6,message.getDate());
+          preparedStatement.execute();
+          return true;
+      }catch(Exception e){
+          e.printStackTrace();
+      }
+
+      return false;
+  }
+
+  public  ArrayList<Message> getTeamMassage(String teamId){
+        PreparedStatement preparedStatement=null;
+        PreparedStatement preparedStatement1=null;
+        ArrayList<Message> messages=new ArrayList<>();
+      try{
+            String query="SELECT * FROM Messages WHERE TEAM_ID=?";
+            preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1,teamId);
+            ResultSet rs=preparedStatement.executeQuery();
+            while(rs.next()){
+                Message message = new Message();
+                message.setMassageId(rs.getString(1));
+                message.setTeamId(teamId);
+                message.setSenderId(rs.getString(3));
+                message.setSenderName(rs.getString(4));
+                message.setMassage(rs.getString(5));
+                message.setDate(rs.getTimestamp(6));
+                messages.add(message);
+            }
+            return messages;
+
+        }catch (Exception e){
+            e.printStackTrace();}
+        return messages;
+  }
 
     //selecting all student who are in the team with id teamId.
     public ArrayList<Student>  getStudents(String teamId){

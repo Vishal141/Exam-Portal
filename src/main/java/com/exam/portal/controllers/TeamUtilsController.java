@@ -1,10 +1,7 @@
 package com.exam.portal.controllers;
 
-import com.exam.portal.entities.BelongTo;
+import com.exam.portal.entities.*;
 
-import com.exam.portal.entities.Student;
-import com.exam.portal.entities.Team;
-import com.exam.portal.entities.TeamUpdate;
 import com.exam.portal.interfaces.TeamUtils;
 import com.exam.portal.services.TeamUtilsService;
 
@@ -14,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
-import java.util.List;
 
 @RestController
 @RequestMapping("/exam-portal/team-utilities")
@@ -72,6 +68,19 @@ public class TeamUtilsController {
         if(teamUtils.joinWithTeamId(teamId,studentId))
             return SUCCESSFUL;
         return FAILED;
+    }
+
+    @RequestMapping("/send/message")
+    public String addMessage(@RequestBody Message message){
+        if(teamUtils.addMessage(message))
+            return SUCCESSFUL;
+        return FAILED;
+    }
+
+    @RequestMapping("/get/all/messages/id={teamId}")
+    public ArrayList<Message> getTeamMessages(@PathVariable String teamId){
+        teamId = "Team#"+teamId;
+        return teamUtils.getTeamMessages(teamId);
     }
 
     @RequestMapping("/get/student/all/id={teamId}")

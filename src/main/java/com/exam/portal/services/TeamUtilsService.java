@@ -2,6 +2,7 @@ package com.exam.portal.services;
 
 import com.exam.portal.database.TeamUtilsDb;
 import com.exam.portal.entities.BelongTo;
+import com.exam.portal.entities.Message;
 import com.exam.portal.entities.Student;
 import com.exam.portal.entities.Team;
 import com.exam.portal.entities.TeamUpdate;
@@ -45,6 +46,12 @@ public class TeamUtilsService implements TeamUtils {
     public Team findTeamById(String id) {
         return teamUtilsDb.findTeamById(id);
     }
+
+    @Override
+    public boolean addMessage(Message message){return teamUtilsDb.addMessage(message);}
+
+    @Override
+    public ArrayList<Message> getTeamMessages(String teamId){return teamUtilsDb.getTeamMassage(teamId);}
 
     @Override
     public boolean joinWithTeamId(String teamId,String studentId){

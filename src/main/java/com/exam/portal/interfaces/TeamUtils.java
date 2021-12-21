@@ -1,6 +1,7 @@
 package com.exam.portal.interfaces;
 
 import com.exam.portal.entities.BelongTo;
+import com.exam.portal.entities.Message;
 import com.exam.portal.entities.Student;
 import com.exam.portal.entities.Team;
 import com.exam.portal.entities.TeamUpdate;
@@ -17,4 +18,6 @@ public interface TeamUtils {
     public Team findTeamById(String id);
     public boolean joinWithTeamId(String teamId,String studentId);
     public TeamUpdate checkTeamUpdate(TeamUpdate update);
+    public boolean addMessage(Message message);
+    public ArrayList<Message> getTeamMessages(String teamId);
 }
