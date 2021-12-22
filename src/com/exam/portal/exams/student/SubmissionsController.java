@@ -76,7 +76,7 @@ public class SubmissionsController implements Initializable {
             response = server.getStudentExamResponse(exam.getExamId(),StudentController.student.getStudentId());
             if(response==null)
                 response = new ExamResponse();
-            marks.setText(response.getMarks()+"/"+exam.getTotalMarks());
+            marks.setText(response.getMarks()+"/"+exam.getMaxScore());
             setResponses();
             setQuestion(exam.getQuestions().get(currQuestionIndex));
         });

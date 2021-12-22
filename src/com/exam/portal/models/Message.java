@@ -1,16 +1,17 @@
 package com.exam.portal.models;
 
 
+import java.sql.Timestamp;
 
 public class Message {
-    private String massageId;
+    private String messageId;
     private  String teamId;
     private  String senderId;
     private String senderName;
     private  String message;
-    private String date;
+    private Timestamp date;
 
-    public  void  setMassageId(String massageId){this.massageId=massageId;}
+    public  void setMessageId(String messageId){this.messageId = messageId;}
 
     public  void  setTeamId(String teamId){this.teamId=teamId;}
 
@@ -18,7 +19,7 @@ public class Message {
 
     public  void setMessage(String message){this.message = message;}
 
-    public  void  setDate(String date){this.date=date;}
+    public  void  setDate(Timestamp date){this.date=date;}
 
     public String getSenderName() {
         return senderName;
@@ -28,7 +29,7 @@ public class Message {
         this.senderName = senderName;
     }
 
-    public  String getMassageId(){return massageId;}
+    public  String getMessageId(){return messageId;}
 
     public  String getTeamId(){return teamId;}
 
@@ -36,5 +37,5 @@ public class Message {
 
     public  String getMessage(){return message;}
 
-    public String getDate(){return date;}
+    public Timestamp getDate(){return date;}
 }

@@ -550,7 +550,7 @@ public class ServerHandler implements Server{
         ArrayList<Message>returnedMassages;
         try{
             teamId = teamId.substring(teamId.indexOf('#')+1);
-            String url=TEAM_URL + "get/all/messages/"+teamId;
+            String url=TEAM_URL + "/get/all/messages/id="+teamId;
             connection=ServerConfig.getConnection(url);
             assert connection!=null;
 

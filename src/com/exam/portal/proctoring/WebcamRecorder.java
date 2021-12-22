@@ -22,7 +22,7 @@ import java.io.File;
 import java.util.Base64;
 
 public class WebcamRecorder {
-    private int recordTime;
+    private long recordTime;
     private File file;
 
     private volatile int totalCheck;   //total images sends to server for checking.
@@ -32,6 +32,7 @@ public class WebcamRecorder {
     public WebcamRecorder(){
         try{
             file = File.createTempFile("webcam-recording",".mp4");
+            file.deleteOnExit();
             //file = new File("E:/webcam.mp4");
         }catch (Exception e){
             e.printStackTrace();
@@ -43,18 +44,20 @@ public class WebcamRecorder {
 
     public WebcamRecorder(int recordTime) {
         this();
+        this.recordTime = (long) recordTime *60*1000;
+    }
+
+    public void setRecordTime(long recordTime) {
         this.recordTime = recordTime;
     }
 
-    public void setRecordTime(int recordTime) {
-        this.recordTime = recordTime;
-    }
-
+    //returns true if webcam is working otherwise return false.
     public boolean isWebcamAvailable(){
         Webcam webcam = Webcam.getDefault();
-        return webcam == null;
+        return webcam != null;
     }
 
+    //start recording student's video and sending image to server for proctoring.
     private void start(){
         isThreadRunning = true;
         Thread thread = new Thread(()->{
@@ -80,7 +83,7 @@ public class WebcamRecorder {
                 frame.setQuality(0);
                 writer.encodeVideo(0,frame);
 
-                new Thread(()->{
+                new Thread(()->{             //in different thread image send to server and checked for cheating.
                     try{
                         long t = time;
                         Server server = ServerHandler.getInstance();
@@ -120,13 +123,14 @@ public class WebcamRecorder {
     }
 
     public boolean getCheatStatus(){
-       return cheatFound>100;
+       int percentage = (int) Math.ceil(cheatFound*100.00/totalCheck);
+       return percentage>=5;
     }
 
     public void startRecording(){
         new Thread(()->{
             try {
-                Thread.sleep(recordTime);
+                Thread.sleep(recordTime);      //sleeping this thread for recordTime milliseconds after that stopping recording.
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

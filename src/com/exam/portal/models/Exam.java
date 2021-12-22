@@ -10,6 +10,8 @@ public class Exam {
     private String examDate;
     private String time;
     private String duration;
+    private int count;
+    private double maxScore;
 
     private ArrayList<Question> questions;
 
@@ -81,6 +83,21 @@ public class Exam {
         this.questions = questions;
     }
 
+    public int getCount(){
+        return count;
+    }
+    public void setCount(int count) {
+        this.count = count;
+    }
+
+    public double getMaxScore() {
+        return maxScore;
+    }
+
+    public void setMaxScore(double maxScore) {
+        this.maxScore = maxScore;
+    }
+
     public void addQuestion(Question question){
         question.setQuestionId(questions.size()+"");
         question.setExamId(this.examId);
@@ -107,12 +124,5 @@ public class Exam {
         if(questions.size()==0)
             return null;
         return questions.get(questions.size()-1);
-    }
-
-    public double getTotalMarks(){
-        double total=0.0;
-        for(Question question:this.getQuestions())
-            total += question.getPoint();
-        return total;
     }
 }

@@ -1,5 +1,6 @@
 package com.exam.portal.exams.scheduled;
 
+import com.exam.portal.exams.student.InstructionController;
 import com.exam.portal.models.Exam;
 import com.exam.portal.models.Team;
 import com.exam.portal.server.Server;
@@ -24,8 +25,9 @@ import java.util.Date;
 import java.util.ResourceBundle;
 
 public class ScheduledExam implements Initializable {
-    private static final String QUESTION_PAPER_PATH = "../student/questionPaper.fxml";
-    private static final String SUBMISSION_PATH = "../student/submissions.fxml";
+    public static final String QUESTION_PAPER_PATH = "../student/questionPaper.fxml";
+    public static final String SUBMISSION_PATH = "../student/submissions.fxml";
+    public static final String INSTRUCTIONS_PATH = "../student/instructions.fxml";
 
     @FXML
     VBox vBox;
@@ -93,7 +95,11 @@ public class ScheduledExam implements Initializable {
                 if(diff>=0 && diff<milli)
                     activeExam.add(exam);
             }
-            addExamsToVBox(activeExam,QUESTION_PAPER_PATH);
+            if(fromTeacher)
+                addExamsToVBox(activeExam,QUESTION_PAPER_PATH);
+            else
+                addExamsToVBox(activeExam,INSTRUCTIONS_PATH);
+            InstructionController.status = "active";
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -114,7 +120,8 @@ public class ScheduledExam implements Initializable {
             if(fromTeacher)
                 addExamsToVBox(upcomingExam,QUESTION_PAPER_PATH);
             else
-                addExamsToVBox(upcomingExam,"upcoming");
+                addExamsToVBox(upcomingExam,INSTRUCTIONS_PATH);
+            InstructionController.status = "upcoming";
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -136,6 +143,7 @@ public class ScheduledExam implements Initializable {
                 addExamsToVBox(archivedExam,QUESTION_PAPER_PATH);
             else
                 addExamsToVBox(archivedExam,SUBMISSION_PATH);
+            InstructionController.status = "archived";
         }catch (Exception e){
             e.printStackTrace();
         }

@@ -14,12 +14,10 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontPosture;
-import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 
 import java.net.URL;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.ResourceBundle;
@@ -83,11 +81,11 @@ public class SelectTeamTeacherController implements Initializable {
             alert.showAndWait();
         }else{
             Message newMassage=new Message();
-            newMassage.setMessage(generateId());
+            newMassage.setMessageId(generateId());
             newMassage.setTeamId(team.getTeamId());
             newMassage.setSenderId(TeacherController.teacher.getTeacherId());
             newMassage.setMessage(tfMassage.getText());
-            newMassage.setDate(String.valueOf(new Date()));
+            newMassage.setDate(new Timestamp(new Date().getTime()));
 
             Server server = ServerHandler.getInstance();
             if(server.sendMassage(newMassage))
@@ -95,7 +93,7 @@ public class SelectTeamTeacherController implements Initializable {
                 Alert alert=new Alert(Alert.AlertType.INFORMATION);
                 alert.setHeaderText(null);
                 alert.setTitle("Status");
-                alert.setContentText("massage sent succesfully");
+                alert.setContentText("massage sent successfully");
                 alert.showAndWait();
             }
             else{
@@ -109,21 +107,15 @@ public class SelectTeamTeacherController implements Initializable {
     }
 
     private void loadCurrentMassages(){
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while(true) {
-                    try{
-                   //System.out.println("Thread is doing something");
-                        fetchMassages();
-                    Thread.sleep(5000);
-                }catch(Exception e){
-                        e.printStackTrace();
-                    }
+        new Thread(() -> {
+            while(true) {
+                try{
+                    fetchMassages();
+                Thread.sleep(10000);
+            }catch(Exception e){
+                    e.printStackTrace();
                 }
             }
-
         }).start();
     }
 
@@ -136,10 +128,12 @@ public class SelectTeamTeacherController implements Initializable {
            setMassages();
         });
     }
+
     private  void setMassages(){
+        listViewofMassages.getItems().clear();
       for( Message message:returnedMassages){
           Label label=new Label();
-          String msg = message.getMessage() + " : " + message.getMessage();
+          String msg = message.getSenderName() + " : " + message.getMessage();
           label.setText(msg);
           label.autosize();
           label.setMaxWidth(500);

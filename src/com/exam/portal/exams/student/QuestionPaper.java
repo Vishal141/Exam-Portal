@@ -2,6 +2,8 @@ package com.exam.portal.exams.student;
 
 import com.exam.portal.exams.scheduled.ScheduledExam;
 import com.exam.portal.models.*;
+import com.exam.portal.proctoring.ProcessesDetails;
+import com.exam.portal.proctoring.WebcamRecorder;
 import com.exam.portal.server.Server;
 import com.exam.portal.server.ServerHandler;
 
@@ -59,6 +61,8 @@ public class QuestionPaper implements Initializable {
     private int currQuestionIndex; //index of questions which is currently showing.
     private volatile boolean runTimer;
 
+    private WebcamRecorder recorder;
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         testTitle.setText(exam.getTitle());
@@ -75,10 +79,13 @@ public class QuestionPaper implements Initializable {
         }else {
             studentName.setText(StudentController.student.getName());
 
-            //setting screen to full scree
+            //setting screen to full screen
             Stage stage = (Stage) timer.getScene().getWindow();
             stage.setFullScreen(true);
             stage.setResizable(false);
+
+            //initializing webcam recorder.
+            recorder = new WebcamRecorder(Integer.parseInt(exam.getDuration()));
         }
     }
 
@@ -91,8 +98,13 @@ public class QuestionPaper implements Initializable {
                 exam = new Exam();
                 exam.setQuestions(new ArrayList<>());
             }else if(exam.getQuestions().size()>0){
-                startTimer();
                 setQuestion(exam.getQuestions().get(0));
+
+                if(!ScheduledExam.fromTeacher){
+                    startTimer();
+                    recorder.startRecording();          //start capturing student's images.
+                    checkCheatStatus();            //monitoring captured image status and number of applications opened.
+                }
             }
         });
     }
@@ -154,6 +166,37 @@ public class QuestionPaper implements Initializable {
         };
 
         new Thread(task).start();
+    }
+
+    //function which check student's cheat status in certain intervals
+    private void checkCheatStatus(){
+        ProcessesDetails processesDetails = new ProcessesDetails();
+        new Thread(()->{
+           try {
+               int cheatCount = 0;    //showing warning to student 3 times if cheating found then after close exam without submitting.
+               while (runTimer){
+                   if(recorder.getCheatStatus()){
+                       if(cheatCount==3 || processesDetails.getProcessesCount()!=1){  //checking that cheatCount cross the limit or
+                           Platform.runLater(()->{                                    //any other application has opened.
+                               runTimer = false;
+                               recorder.finish();
+                               backToExams();
+                           });
+                       }else{
+                           String msg = "It has been detected that you are cheating in the exam.\nDo not repeat it again otherwise " +
+                                   "you will be automatically logged out from exam.";
+                           Platform.runLater(()->{
+                               showAlert(Alert.AlertType.WARNING,"Cheating found",msg);
+                           });
+                       }
+                       cheatCount++;
+                   }
+                   Thread.sleep(5000);
+               }
+           }catch (Exception e){
+               e.printStackTrace();
+           }
+        }).start();
     }
 
     //display a specific question in the list.
@@ -267,6 +310,8 @@ public class QuestionPaper implements Initializable {
     //submit and end the test.
     public void submitTest(ActionEvent event){
         runTimer = false;
+        recorder.finish();     //stop capturing student's images.
+
         //if current question is subjective than saving response in textarea.
         Question question = exam.getQuestions().get(currQuestionIndex);
         if(question.getQuestionType()==SUBJECTIVE){
@@ -365,7 +410,6 @@ public class QuestionPaper implements Initializable {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 
 }

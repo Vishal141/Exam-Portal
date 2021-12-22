@@ -22,6 +22,7 @@ import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 
 import java.net.URL;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.ResourceBundle;
@@ -116,7 +117,7 @@ public class SelectTeamStudentController implements Initializable {
             newMassage.setTeamId(currentTeam.getTeamId());
             newMassage.setSenderId(student.getStudentId());
             newMassage.setMessage(tfMassage.getText());
-            newMassage.setDate(String.valueOf(new Date()));
+            newMassage.setDate(new Timestamp(new Date().getTime()));
 
             Server server = ServerHandler.getInstance();
         }

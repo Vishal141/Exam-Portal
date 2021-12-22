@@ -1,5 +1,6 @@
 package com.exam.portal.exams.scheduled;
 
+import com.exam.portal.exams.student.InstructionController;
 import com.exam.portal.exams.student.QuestionPaper;
 import com.exam.portal.exams.student.SubmissionsController;
 import com.exam.portal.models.Exam;
@@ -70,9 +71,8 @@ public class ExamItem {
             @Override
             public void handle(MouseEvent mouseEvent) {
                 try {
-                    if (path.equals("upcoming"))
-                        return;
                     QuestionPaper.exam = exam;
+                    InstructionController.exam = exam;
                     SubmissionsController.exam = exam;
                     Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource(path)));
                     Scene scene = new Scene(root, 600, 600);
