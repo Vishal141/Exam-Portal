@@ -25,7 +25,7 @@ public class ExamUtilsDb {
     //creates a new exam in the team and return true if successfully created otherwise returns false.
     public boolean createExam(Exam exam){
         PreparedStatement preparedStatement=null;
-        String query = "INSERT INTO Exams VALUES (?,?,?,?,?,?,?,?)";
+        String query = "INSERT INTO Exams VALUES (?,?,?,?,?,?,?,?,?,?)";
         try{
             preparedStatement = connection.prepareStatement(query);
             preparedStatement.setString(1,exam.getExamId());
@@ -36,6 +36,8 @@ public class ExamUtilsDb {
             preparedStatement.setTime(6,exam.getTime());
             preparedStatement.setInt(7,Integer.parseInt(exam.getDuration()));
             preparedStatement.setTimestamp(8,new Timestamp(new Date().getTime()));
+            preparedStatement.setInt(9,exam.getQuestionCount());
+            preparedStatement.setDouble(10,exam.getMaxScore());
             preparedStatement.execute();
             return true;
         }catch(Exception e){
@@ -234,6 +236,8 @@ public class ExamUtilsDb {
         exam.setExamDate(rs.getDate(5));
         exam.setTime(rs.getTime(6));
         exam.setDuration(rs.getInt(7)+"");
+        exam.setQuestionCount(rs.getInt(9));
+        exam.setMaxScore(rs.getDouble(10));
         return  exam;
     }
 
@@ -287,7 +291,7 @@ public class ExamUtilsDb {
                 option.setQuestionId(rs.getString(2));
                 option.setIndex(rs.getString(3));
                 option.setIsImage(rs.getBoolean(4));
-                option.setIsCorrect(rs.getBoolean(6));
+                option.setCorrect(rs.getBoolean(6));
                 if(option.isImage())
                     option.setFile(getImage(rs.getString(5)));  //encoding image as string and setting it.
                 else
@@ -322,6 +326,8 @@ public class ExamUtilsDb {
 
     //creating a single response string by concatenating all responses and separating by "|;
     private String getResponse(ArrayList<QuestionResponse> responses){
+        if(responses==null || responses.size()==0)
+            return "";
         StringBuilder response = new StringBuilder();
         for(QuestionResponse questionResponse:responses){
             if(questionResponse.getResponseType().equals(OPTIONS))

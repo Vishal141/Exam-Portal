@@ -16,103 +16,52 @@ public class Proctor {
     private static final String API_KEY = "acc_0509d1b79051d66";
     private static final String API_SECRET = "c2b18824b72e63d25249bccdafbe5d1b";
 
-    private static Proctor proctor = null;
-
-    private Proctor(){}
-
-    public static Proctor getInstance(){
-        if(proctor==null)
-            proctor = new Proctor();
-        return proctor;
-    }
-
     //returns true if  there is no content in image which signifies cheating.
     public boolean getResult(Image image){
-        String imageUploadId = uploadFile(image);
-        return (faceResult(imageUploadId)&&objectResult(imageUploadId));
+        if(!faceResult(image))
+            return false;
+        image.setStudentId(image.getStudentId()+"1");
+        return objectResult(image);
     }
 
     //return true if there is only single face in the image
-    private boolean faceResult(String imageUploadId){
+    private boolean faceResult(Image image){
         try {
-            String credentialsToEncode = API_KEY + ":" + API_SECRET;
-            String basicAuth = Base64.getEncoder().encodeToString(credentialsToEncode.getBytes(StandardCharsets.UTF_8));
-
-            String endpoint_url = "https://api.imagga.com/v2/faces/detections";
-
-            String url = endpoint_url + "?image_upload_id=" + imageUploadId;
-            URL urlObject = new URL(url);
-            HttpURLConnection connection = (HttpURLConnection) urlObject.openConnection();
-            connection.setRequestProperty("Authorization", "Basic " + basicAuth);
-            int responseCode = connection.getResponseCode();
-            System.out.println("\nSending 'GET' request to URL : " + url);
-            System.out.println("Response Code : " + responseCode);
-            BufferedReader connectionInput = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-            String jsonResponse = connectionInput.readLine();
-            connectionInput.close();
-
-            System.out.println(jsonResponse);
+            String response = getResponse("/faces/detections",image);
+           // System.out.println(response);
             Gson gson = new Gson();
-            FaceDetectionResponse response = gson.fromJson(jsonResponse,FaceDetectionResponse.class);
-
-            //checking number of faces.
-            return response.getResult().getFaces().size()==1;
-
+            FaceDetectionResponse faceDetectionResponse = gson.fromJson(response,FaceDetectionResponse.class);
+            if(faceDetectionResponse.getResult().getFaces().size() != 1)
+                return false;
         }catch (Exception e){
             e.printStackTrace();
         }
+
         return true;
     }
 
     //check all the tags of image and there is tag like mobile,laptop then there may be chance of cheating.
-    private boolean objectResult(String imageUploadId){
-        try {
-            String credentialsToEncode = API_KEY + ":" + API_SECRET;
-            String basicAuth = Base64.getEncoder().encodeToString(credentialsToEncode.getBytes(StandardCharsets.UTF_8));
-
-            String endpoint_url = "https://api.imagga.com/v2/tags";
-            String image_url = "https://imagga.com/static/images/tagging/wind-farm-538576_640.jpg";
-
-            String url = endpoint_url + "?image_upload_id=" + imageUploadId;
-            URL urlObject = new URL(url);
-            HttpURLConnection connection = (HttpURLConnection) urlObject.openConnection();
-
-            connection.setRequestProperty("Authorization", "Basic " + basicAuth);
-
-            int responseCode = connection.getResponseCode();
-
-            System.out.println("\nSending 'GET' request to URL : " + url);
-            System.out.println("Response Code : " + responseCode);
-
-            BufferedReader connectionInput = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-            String jsonResponse = connectionInput.readLine();
-            connectionInput.close();
-
-            System.out.println(jsonResponse);
+    private boolean objectResult(Image image){
+        try{
+            String response = getResponse("/tags",image);
+          //  System.out.println(response);
             Gson gson = new Gson();
-            TagDetectionResponse response = gson.fromJson(jsonResponse, TagDetectionResponse.class);
-
-            //checking tags.
-            for(Tags tags:response.getResult().getTags()){
+            TagDetectionResponse tagDetectionResponse = gson.fromJson(response,TagDetectionResponse.class);
+            for(Tags tags:tagDetectionResponse.getResult().getTags()){
                 String tag = tags.getTag().getEn().toLowerCase();
-                if((tag.equals("mobile") || tag.equals("laptop")) && tags.getConfidence()>=15)
+                if((tag.equals("mobile") || tag.equals("laptop")))
                     return false;
             }
-
         }catch (Exception e){
             e.printStackTrace();
         }
-
         return true;
     }
 
-    //upload the image on the api server and return an unique image which expire in 5 seconds.
-    private String uploadFile(Image image){
+    private String getResponse(String endpoint,Image image){
         try{
             String credentialsToEncode = API_KEY + ":" +API_SECRET;
             String basicAuth = Base64.getEncoder().encodeToString(credentialsToEncode.getBytes(StandardCharsets.UTF_8));
-
-            String endpoint = "/tags";
 
             String crlf = "\r\n";
             String twoHyphens = "--";
@@ -155,7 +104,7 @@ public class Proctor {
             responseStreamReader.close();
 
             String response = stringBuilder.toString();
-            System.out.println(response);
+            // System.out.println(response);
 
             responseStream.close();
             connection.disconnect();
@@ -164,7 +113,7 @@ public class Proctor {
         }catch (Exception e){
             e.printStackTrace();
         }
-
         return null;
     }
+
 }

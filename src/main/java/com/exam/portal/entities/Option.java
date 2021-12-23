@@ -9,8 +9,8 @@ public class Option {
     private String text;
     private String file;
 
-    private boolean isCorrect;
-    private boolean isSelected;
+    private boolean correct;
+    private boolean selected;
 
     public Option(){}
 
@@ -63,18 +63,18 @@ public class Option {
     }
 
     public boolean isCorrect() {
-        return isCorrect;
+        return correct;
     }
 
-    public void setIsCorrect(boolean correct) {
-        isCorrect = correct;
+    public void setCorrect(boolean correct) {
+        this.correct = correct;
     }
 
     public boolean isSelected() {
-        return isSelected;
+        return selected;
     }
 
-    public void setIsSelected(boolean selected) {
-        isSelected = selected;
+    public void setSelected(boolean selected) {
+        this.selected = selected;
     }
 }

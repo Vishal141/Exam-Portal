@@ -51,7 +51,7 @@ public class TeamUtilsService implements TeamUtils {
     public boolean addMessage(Message message){return teamUtilsDb.addMessage(message);}
 
     @Override
-    public ArrayList<Message> getTeamMessages(String teamId){return teamUtilsDb.getTeamMassage(teamId);}
+    public ArrayList<Message> getTeamMessages(String teamId){return teamUtilsDb.getTeamMessage(teamId);}
 
     @Override
     public boolean joinWithTeamId(String teamId,String studentId){

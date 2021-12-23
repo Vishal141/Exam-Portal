@@ -36,7 +36,7 @@ public class ExamUtilsController{
 
     @RequestMapping("/proctor/get")
     public String getProctorResult(@RequestBody Image image){
-        Proctor proctor = Proctor.getInstance();
+        Proctor proctor = new Proctor();
         if(proctor.getResult(image))
             return SUCCESSFUL;
         return FAILED;

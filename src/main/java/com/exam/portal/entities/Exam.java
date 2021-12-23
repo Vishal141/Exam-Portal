@@ -12,6 +12,8 @@ public class Exam {
     private Date examDate;
     private Time time;
     private String duration;
+    private int questionCount;
+    private double maxScore;
 
     private ArrayList<Question> questions;
 
@@ -81,5 +83,21 @@ public class Exam {
 
     public void setQuestions(ArrayList<Question> questions) {
         this.questions = questions;
+    }
+
+    public int getQuestionCount() {
+        return questionCount;
+    }
+
+    public void setQuestionCount(int questionCount) {
+        this.questionCount = questionCount;
+    }
+
+    public double getMaxScore() {
+        return maxScore;
+    }
+
+    public void setMaxScore(double maxScore) {
+        this.maxScore = maxScore;
     }
 }
