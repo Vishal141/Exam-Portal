@@ -7,6 +7,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
@@ -15,28 +16,32 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class Controller implements Initializable {
-
     @FXML
-    public Button loginBtn;
+    Image imageView;
+    @FXML
+    AnchorPane anchorPane;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
+        new Thread(()->{
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            Platform.runLater(()->{
                 try {
-                    Thread.sleep(1000);
                     moveToLogin();
-                } catch (Exception e) {
+                } catch (IOException e) {
                     e.printStackTrace();
                 }
-            }
-        });
+            });
+        }).start();
     }
 
     private void moveToLogin() throws IOException {
-        Stage primaryStage = (Stage) loginBtn.getScene().getWindow();
-        Parent root = FXMLLoader.load(getClass().getResource("Login/Login.fxml"));
+        Stage primaryStage = (Stage) anchorPane.getScene().getWindow();
+        Parent root = FXMLLoader.load(getClass().getResource("login/login.fxml"));
         primaryStage.setTitle("Login");
         primaryStage.setScene(new Scene(root, 700,500));
         primaryStage.show();

@@ -20,7 +20,6 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
-import java.io.File;
 import java.math.BigInteger;
 import java.net.URL;
 import java.security.MessageDigest;
@@ -72,10 +71,11 @@ public class StudentController implements Initializable {
     public void coursesClicked(ActionEvent actionEvent) {
     }
 
-    public void complainClicked(ActionEvent actionEvent) {
+    //logging out student.
+    public void logout(ActionEvent actionEvent) {
+        String path = "../login/login.fxml";
+        changeStage(path,"Login",600,600);
     }
-    @FXML
-    private JFXButton directJoinBtn;
 
     public void gotoJoinTeam(ActionEvent actionEvent) {
         String path = "joinWithId.fxml";
@@ -85,11 +85,14 @@ public class StudentController implements Initializable {
     //create a new stage and show it.
     public void changeStage(String path,String title,int width,int height){
         try {
-            Stage stage = new Stage();
+            Stage stage;
+            if(title.equals("Join with Team ID") || title.equals("Edit Details"))
+                stage = new Stage();
+            else
+                stage = (Stage) lblName.getScene().getWindow();
             Parent parent = FXMLLoader.load(getClass().getResource(path));
             stage.setTitle(title);
             stage.setScene(new Scene(parent,width,height));
-            stage.initStyle(StageStyle.DECORATED);
             stage.show();
         }catch (Exception e){
             e.printStackTrace();
@@ -140,6 +143,7 @@ public class StudentController implements Initializable {
             });
         }
     }
+
 
     //generate md5 hash value using given text.
     private String getHash(String text){

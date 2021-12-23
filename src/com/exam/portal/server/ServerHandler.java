@@ -568,7 +568,7 @@ public class ServerHandler implements Server{
     //method for writing object in request body
     private void writeJson(String json){
         try {
-            System.out.println(json);
+            //System.out.println(json);
             connection.setFixedLengthStreamingMode(json.length());
             OutputStream os = connection.getOutputStream();
             os.write(json.getBytes());

@@ -33,7 +33,8 @@
                <Font name="System Bold Italic" size="14.0" />
             </font>
          </Label>
-         <JFXButton layoutX="442.0" layoutY="25.0" onAction="#joinTeam" prefHeight="26.0" prefWidth="101.0" stylesheets="@../cssFiles/style.css" text="Join a Team" textFill="#f0ebeb" />
+         <JFXButton layoutX="369.0" layoutY="23.0" onAction="#joinTeam" prefHeight="26.0" prefWidth="101.0" stylesheets="@../cssFiles/style.css" text="Join a Team" textFill="#f0ebeb" />
+         <JFXButton layoutX="493.0" layoutY="22.0" onAction="#back" prefHeight="27.0" prefWidth="70.0" stylesheets="@../cssFiles/style.css" text="Back" textFill="#f0ebeb" />
       </AnchorPane>
    </top>
 </BorderPane>

@@ -100,7 +100,7 @@ public class SubmissionsController implements Initializable {
 
     @FXML
     void nextQuestion(ActionEvent event) {
-        if(currQuestionIndex<exam.getQuestionCount()-1){
+        if(currQuestionIndex<exam.getCurrentQuestionCount()-1){
             currQuestionIndex++;
             questionList.getItems().clear();
             setQuestion(exam.getQuestions().get(currQuestionIndex));

@@ -127,7 +127,7 @@ public class SelectTeamStudentController implements Initializable {
         try{
             Stage stage = (Stage) btnSend.getScene().getWindow();
             ShowAllStudents.fromTeacher = false;
-            Parent root = FXMLLoader.load(getClass().getResource("showAllStudent.fxml"));
+            Parent root = FXMLLoader.load(getClass().getResource("showAllStudents.fxml"));
             stage.setTitle("All students");
             stage.setScene(new Scene(root,600,600));
             stage.show();

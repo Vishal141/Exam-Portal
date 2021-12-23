@@ -16,7 +16,10 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.paint.Color;
@@ -28,6 +31,7 @@ import javafx.stage.Stage;
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class AddStudentController implements Initializable {
@@ -68,6 +72,7 @@ public class AddStudentController implements Initializable {
     }
 
     //searching for student using text entered by teacher.
+    @FXML
     public void search(ActionEvent actionEvent){
         Platform.runLater(() -> {
             if(searchText.getText().equals("")){     //checking that teacher has entered any text or not.
@@ -90,6 +95,7 @@ public class AddStudentController implements Initializable {
     }
 
     //send student and teacher details to server for adding student in team.
+    @FXML
     public void addStudent(ActionEvent actionEvent){
         if(searchResultList.getSelectionModel().isEmpty() || selectedTeam.getSelectionModel().isEmpty()){
             showAlert("Please select student from list or team from team list.","Warning", Alert.AlertType.WARNING);
@@ -108,13 +114,25 @@ public class AddStudentController implements Initializable {
             Platform.runLater(()->{
                 if(server.addStudent(belongTo)){    //sending add student request to server.
                     showAlert("Student successfully added to team","Successful", Alert.AlertType.INFORMATION);
-                    Stage stage = (Stage) searchText.getScene().getWindow();
-                    stage.close();
+                    back(actionEvent);
                 }else{
                     String message = "Not able to add student in this team.\nMay be student already exist in this team.";
                     showAlert(message,"Warning", Alert.AlertType.WARNING);
                 }
             });
+        }
+    }
+
+    @FXML
+    public void back(ActionEvent event){
+        try {
+            Stage stage = (Stage) searchText.getScene().getWindow();
+            Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("../teacher/teacherDashboard.fxml")));
+            stage.setTitle("Exam Portal");
+            stage.setScene(new Scene(root,600,600));
+            stage.show();
+        }catch (Exception e){
+            e.printStackTrace();
         }
     }
 

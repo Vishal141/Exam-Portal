@@ -15,6 +15,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 
 import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
@@ -22,6 +24,7 @@ import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class ScheduledExam implements Initializable {
@@ -149,28 +152,20 @@ public class ScheduledExam implements Initializable {
         }
     }
 
-    //compare dates.
-    private boolean after(Date examDate,String time,int duration){
-        Date date = new Date();
-        if(date.after(examDate))
-            return false;
-        if(date.before(examDate))
-            return true;
-        int h = Integer.parseInt(time.substring(0,1));
-        int m = Integer.parseInt(time.substring(3,4));
-        h += duration/60;
-        duration = duration%60;
-        m += duration;
-        h += m/60;
-        m = m%60;
-        if(date.getHours()>h)
-            return true;
-        if(date.getDate()<h)
-            return false;
-        return date.getMinutes()>m;
-    }
-
-    private long getTimeDiff(long millis){
-        return System.currentTimeMillis()-millis;
+    @FXML
+    public void back(ActionEvent event){
+        try {
+            Stage stage = (Stage) vBox.getScene().getWindow();
+            Parent root;
+            if(fromTeacher)
+                root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("../../teacher/teacherDashboard.fxml")));
+            else
+                root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("../../student/studentDashboard.fxml")));
+            stage.setScene(new Scene(root,600,600));
+            stage.setTitle("Exam Portal");
+            stage.show();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 }

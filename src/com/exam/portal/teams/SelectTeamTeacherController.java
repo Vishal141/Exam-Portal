@@ -47,7 +47,7 @@ public class SelectTeamTeacherController implements Initializable {
     @FXML
     Button btnSend;
     @FXML
-    private ListView<Label> listViewofMassages;
+    private ListView<Label> messageList;
 
     private ArrayList<Message> returnedMassages;
 
@@ -57,19 +57,30 @@ public class SelectTeamTeacherController implements Initializable {
         loadCurrentMassages();
     }
 
-    @FXML
-    void addStudent(ActionEvent event) {
-        String path = "addStudent.fxml";
-        changeStage(path,"Add Student",600,650);
+    //fetching all messages from server.
+    private void fetchMassages(){
+        Platform.runLater(()->{
+            Server server = new ServerHandler().getInstance();
+            returnedMassages = server.getMassages(team.getTeamId());
+            if(returnedMassages==null)
+                returnedMassages=new ArrayList<>();
+            setMassages();
+        });
     }
 
-    @FXML
-    void goBack(ActionEvent event) {
-        String path = "teams.fxml";
-        changeStage(path,"Teams",700,600);
+    //fetching all the messages after certain interval.
+    private void loadCurrentMassages(){
+        new Thread(() -> {
+            while(true) {
+                try{
+                    fetchMassages();
+                    Thread.sleep(10000);
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
+            }
+        }).start();
     }
-
-
 
     @FXML
     void send(ActionEvent event) {
@@ -84,6 +95,7 @@ public class SelectTeamTeacherController implements Initializable {
             newMassage.setMessageId(generateId());
             newMassage.setTeamId(team.getTeamId());
             newMassage.setSenderId(TeacherController.teacher.getTeacherId());
+            newMassage.setSenderName(TeacherController.teacher.getName());
             newMassage.setMessage(tfMassage.getText());
             newMassage.setDate(new Timestamp(new Date().getTime()));
 
@@ -106,31 +118,8 @@ public class SelectTeamTeacherController implements Initializable {
         }
     }
 
-    private void loadCurrentMassages(){
-        new Thread(() -> {
-            while(true) {
-                try{
-                    fetchMassages();
-                Thread.sleep(10000);
-            }catch(Exception e){
-                    e.printStackTrace();
-                }
-            }
-        }).start();
-    }
-
-    private void fetchMassages(){
-        Platform.runLater(()->{
-           Server server = new ServerHandler().getInstance();
-          returnedMassages = server.getMassages(team.getTeamId());
-          if(returnedMassages==null)
-              returnedMassages=new ArrayList<>();
-           setMassages();
-        });
-    }
-
     private  void setMassages(){
-        listViewofMassages.getItems().clear();
+        messageList.getItems().clear();
       for( Message message:returnedMassages){
           Label label=new Label();
           String msg = message.getSenderName() + " : " + message.getMessage();
@@ -141,7 +130,7 @@ public class SelectTeamTeacherController implements Initializable {
          // label.setFont(font);
           label.setStyle("-fx-background-color: DarkSlateGrey");
           label.setStyle("-fx-border-color: black");
-          listViewofMassages.getItems().add(label);
+          messageList.getItems().add(label);
 
       }
     }
@@ -149,6 +138,18 @@ public class SelectTeamTeacherController implements Initializable {
     private String generateId(){
         String uniqueId = UUID.randomUUID().toString();
         return uniqueId;
+    }
+
+    @FXML
+    void addStudent(ActionEvent event) {
+        String path = "addStudent.fxml";
+        changeStage(path,"Add Student",600,650);
+    }
+
+    @FXML
+    void goBack(ActionEvent event) {
+        String path = "teams.fxml";
+        changeStage(path,"Teams",700,600);
     }
 
     @FXML

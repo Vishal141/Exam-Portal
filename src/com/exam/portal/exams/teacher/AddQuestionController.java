@@ -3,10 +3,12 @@ package com.exam.portal.exams.teacher;
 import com.exam.portal.models.Option;
 import com.exam.portal.models.Question;
 import com.jfoenix.controls.*;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.print.PageLayout;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -169,7 +171,9 @@ public class AddQuestionController implements Initializable {
                     Option option = question.getLastQuestion();
                     Label label = new Label();
                     label.setText(option.getText());
-                    options.getItems().add(label);
+                    Platform.runLater(()->{
+                        options.getItems().add(label);
+                    });
                     optionCount = question.getOptionCount();
                 }else{
                     try {

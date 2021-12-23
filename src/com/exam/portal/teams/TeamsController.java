@@ -43,9 +43,6 @@ public class TeamsController implements Initializable {
     Button btnManageTeams;
 
     @FXML
-    Button btnJoinWId;
-
-    @FXML
     Button btnCreateNewTeam;
 
     @FXML

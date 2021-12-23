@@ -78,14 +78,6 @@ public class QuestionPaper implements Initializable {
             timer.setVisible(false);
         }else {
             studentName.setText(StudentController.student.getName());
-
-            //setting screen to full screen
-            Stage stage = (Stage) timer.getScene().getWindow();
-            stage.setFullScreen(true);
-            stage.setResizable(false);
-
-            //initializing webcam recorder.
-            recorder = new WebcamRecorder(Integer.parseInt(exam.getDuration()));
         }
     }
 
@@ -102,6 +94,7 @@ public class QuestionPaper implements Initializable {
 
                 if(!ScheduledExam.fromTeacher){
                     startTimer();
+                    recorder = new WebcamRecorder(Integer.parseInt(exam.getDuration())); //initializing webcam recorder.
                     recorder.startRecording();          //start capturing student's images.
                     checkCheatStatus();            //monitoring captured image status and number of applications opened.
                 }
@@ -112,60 +105,45 @@ public class QuestionPaper implements Initializable {
     //starting timer
     private void startTimer(){
         runTimer = true;
-        Task<Void> task = new Task<>(){
-            @Override
-            protected Void call() throws Exception {
+        new Thread(()->{
+            try {
                 SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 String time = exam.getExamDate()+" "+exam.getTime();
                 Date date = format.parse(time);
 
-                long millisLeft = date.getTime()+(Long.getLong(exam.getDuration()))*60*1000;  //getting total milliseconds left in exam.
-                millisLeft -= System.currentTimeMillis();
-                int currHours = (int) (millisLeft/(60*60*1000));    //converting millis left to hours,minutes and second left.
-                millisLeft = millisLeft - currHours*(60*60*1000);
-                int currMinutes = (int) (millisLeft/(60*1000));
-                int currSeconds = (int) (millisLeft - currMinutes*60*1000);
+                long total = date.getTime()+((Long.parseLong(exam.getDuration()))*60*1000)-System.currentTimeMillis();
+                int hr = (int) (total/(60*60*1000));
+                int mm = (int) (total%(60*60*1000))/(60*1000);
+                int sec = (int) (total%(60*1000))/1000;
 
-                if(currMinutes==0 && currHours>0){          //if current minutes or seconds are 0 than updating them.
-                    currMinutes = 59;
-                    currHours--;
-                }
-                if(currSeconds==0 && currMinutes>0){
-                    currMinutes--;
-                    currSeconds = 59;
-                }
-
-                while (currSeconds>0 && runTimer){
-                    int finalCurrentHours = currHours;
-                    int finalCurrMinutes = currMinutes;
-                    int finalCurrSeconds = currSeconds;
+                while ((hr>0 || mm>0 || sec>0) && runTimer){
+                    if(mm==0 && hr>0){
+                        mm += 60;
+                        hr--;
+                    }
+                    if(sec==0 && mm>0){
+                        sec += 60;
+                        mm--;
+                    }
+                    int finalHr = hr;
+                    int finalMm = mm;
+                    int finalSec = sec;
                     Platform.runLater(()->{
-                        timer.setText("Time Left : "+finalCurrentHours+":"+finalCurrMinutes +":"+ finalCurrSeconds);
+                        timer.setText("Time Left : "+ finalHr +" : "+ finalMm +" : "+ finalSec);
                     });
-
-                    currSeconds--;
-                    if(currMinutes==0 && currHours>0){
-                        currMinutes = 59;
-                        currHours--;
-                    }
-                    if(currSeconds==0 && currMinutes>0){
-                        currMinutes--;
-                        currSeconds = 59;
-                    }
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+                    sec--;
+                    Thread.sleep(1000);
                 }
 
-                if(runTimer)
-                    submitBtn.fire();
-                return null;
+                if(runTimer){
+                    Platform.runLater(()->{
+                        submitBtn.fire();
+                    });
+                }
+            }catch (Exception e){
+                e.printStackTrace();
             }
-        };
-
-        new Thread(task).start();
+        }).start();
     }
 
     //function which check student's cheat status in certain intervals
@@ -176,17 +154,26 @@ public class QuestionPaper implements Initializable {
                int cheatCount = 0;    //showing warning to student 3 times if cheating found then after close exam without submitting.
                while (runTimer){
                    if(recorder.getCheatStatus()){
+                       //System.out.println(cheatCount);
                        if(cheatCount==3 || processesDetails.getProcessesCount()!=1){  //checking that cheatCount cross the limit or
                            Platform.runLater(()->{                                    //any other application has opened.
                                runTimer = false;
                                recorder.finish();
+
+                               ExamResponse response = new ExamResponse();
+                               response.setExamId(exam.getExamId());
+                               response.setStudentId(StudentController.student.getStudentId());
+                               ArrayList<QuestionResponse> questionResponses = new ArrayList<>();
+                               response.setResponses(questionResponses);
+                               response.setMarks(0);
+
+                               Server server = ServerHandler.getInstance();
+                               server.sendExamResponse(response);
+
+                               String message="you have been logged out from exam. \nDue to Cheating.";
+                               showAlert(Alert.AlertType.WARNING,"Warning",message);
+
                                backToExams();
-                           });
-                       }else{
-                           String msg = "It has been detected that you are cheating in the exam.\nDo not repeat it again otherwise " +
-                                   "you will be automatically logged out from exam.";
-                           Platform.runLater(()->{
-                               showAlert(Alert.AlertType.WARNING,"Cheating found",msg);
                            });
                        }
                        cheatCount++;
@@ -300,7 +287,7 @@ public class QuestionPaper implements Initializable {
             question.setResponse(textArea.getText());
         }
 
-        if(currQuestionIndex<exam.getQuestionCount()-1){
+        if(currQuestionIndex<exam.getCurrentQuestionCount()-1){
             currQuestionIndex++;
             questionList.getItems().clear();
             setQuestion(exam.getQuestions().get(currQuestionIndex));

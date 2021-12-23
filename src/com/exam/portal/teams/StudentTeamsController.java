@@ -82,6 +82,7 @@ public class StudentTeamsController implements Initializable {
     }
 
     //opening another window for entering team id for joining new team.
+    @FXML
     public void joinTeam(ActionEvent event) {
         try {
             Parent root = FXMLLoader.load(getClass().getResource("../student/joinWithId.fxml"));
@@ -90,6 +91,19 @@ public class StudentTeamsController implements Initializable {
             stage.setScene(new Scene(root,600,600));
             stage.show();
         } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    public void back(ActionEvent event){
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("../student/studentDashboard.fxml"));
+            Stage stage = (Stage) teamList.getScene().getWindow();
+            stage.setTitle("Exam Portal");
+            stage.setScene(new Scene(root,600,600));
+            stage.show();
+        }catch (Exception e){
             e.printStackTrace();
         }
     }

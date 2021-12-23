@@ -24,6 +24,8 @@ public class AddOptionController implements Initializable {
     JFXToggleButton isImage;
     @FXML
     JFXButton chooseFileBtn;
+    @FXML
+    JFXToggleButton correct;
 
     private Option option;
     private File file;
@@ -59,6 +61,8 @@ public class AddOptionController implements Initializable {
                 option.setIsImage(true);
                 option.setText(file.getAbsolutePath());
                 option.setFile(encodeImageToBase64Binary(file));
+                if(correct.isSelected())
+                    option.setCorrect(true);
             }
         }else{
             if(optionText.getText().equals("")){                 //checking option text is entered or not.

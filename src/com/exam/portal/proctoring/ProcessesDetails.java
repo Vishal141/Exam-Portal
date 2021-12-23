@@ -12,10 +12,13 @@ public class ProcessesDetails {
             int count = 0;
             if(sc.hasNextLine())sc.nextLine();
             while (sc.hasNextLine()){
-                count++;
-                sc.nextLine();
+                String name = sc.nextLine();
+                if(!name.equals(""))
+                    count++;
+                //System.out.println(name);
             }
-            return count-4;
+            System.out.println(count);
+            return count-5;
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -14,6 +14,8 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
+import java.util.Objects;
+
 import static com.exam.portal.student.StudentController.student;
 
 public class JoinTeamController {
@@ -48,20 +50,6 @@ public class JoinTeamController {
                     alert.setContentText("Team ID is invalid");
                     alert.showAndWait();}
             });
-        }
-    }
-
-    //create a new stage and show it.
-    public void changeStage(String path,String title,int width,int height){
-        try {
-            Stage stage = new Stage();
-            Parent parent = FXMLLoader.load(getClass().getResource(path));
-            stage.setTitle(title);
-            stage.setScene(new Scene(parent,width,height));
-            stage.initStyle(StageStyle.DECORATED);
-            stage.show();
-        }catch (Exception e){
-            e.printStackTrace();
         }
     }
 }

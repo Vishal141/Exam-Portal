@@ -43,7 +43,6 @@ public class TeacherController implements Initializable {
      Button btnCourses;
 
     @FXML
-     Button btnComplain; @FXML
      Button btnEdit;
 
     @Override
@@ -60,8 +59,9 @@ public class TeacherController implements Initializable {
     }
 
     @FXML
-    void complainClicked(ActionEvent event) {
-        System.out.println("complain");
+    void logout(ActionEvent event) {
+        String path = "../login/login.fxml";
+        changeStage(path,"Login",600,600);
     }
 
     @FXML
@@ -97,7 +97,7 @@ public class TeacherController implements Initializable {
     public void editDetails(ActionEvent actionEvent) {
         try {
             Stage stage = new Stage();
-            Parent parent = FXMLLoader.load(getClass().getResource("Edit.fxml"));
+            Parent parent = FXMLLoader.load(getClass().getResource("edit.fxml"));
             stage.setTitle("Edit Details");
             stage.setScene(new Scene(parent,500,500));
             stage.show();
@@ -109,7 +109,11 @@ public class TeacherController implements Initializable {
     //functions which create new stage and show it.
     public void changeStage(String path,String title,int width,int height){
         try{
-            Stage stage = new Stage();
+            Stage stage;
+            if(title.equals("Edit Details") || title.equals("Create Team"))
+                stage = new Stage();
+            else
+                stage = (Stage) lblTName.getScene().getWindow();
             Parent parent = FXMLLoader.load(Objects.requireNonNull(getClass().getResource(path)));
             stage.setTitle(title);
             stage.setScene(new Scene(parent,width,height));

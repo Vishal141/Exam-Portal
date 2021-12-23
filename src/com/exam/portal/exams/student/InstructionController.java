@@ -1,7 +1,7 @@
 package com.exam.portal.exams.student;
 
-import com.exam.portal.exams.scheduled.ScheduledExam;
 import com.exam.portal.models.Exam;
+import com.exam.portal.proctoring.ProcessesDetails;
 import com.exam.portal.proctoring.WebcamRecorder;
 import com.jfoenix.controls.JFXButton;
 import javafx.application.Platform;
@@ -11,12 +11,14 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
 
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class InstructionController implements Initializable {
@@ -56,7 +58,7 @@ public class InstructionController implements Initializable {
         }
         testTitle.setText(exam.getTitle());
         duration.setText(exam.getDuration());
-        questionCount.setText(exam.getCount()+"");
+        questionCount.setText(exam.getQuestionCount()+"");
         maxScore.setText(exam.getMaxScore()+"");
     }
 
@@ -70,7 +72,9 @@ public class InstructionController implements Initializable {
                 int hr = (int) (diff/(60*60*1000));                    //hours remaining.
                 int mm = (int) ((diff%(60*60*1000))/(60*1000));        //minutes remaining.
                 int sec = (int) ((diff%(60*1000))/1000);               //seconds remaining.
-                timerStatus.setText("Starting In");
+                Platform.runLater(()->{
+                    timerStatus.setText("Starting In");
+                });
                 while(hr>0 || mm>0 || sec>0){
                     if(mm==0 && hr>0){  //updating minutes.
                         hr--;
@@ -90,7 +94,7 @@ public class InstructionController implements Initializable {
                     });
                     Thread.sleep(1000);
                 }
-                setWebcamStatus();
+                Platform.runLater(this::setWebcamStatus);
                 examClosedInTimer();
             }catch (Exception e){
                 e.printStackTrace();
@@ -108,7 +112,9 @@ public class InstructionController implements Initializable {
                 int hr = (int) (diff/(60*60*1000));                    //hours remaining.
                 int mm = (int) ((diff%(60*60*1000))/(60*1000));        //minutes remaining.
                 int sec = (int) ((diff%(60*1000))/1000);               //seconds remaining.
-                timerStatus.setText("Closed In");
+                Platform.runLater(()->{
+                    timerStatus.setText("Closed In");
+                });
                 while(hr>0 || mm>0 || sec>0){
                     if(mm==0 && hr>0){  //updating minutes.
                         mm+=60;
@@ -128,8 +134,10 @@ public class InstructionController implements Initializable {
                     });
                     Thread.sleep(1000);
                 }
-                timerStatus.setText("Closed");
-                startBtn.setDisable(true);
+                Platform.runLater(()->{
+                    timerStatus.setText("Closed");
+                    startBtn.setDisable(true);
+                });
             }catch (Exception e){
                 e.printStackTrace();
             }
@@ -152,13 +160,32 @@ public class InstructionController implements Initializable {
     @FXML
     public void startTest(ActionEvent event) {
         try {
+            //check application count before starting test.
+            if(!checkApplicationCount()){
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setTitle("Warning");
+                alert.setHeaderText(null);
+                alert.setContentText("You need to close all other applications running \nbefore starting test.");
+                alert.showAndWait();
+                return;
+            }
+
             Stage stage = (Stage) startBtn.getScene().getWindow();
-            Parent root = FXMLLoader.load(getClass().getResource(ScheduledExam.QUESTION_PAPER_PATH));
+            QuestionPaper.exam = exam;
+            Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("questionPaper.fxml")));
             stage.setTitle("Exam Portal");
             stage.setScene(new Scene(root,600,600));
+            //setting screen to full screen
+            stage.setFullScreen(true);
+            stage.setResizable(false);
             stage.show();
         }catch (Exception e){
             e.printStackTrace();
         }
+    }
+
+    private boolean checkApplicationCount(){
+        ProcessesDetails processesDetails = new ProcessesDetails();
+        return processesDetails.getProcessesCount() == 1;
     }
 }
