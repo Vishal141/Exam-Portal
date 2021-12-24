@@ -32,4 +32,5 @@ public interface Server {
     public ArrayList<Student> getStudentsByTeamId(String Id);
     public boolean sendMassage(Message newMassage);
     public ArrayList<Message> getMassages(String teamId);
+    public  ArrayList<StudentResponse>fetchExamDetails(String examId);
 }

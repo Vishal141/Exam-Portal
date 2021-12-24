@@ -23,6 +23,7 @@ public class ServerHandler implements Server{
     //connection which link to the specific url on server.
     private HttpURLConnection connection;
 
+
     private static ServerHandler serverHandler=null;
 
     public ServerHandler(){
@@ -558,6 +559,23 @@ public class ServerHandler implements Server{
             String response = reader.readLine();
             returnedMassages = gson.fromJson(response,new TypeToken<List<Message>>(){}.getType());
             return returnedMassages;
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+    @Override
+    public ArrayList<StudentResponse> fetchExamDetails(String examId){
+        ArrayList<StudentResponse>fetchedDetails;
+        try{
+            String url=EXAM_URL+"exam_details/exam_id="+examId;
+            connection=ServerConfig.getConnection(url);
+            assert connection!=null;
+            BufferedReader reader =new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            String response=reader.readLine();
+            fetchedDetails=gson.fromJson(response,new TypeToken<List<StudentResponse>>(){}.getType());
+            return fetchedDetails;
 
         }catch (Exception e){
             e.printStackTrace();
