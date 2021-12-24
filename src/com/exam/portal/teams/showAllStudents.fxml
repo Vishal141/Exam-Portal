@@ -9,7 +9,7 @@
    <children>
       <AnchorPane layoutX="-1.0" layoutY="1.0" prefHeight="400.0" prefWidth="600.0">
          <children>
-            <TableView layoutX="7.0" layoutY="7.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <TableView fx:id="table" layoutX="7.0" layoutY="7.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
               <columns>
                 <TableColumn fx:id="name" prefWidth="220.79999083280563" text="Name" />
                 <TableColumn fx:id="mnumber" prefWidth="170.40000915527344" text="Mobile number" />
