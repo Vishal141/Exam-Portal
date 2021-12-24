@@ -1,4 +1,4 @@
-package com.exam.portal.Login;
+package com.exam.portal.login;
 
 import com.exam.portal.models.Student;
 import com.exam.portal.models.Teacher;
@@ -16,14 +16,9 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 
-import javax.crypto.SecretKeyFactory;
-import javax.crypto.spec.PBEKeySpec;
-import java.io.IOException;
 import java.math.BigInteger;
 import java.net.URL;
 import java.security.MessageDigest;
-import java.security.SecureRandom;
-import java.security.spec.KeySpec;
 import java.util.ResourceBundle;
 import java.util.UUID;
 
@@ -83,7 +78,7 @@ public class LoginController implements Initializable {
     void register(ActionEvent event){    //change current stage to signUp stage.
         try {
             Stage stage = (Stage) signupBtn.getScene().getWindow();
-            Parent root = FXMLLoader.load(getClass().getResource("SignUp.fxml"));
+            Parent root = FXMLLoader.load(getClass().getResource("signUp.fxml"));
             stage.setTitle("Create New Account");
             stage.setScene(new Scene(root,700,600));
             stage.show();
@@ -182,7 +177,7 @@ public class LoginController implements Initializable {
     public void backToLogin(ActionEvent actionEvent) {
         try{
             Stage stage = (Stage) doSignUp.getScene().getWindow();
-            Parent root = FXMLLoader.load(getClass().getResource("Login.fxml"));
+            Parent root = FXMLLoader.load(getClass().getResource("login.fxml"));
             stage.setTitle("Login");
             stage.setScene(new Scene(root,700,500));
             stage.show();

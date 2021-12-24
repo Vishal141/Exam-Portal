@@ -112,6 +112,8 @@ public class CreateExamController implements Initializable {
             exam.setDuration(tfDuration.getText());
             exam.setTeamId(teams.get(selectedTeam.getSelectionModel().getSelectedIndex()).getTeamId());
             exam.setCreatorId(TeacherController.teacher.getTeacherId());
+            exam.setQuestionCount(exam.getCurrentQuestionCount());
+            exam.setMaxScore(exam.calculateMaxScore());
         }
 
         if(flag){
@@ -207,12 +209,14 @@ public class CreateExamController implements Initializable {
         isThreadRunning = true;
         new Thread(()->{
             while (isThreadRunning){
-                if(exam.getQuestionCount() != questionCount){   //checking that question is added or not.
+                if(exam.getCurrentQuestionCount() != questionCount){   //checking that question is added or not.
                     Question question = exam.getLastQuestion();
-                    Label label = new Label();
-                    label.setText(question.getQuestion());
-                    questionList.getItems().add(label);
-                    questionCount = exam.getQuestionCount();
+                    Platform.runLater(()->{
+                        Label label = new Label();
+                        label.setText(question.getQuestion());
+                        questionList.getItems().add(label);
+                    });
+                    questionCount = exam.getCurrentQuestionCount();
                 }else{
                     try {
                         Thread.sleep(1000);          //sleep thread for 1 second.

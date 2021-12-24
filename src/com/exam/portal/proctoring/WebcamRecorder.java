@@ -1,9 +1,9 @@
 package com.exam.portal.proctoring;
 
-import com.exam.portal.models.ProctoringFile;
-import com.exam.portal.notificatios.Notification;
+import com.exam.portal.models.Image;
 import com.exam.portal.server.Server;
 import com.exam.portal.server.ServerHandler;
+import com.exam.portal.student.StudentController;
 import com.github.sarxos.webcam.Webcam;
 import com.github.sarxos.webcam.WebcamResolution;
 import com.xuggle.mediatool.IMediaWriter;
@@ -19,56 +19,45 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.util.Base64;
 
 public class WebcamRecorder {
-    private int recordTime;
-    private String examId;
-    private String studentId;
-
+    private long recordTime;
     private File file;
-    private ProctorResult result;
-    private ProctoringFile proctoringFile;
 
+    private volatile int totalCheck;   //total images sends to server for checking.
+    private volatile int cheatFound;   //total times server false in not cheat status.
     private volatile boolean isThreadRunning;
 
     public WebcamRecorder(){
         try{
             file = File.createTempFile("webcam-recording",".mp4");
+            file.deleteOnExit();
             //file = new File("E:/webcam.mp4");
         }catch (Exception e){
             e.printStackTrace();
         }
         isThreadRunning = false;
-        result = new ProctorResult();
-        proctoringFile = new ProctoringFile();
+        totalCheck = 0;
+        cheatFound = 0;
     }
 
-    public WebcamRecorder(int recordTime, String examId, String studentId) {
+    public WebcamRecorder(int recordTime) {
         this();
-        this.recordTime = recordTime;
-        this.examId = examId;
-        this.studentId = studentId;
+        this.recordTime = (long) recordTime *60*1000;
     }
 
-    public void setRecordTime(int recordTime) {
+    public void setRecordTime(long recordTime) {
         this.recordTime = recordTime;
     }
 
-    public void setExamId(String examId) {
-        this.examId = examId;
-    }
-
-    public void setStudentId(String studentId) {
-        this.studentId = studentId;
-    }
-
+    //returns true if webcam is working otherwise return false.
     public boolean isWebcamAvailable(){
         Webcam webcam = Webcam.getDefault();
-        return webcam == null;
+        return webcam != null;
     }
 
+    //start recording student's video and sending image to server for proctoring.
     private void start(){
         isThreadRunning = true;
         Thread thread = new Thread(()->{
@@ -94,25 +83,27 @@ public class WebcamRecorder {
                 frame.setQuality(0);
                 writer.encodeVideo(0,frame);
 
-                new Thread(()->{
+                new Thread(()->{             //in different thread image send to server and checked for cheating.
                     try{
                         long t = time;
                         Server server = ServerHandler.getInstance();
                         ByteArrayOutputStream os = new ByteArrayOutputStream();
                         ImageIO.write(image,"jpg",os);
                         String bytes = Base64.getEncoder().encodeToString(os.toByteArray());
-                        int faces = server.detectFace(bytes);
-                        if(faces != 1){
-                            result.addTime(t);
-                            result.setCheatStatus(recordTime);
+                        Image image1 = new Image();
+                        image1.setStudentId(StudentController.student.getStudentId());
+                        image1.setBytes(bytes);
+                        if(!server.getProctorResult(image1)){
+                            cheatFound++;
                         }
+                        totalCheck++;
                     }catch (Exception e){
                         e.printStackTrace();
                     }
                 }).start();
 
                 try {
-                    Thread.sleep(100);
+                    Thread.sleep(5000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -129,27 +120,17 @@ public class WebcamRecorder {
     public void finish(){
         isThreadRunning = false;
         System.out.println("finished");
-        proctoringFile.setExamId(this.examId);
-        proctoringFile.setType("Webcam-Video");
-        proctoringFile.setStudentId(this.studentId);
-        proctoringFile.setFile(encodeFileToBase64(file));
-        proctoringFile.setProctorResult(result);
+    }
 
-        if(result.getCheatStatus()){
-            //Give Notification
-            Notification notification = new Notification("Warning","It has been detected that you cheat in the exam.");
-            notification.show(TrayIcon.MessageType.WARNING);
-            //send proctoring file to server for reference.
-            proctoringFile.setResult(result);
-            Server server = ServerHandler.getInstance();
-            server.sendProctorFile(proctoringFile);
-        }
+    public boolean getCheatStatus(){
+       int percentage = (int) Math.ceil(cheatFound*100.00/totalCheck);
+       return percentage>=5;
     }
 
     public void startRecording(){
         new Thread(()->{
             try {
-                Thread.sleep(this.recordTime);
+                Thread.sleep(recordTime);      //sleeping this thread for recordTime milliseconds after that stopping recording.
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -157,25 +138,5 @@ public class WebcamRecorder {
         }).start();
 
         this.start();
-    }
-
-    private String encodeFileToBase64(File file){
-        try{
-            FileInputStream fis = new FileInputStream(file);
-            String encoded = Base64.getEncoder().encodeToString(fis.readAllBytes());
-            return encoded;
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    public static void main(String[] args) {
-        WebcamRecorder recorder = new WebcamRecorder();
-        recorder.setRecordTime(60000);
-        recorder.setStudentId("S54d51sd");
-        recorder.setExamId("Exam#54e7d0");
-
-        recorder.startRecording();
     }
 }

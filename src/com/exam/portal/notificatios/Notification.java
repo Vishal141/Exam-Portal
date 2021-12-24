@@ -1,7 +1,11 @@
 package com.exam.portal.notificatios;
 
-import javax.swing.*;
 import java.awt.*;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class Notification {
     private final String title;
@@ -22,14 +26,18 @@ public class Notification {
             tray.add(trayIcon);
             trayIcon.setToolTip("Exam Portal");
             trayIcon.displayMessage(title,message,type);
-            //System.exit(0);
         }catch (Exception e){
             e.printStackTrace();
         }
     }
 
     public static void main(String[] args) {
-        Notification notification = new Notification("Hello world","This is my first notification");
-        notification.show(TrayIcon.MessageType.INFO);
+        String path = File.listRoots()[1].getAbsolutePath()+"exam_portal\\info.ep";
+        Path path1 = Paths.get(path);
+        try {
+            Files.createFile(path1);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -1,11 +1,13 @@
 package com.exam.portal.exams.scheduled;
 
+import com.exam.portal.exams.student.InstructionController;
 import com.exam.portal.models.Exam;
 import com.exam.portal.models.Team;
 import com.exam.portal.server.Server;
 import com.exam.portal.server.ServerHandler;
 import com.exam.portal.student.StudentController;
 import com.exam.portal.teacher.TeacherController;
+import com.jfoenix.controls.JFXButton;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -13,6 +15,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 
 import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
@@ -20,11 +24,18 @@ import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class ScheduledExam implements Initializable {
+    public static final String QUESTION_PAPER_PATH = "../student/questionPaper.fxml";
+    public static final String SUBMISSION_PATH = "../student/submissions.fxml";
+    public static final String INSTRUCTIONS_PATH = "../student/instructions.fxml";
+
     @FXML
     VBox vBox;
+    @FXML
+    JFXButton activeBtn;
 
     //variable used for determining that it is student or teacher.
     public static boolean fromTeacher;
@@ -46,12 +57,12 @@ public class ScheduledExam implements Initializable {
                 exams = server.getExamScheduledFor(StudentController.student.getStudentId());
             if(exams == null)
                 exams = new ArrayList<>();
-            addExamsToVBox(exams);
+            activeBtn.fire();          //setting active exams initially.
         });
     }
 
     //displaying all exams.
-    private void addExamsToVBox(ArrayList<Exam> examArrayList){
+    private void addExamsToVBox(ArrayList<Exam> examArrayList,String path){
         ExamItem.stage = (Stage)vBox.getScene().getWindow();
         Server server = ServerHandler.getInstance();
         try{
@@ -61,12 +72,13 @@ public class ScheduledExam implements Initializable {
                ExamItem examItem = loader.getController();
                examItem.setTitle(exam.getTitle());
                examItem.setDate(exam.getExamDate());
+               examItem.setTime(exam.getTime());
                examItem.setExam(exam);
                Team team = server.getTeamById(exam.getTeamId());
                examItem.setTeamName(team.getName());
                examItem.setTeam(team);
                vBox.getChildren().add(node);
-               examItem.addEventListener();
+               examItem.addEventListener(path);
            }
         }catch (Exception e){
             e.printStackTrace();
@@ -74,9 +86,26 @@ public class ScheduledExam implements Initializable {
     }
 
     //display all the exams.
-    public void allExams(ActionEvent actionEvent) {
+    public void activeExams(ActionEvent actionEvent) {
         vBox.getChildren().clear();
-        addExamsToVBox(exams);
+        try{
+            ArrayList<Exam> activeExam = new ArrayList<>();
+            for(Exam exam:exams){
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                Date examDate = dateFormat.parse(exam.getExamDate()+" "+exam.getTime());
+                long diff = System.currentTimeMillis()-examDate.getTime();
+                long milli = Long.parseLong(exam.getDuration())*60*1000;      //duration from minutes to milliseconds.
+                if(diff>=0 && diff<milli)
+                    activeExam.add(exam);
+            }
+            if(fromTeacher)
+                addExamsToVBox(activeExam,QUESTION_PAPER_PATH);
+            else
+                addExamsToVBox(activeExam,INSTRUCTIONS_PATH);
+            InstructionController.status = "active";
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     //display all exams which has not been finished yet.
@@ -85,12 +114,17 @@ public class ScheduledExam implements Initializable {
         try{
             ArrayList<Exam> upcomingExam = new ArrayList<>();
             for(Exam exam:exams){
-                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-                Date examDate = dateFormat.parse(exam.getExamDate());
-                if(after(examDate,exam.getTime()))         //comparing dates.
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                Date examDate = dateFormat.parse(exam.getExamDate()+" "+exam.getTime());
+                long diff = System.currentTimeMillis()-examDate.getTime();
+                if(diff<0)
                     upcomingExam.add(exam);
             }
-            addExamsToVBox(upcomingExam);
+            if(fromTeacher)
+                addExamsToVBox(upcomingExam,QUESTION_PAPER_PATH);
+            else
+                addExamsToVBox(upcomingExam,INSTRUCTIONS_PATH);
+            InstructionController.status = "upcoming";
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -102,30 +136,36 @@ public class ScheduledExam implements Initializable {
         try{
             ArrayList<Exam> archivedExam = new ArrayList<>();
             for(Exam exam:exams){
-                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-                Date examDate = dateFormat.parse(exam.getExamDate());
-                if(!after(examDate,exam.getTime()))
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                Date examDate = dateFormat.parse(exam.getExamDate()+" "+exam.getTime());
+                long diff = System.currentTimeMillis()-(examDate.getTime()+ (long) (Integer.parseInt(exam.getDuration())) *60*1000);
+                if(diff>0)
                     archivedExam.add(exam);
             }
-            addExamsToVBox(archivedExam);
+            if(fromTeacher)
+                addExamsToVBox(archivedExam,QUESTION_PAPER_PATH);
+            else
+                addExamsToVBox(archivedExam,SUBMISSION_PATH);
+            InstructionController.status = "archived";
         }catch (Exception e){
             e.printStackTrace();
         }
     }
 
-    //compare dates.
-    private boolean after(Date examDate,String time){
-        Date date = new Date();
-        if(date.after(examDate))
-            return false;
-        if(date.before(examDate))
-            return true;
-        int h = Integer.parseInt(time.substring(0,1));
-        int m = Integer.parseInt(time.substring(3,4));
-        if(date.getHours()>h)
-            return true;
-        if(date.getDate()<h)
-            return false;
-        return date.getMinutes()>m;
+    @FXML
+    public void back(ActionEvent event){
+        try {
+            Stage stage = (Stage) vBox.getScene().getWindow();
+            Parent root;
+            if(fromTeacher)
+                root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("../../teacher/teacherDashboard.fxml")));
+            else
+                root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("../../student/studentDashboard.fxml")));
+            stage.setScene(new Scene(root,600,600));
+            stage.setTitle("Exam Portal");
+            stage.show();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 }

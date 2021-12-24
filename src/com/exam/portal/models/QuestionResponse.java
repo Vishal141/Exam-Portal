@@ -1,24 +1,24 @@
 package com.exam.portal.models;
 
 public class QuestionResponse {
-    private String QId;
-    private String ResponseType;
+    private String qId;
+    private String responseType;
     private String response;
 
     public String getQId() {
-        return QId;
+        return qId;
     }
 
-    public void setQId(String QId) {
-        this.QId = QId;
+    public void setQId(String qId) {
+        this.qId = qId;
     }
 
     public String getResponseType() {
-        return ResponseType;
+        return responseType;
     }
 
     public void setResponseType(String responseType) {
-        ResponseType = responseType;
+        this.responseType = responseType;
     }
 
     public String getResponse() {

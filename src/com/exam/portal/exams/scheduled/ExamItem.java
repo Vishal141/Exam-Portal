@@ -1,6 +1,8 @@
 package com.exam.portal.exams.scheduled;
 
+import com.exam.portal.exams.student.InstructionController;
 import com.exam.portal.exams.student.QuestionPaper;
+import com.exam.portal.exams.student.SubmissionsController;
 import com.exam.portal.models.Exam;
 import com.exam.portal.models.Team;
 import javafx.event.EventHandler;
@@ -27,6 +29,8 @@ public class ExamItem {
     @FXML
     Label date;
     @FXML
+    Label time;
+    @FXML
     Label teamName;
 
     private Exam exam;
@@ -39,6 +43,10 @@ public class ExamItem {
 
     public void setDate(String text){
         date.setText(text);
+    }
+
+    public void setTime(String text){
+        time.setText(text);
     }
 
     public void setTeamName(String text){
@@ -58,14 +66,16 @@ public class ExamItem {
     }
 
     //take to the question paper when we clicked on exam.
-    public void addEventListener(){
-        vBox.setOnMouseClicked(new EventHandler<MouseEvent>() {
+    public void addEventListener(String path){
+        vBox.setOnMouseClicked(new EventHandler<>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
                 try {
                     QuestionPaper.exam = exam;
-                    Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("../student/questionPaper.fxml")));
-                    Scene scene = new Scene(root,600,600);
+                    InstructionController.exam = exam;
+                    SubmissionsController.exam = exam;
+                    Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource(path)));
+                    Scene scene = new Scene(root, 600, 600);
                     stage.setTitle("Exam Portal");
                     stage.setScene(scene);
                     stage.show();

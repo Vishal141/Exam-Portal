@@ -9,12 +9,12 @@ public class Option {
     private String text;
     private String  file;
 
-    private boolean isSelected;
-    private boolean isCorrect;
+    private boolean selected;
+    private boolean correct;
 
     public Option(){
-        isSelected = false;
-        isCorrect = false;
+        selected = false;
+        correct = false;
     }
 
     public Option(String text){
@@ -71,20 +71,20 @@ public class Option {
         this.questionId = questionId;
     }
 
-    public boolean getIsCorrect() {
-        return isCorrect;
+    public boolean getCorrect() {
+        return correct;
     }
 
-    public void setIsCorrect(boolean correct) {
-        isCorrect = correct;
+    public void setCorrect(boolean isCorrect) {
+        this.correct = isCorrect;
     }
 
-    public boolean getIsSelected() {
-        return isSelected;
+    public boolean getSelected() {
+        return selected;
     }
 
-    public boolean setIsSelected() {
-        isSelected = !isSelected;
-        return isSelected;
+    public boolean setSelected() {
+        selected = !selected;
+        return selected;
     }
 }

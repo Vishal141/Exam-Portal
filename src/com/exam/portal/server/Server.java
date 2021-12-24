@@ -2,7 +2,6 @@ package com.exam.portal.server;
 
 import com.exam.portal.models.*;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 //this interface contains all server-client communication methods.
@@ -21,9 +20,7 @@ public interface Server {
     public ArrayList<Team> getStudentsTeams(String Id);
     public ArrayList<Team> getTeachersTeams(String Id);
     public boolean updateTeacher(Teacher teacher);
-    public boolean checkProctor();
-    public int detectFace(String bytes);
-    public void sendProctorFile(ProctoringFile file);
+    public boolean getProctorResult(Image image);
     public ArrayList<Exam> getExamScheduledBy(String teacherId);
     public Exam getExamById(String examId);
     public Team getTeamById(String id);
@@ -31,5 +28,8 @@ public interface Server {
     public ArrayList<Exam> getExamScheduledFor(String studentId);
     public boolean joinTeamWithId(String teamId,String studentId);
     public boolean sendExamResponse(ExamResponse response);
+    public ExamResponse getStudentExamResponse(String examId,String studentId);
     public ArrayList<Student> getStudentsByTeamId(String Id);
+    public boolean sendMassage(Message newMassage);
+    public ArrayList<Message> getMassages(String teamId);
 }
