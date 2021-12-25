@@ -35,14 +35,12 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
+import javax.swing.*;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.Date;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class QuestionPaper implements Initializable {
     private static final int SUBJECTIVE=2;
@@ -84,8 +82,12 @@ public class QuestionPaper implements Initializable {
             studentName.setText(StudentController.student.getName());
         }
 
-        //TODO Back Button.
-        //TODO submit on stage close.
+        //submitting test if student close current stage.
+        stage.setOnCloseRequest(windowEvent -> {
+            if(!ScheduledExam.fromTeacher){
+                submitBtn.fire();
+            }
+        });
     }
 
     //fetching all the questions of selected exam and display first of them.
@@ -413,7 +415,7 @@ public class QuestionPaper implements Initializable {
     //closing current stage and showing exams stage.
     private void backToExams(){
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("../scheduled/ScheduledExam.fxml"));
+            Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("../scheduled/ScheduledExam.fxml")));
             Stage stage = (Stage) testTitle.getScene().getWindow();
             stage.setTitle("Exams");
             stage.setScene(new Scene(root,600,600));
@@ -432,4 +434,13 @@ public class QuestionPaper implements Initializable {
         return image;
     }
 
+    @FXML
+    public void back(ActionEvent event){
+        if(ScheduledExam.fromTeacher)
+            backToExams();
+        else{
+            String msg = "You need to submit test for going back.";
+            showAlert(Alert.AlertType.WARNING,"Warning",msg);
+        }
+    }
 }

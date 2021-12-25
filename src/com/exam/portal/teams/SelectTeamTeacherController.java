@@ -111,6 +111,7 @@ public class SelectTeamTeacherController implements Initializable {
     }
 
     private  void setMassages(ArrayList<Message> messages){
+        if(messages==null)return;
         for( Message message:messages){
             Label label=new Label();
             String msg = message.getSenderName() + " : " + message.getMessage();

@@ -262,4 +262,17 @@ public class CreateExamController implements Initializable {
             return;
         time = localTime.getHour()+":"+localTime.getMinute()+":00";
     }
+
+    @FXML
+    public void back(ActionEvent event){
+        try {
+            Stage stage = (Stage) tfTitle.getScene().getWindow();
+            Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("../../teacher/teacherDashboard.fxml")));
+            stage.setTitle("Exam Portal");
+            stage.setScene(new Scene(root,600,600));
+            stage.show();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
 }

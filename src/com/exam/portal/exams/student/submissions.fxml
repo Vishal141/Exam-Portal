@@ -23,6 +23,11 @@
                 <font>
                     <Font name="System Bold Italic" size="12.0" />
                 </font></Label>
+         <JFXButton layoutX="14.0" layoutY="19.0" onAction="#back" stylesheets="@../../cssFiles/style.css" text="Back" textFill="#f2eaea">
+            <font>
+               <Font name="System Bold Italic" size="12.0" />
+            </font>
+         </JFXButton>
             <BorderPane.margin>
                 <Insets left="5.0" right="5.0" top="5.0" />
             </BorderPane.margin>
@@ -43,15 +48,12 @@
         </JFXListView>
     </right>
     <bottom>
-        <AnchorPane prefHeight="68.0" prefWidth="682.0" style="-fx-background-color: #a7ffeb;"
-                    stylesheets="@../../cssFiles/style.css" BorderPane.alignment="CENTER">
+        <AnchorPane prefHeight="68.0" prefWidth="682.0" style="-fx-background-color: #a7ffeb;" stylesheets="@../../cssFiles/style.css" BorderPane.alignment="CENTER">
             <BorderPane.margin>
-                <Insets bottom="5.0" left="5.0" right="5.0"/>
+                <Insets bottom="5.0" left="5.0" right="5.0" />
             </BorderPane.margin>
-            <JFXButton layoutX="158.0" layoutY="20.0" onAction="#prevQuestion" prefHeight="26.0" prefWidth="128.0"
-                       text="Prev" textFill="#f2eaea"/>
-            <JFXButton layoutX="357.0" layoutY="20.0" onAction="#nextQuestion" prefHeight="26.0" prefWidth="128.0"
-                       text="Next" textFill="#f8f0f0"/>
+            <JFXButton layoutX="158.0" layoutY="20.0" onAction="#prevQuestion" prefHeight="26.0" prefWidth="128.0" text="Prev" textFill="#f2eaea" />
+            <JFXButton layoutX="357.0" layoutY="20.0" onAction="#nextQuestion" prefHeight="26.0" prefWidth="128.0" text="Next" textFill="#f8f0f0" />
         </AnchorPane>
     </bottom>
 </BorderPane>

@@ -3,6 +3,7 @@ package com.exam.portal.exams.scheduled;
 import com.exam.portal.exams.student.InstructionController;
 import com.exam.portal.exams.student.QuestionPaper;
 import com.exam.portal.exams.student.SubmissionsController;
+import com.exam.portal.exams.teacher.ViewSubmissionsController;
 import com.exam.portal.models.Exam;
 import com.exam.portal.models.Team;
 import javafx.event.EventHandler;
@@ -74,6 +75,7 @@ public class ExamItem {
                     QuestionPaper.exam = exam;
                     InstructionController.exam = exam;
                     SubmissionsController.exam = exam;
+                    ViewSubmissionsController.exam = exam;
                     Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource(path)));
                     Scene scene = new Scene(root, 600, 600);
                     stage.setTitle("Exam Portal");

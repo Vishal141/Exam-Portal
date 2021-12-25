@@ -32,6 +32,7 @@ public class ScheduledExam implements Initializable {
     public static final String QUESTION_PAPER_PATH = "../student/questionPaper.fxml";
     public static final String SUBMISSION_PATH = "../student/submissions.fxml";
     public static final String INSTRUCTIONS_PATH = "../student/instructions.fxml";
+    public static final String VIEW_SUBMISSIONS_PATH = "../teacher/viewSubmissions.fxml";
 
     @FXML
     VBox vBox;
@@ -142,7 +143,7 @@ public class ScheduledExam implements Initializable {
         }
     }
 
-    //display all finished exams.
+    //display all finished exams by comparing current time and exam time.
     public void archivedExams(ActionEvent actionEvent) {
         vBox.getChildren().clear();
         try{
@@ -154,8 +155,9 @@ public class ScheduledExam implements Initializable {
                 if(diff>0)
                     archivedExam.add(exam);
             }
+
             if(fromTeacher)
-                addExamsToVBox(archivedExam,QUESTION_PAPER_PATH);
+                addExamsToVBox(archivedExam,VIEW_SUBMISSIONS_PATH);
             else
                 addExamsToVBox(archivedExam,SUBMISSION_PATH);
             InstructionController.status = "archived";

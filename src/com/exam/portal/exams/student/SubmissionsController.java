@@ -10,8 +10,11 @@ import com.jfoenix.controls.JFXTextArea;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -21,10 +24,12 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
 
 import java.io.ByteArrayInputStream;
 import java.net.URL;
 import java.util.Base64;
+import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.StringTokenizer;
 
@@ -59,8 +64,6 @@ public class SubmissionsController implements Initializable {
         currQuestionIndex = 0;
         fetchExam();
         fetchResponse();
-
-        //TODO back button
     }
 
     //fetching exam from sever.
@@ -188,5 +191,18 @@ public class SubmissionsController implements Initializable {
         byte[] bytes1 = Base64.getDecoder().decode(bytes);
         Image image = new Image(new ByteArrayInputStream(bytes1));
         return image;
+    }
+
+    @FXML
+    public void back(ActionEvent event){
+        try {
+            Stage stage = (Stage) testTitle.getScene().getWindow();
+            Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("../scheduled/ScheduledExam.fxml")));
+            stage.setTitle("Exam Portal");
+            stage.setScene(new Scene(root,600,600));
+            stage.show();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 }

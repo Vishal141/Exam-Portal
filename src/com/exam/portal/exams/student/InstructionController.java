@@ -188,4 +188,17 @@ public class InstructionController implements Initializable {
         ProcessesDetails processesDetails = new ProcessesDetails();
         return processesDetails.getProcessesCount() == 1;
     }
+
+    @FXML
+    public void back(ActionEvent event){
+        try {
+            Stage stage = (Stage) timerStatus.getScene().getWindow();
+            Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("../scheduled/ScheduledExam.fxml")));
+            stage.setScene(new Scene(root,600,600));
+            stage.setTitle("Exam Portal");
+            stage.show();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
 }

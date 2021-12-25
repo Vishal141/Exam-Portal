@@ -23,6 +23,11 @@
             <font>
                <Font name="System Bold Italic" size="12.0" />
             </font></Label>
+         <JFXButton layoutX="14.0" layoutY="18.0" onAction="#back" stylesheets="@../../cssFiles/style.css" text="Back" textFill="#fae8e8">
+            <font>
+               <Font name="System Bold Italic" size="12.0" />
+            </font>
+         </JFXButton>
          <BorderPane.margin>
             <Insets left="5.0" right="5.0" top="5.0" />
          </BorderPane.margin>

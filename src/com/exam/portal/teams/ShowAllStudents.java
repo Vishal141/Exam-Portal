@@ -38,7 +38,7 @@ public class ShowAllStudents implements Initializable {
 
     private ArrayList<Student> students;
 
-    private ObservableList<Student> list= FXCollections.observableArrayList();
+    private final ObservableList<Student> list= FXCollections.observableArrayList();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -95,4 +95,5 @@ public class ShowAllStudents implements Initializable {
             e.printStackTrace();
         }
     }
+
 }
