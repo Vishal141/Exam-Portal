@@ -1,10 +1,6 @@
 package com.exam.portal.interfaces;
 
-import com.exam.portal.entities.BelongTo;
-import com.exam.portal.entities.Message;
-import com.exam.portal.entities.Student;
-import com.exam.portal.entities.Team;
-import com.exam.portal.entities.TeamUpdate;
+import com.exam.portal.entities.*;
 
 import java.util.ArrayList;
 
@@ -20,4 +16,5 @@ public interface TeamUtils {
     public TeamUpdate checkTeamUpdate(TeamUpdate update);
     public boolean addMessage(Message message);
     public ArrayList<Message> getTeamMessages(String teamId);
+    public MessageUpdate checkMessageUpdate(MessageUpdate update);
 }

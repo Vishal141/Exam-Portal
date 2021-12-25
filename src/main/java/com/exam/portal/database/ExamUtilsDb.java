@@ -391,6 +391,7 @@ public class ExamUtilsDb {
         int count = getExamCount(update.getStudentId());
         if(count>update.getPrevCount()){
             update.setUpdate(true);
+            update.setPrevCount(count);
             int diff = count-update.getPrevCount();
             String query = "SELECT * FROM Exams WHERE Team_Id IN (SELECT Team_Id FROM BelongTo WHERE Student_Id=?) DESC Created_At LIMIT ?";
             try{
@@ -415,7 +416,7 @@ public class ExamUtilsDb {
     //getting count of all exams in team in which student with id studentId has been added.
     private int getExamCount(String studentId){
         try {
-            String query = "SELECT COUNT(Exam_Id) WHERE Creator_Id IN (SELECT Team_Id FROM BelongTo WHERE Student_Id=?)";
+            String query = "SELECT COUNT(Exam_Id) FROM Exams WHERE Creator_Id IN (SELECT Team_Id FROM BelongTo WHERE Student_Id=?)";
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             preparedStatement.setString(1,studentId);
             ResultSet rs = preparedStatement.executeQuery();

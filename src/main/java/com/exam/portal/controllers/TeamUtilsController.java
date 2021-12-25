@@ -93,4 +93,9 @@ public class TeamUtilsController {
     public TeamUpdate checkTeamUpdate(@RequestBody TeamUpdate update){
         return teamUtils.checkTeamUpdate(update);
     }
+
+    @RequestMapping("/get/update/message")
+    public MessageUpdate checkMessageUpdate(@RequestBody MessageUpdate update){
+        return teamUtils.checkMessageUpdate(update);
+    }
 }

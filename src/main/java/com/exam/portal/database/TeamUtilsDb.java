@@ -1,11 +1,6 @@
 package com.exam.portal.database;
 
-import com.exam.portal.entities.BelongTo;
-import com.exam.portal.entities.Message;
-import com.exam.portal.entities.Student;
-
-import com.exam.portal.entities.Team;
-import com.exam.portal.entities.TeamUpdate;
+import com.exam.portal.entities.*;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -215,6 +210,7 @@ public class TeamUtilsDb {
         int count = getTeamCount(teamUpdate.getStudentId());
         if(count > teamUpdate.getPrevCount()){  //if current count is greater than previous means student added in some new teams.
             teamUpdate.setUpdate(true);
+            teamUpdate.setPrevCount(count);
             int diff = count-teamUpdate.getPrevCount();
             try{
                 String query = "SELECT * FROM Teams WHERE Team_Id IN (SELECT Team_Id FROM BelongTo WHERE Student_Id=? DESC Added_Date LIMIT ?)";
@@ -253,7 +249,53 @@ public class TeamUtilsDb {
         }catch (Exception e){
             e.printStackTrace();
         }
-
         return 0;
+    }
+
+    //comparing message count with prevCount and returns extra messages
+    public MessageUpdate getMessageUpdate(MessageUpdate update){
+        int count = getMessageCount(update.getTeamId());
+        if(count>update.getPrevCount()){
+            update.setUpdate(true);
+            update.setPrevCount(count);
+            int diff = count-update.getPrevCount();
+            try {
+                String query = "SELECT * FROM Messages WHERE Team_Id=? DESC Time LIMIT ?";
+                PreparedStatement preparedStatement = connection.prepareStatement(query);
+                preparedStatement.setString(1,update.getTeamId());
+                preparedStatement.setInt(2,diff);
+                ResultSet rs = preparedStatement.executeQuery();
+                ArrayList<Message> messages = new ArrayList<>();
+                while(rs.next()){
+                    Message message = new Message();
+                    message.setMessageId(rs.getString(1));
+                    message.setTeamId(update.getTeamId());
+                    message.setSenderId(rs.getString(3));
+                    message.setSenderName(rs.getString(4));
+                    message.setMessage(rs.getString(5));
+                    message.setDate(rs.getTimestamp(6));
+                    messages.add(message);
+                }
+                update.setMessages(messages);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+        return update;
+    }
+
+    //getting count of messages in team with given id.
+    private int getMessageCount(String teamId){
+        try {
+            String query = "SELECT COUNT(Message_Id) FROM Messages WHERE Team_Id=?";
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1,teamId);
+            ResultSet rs = preparedStatement.executeQuery();
+            if(rs.next())
+                return rs.getInt(1);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return  0;
     }
 }
