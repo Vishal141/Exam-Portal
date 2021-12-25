@@ -1,8 +1,11 @@
 package com.exam.portal.teams;
 
+import com.exam.portal.exams.scheduled.ScheduledExam;
 import com.exam.portal.models.Message;
+import com.exam.portal.models.MessageUpdate;
 import com.exam.portal.models.Team;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -17,9 +20,7 @@ import com.exam.portal.server.ServerHandler;
 import javafx.application.Platform;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontPosture;
-import javafx.scene.text.FontWeight;
+import javafx.stage.WindowEvent;
 
 import java.net.URL;
 import java.sql.Timestamp;
@@ -33,6 +34,8 @@ import static com.exam.portal.student.StudentController.student;
 
 public class SelectTeamStudentController implements Initializable {
     public static Team currentTeam;
+    public static Stage stage;
+
     @FXML
     private Label lblTeamName;
     @FXML
@@ -42,70 +45,88 @@ public class SelectTeamStudentController implements Initializable {
     Button btnShowStudents;
 
     @FXML
-    Button btnSheduleExam;
+    Button btnScheduledExam;
 
     @FXML
-    Button btnGoBcak;
+    Button btnGoBack;
 
     @FXML
-    TextField tfMassage;
+    TextField tfMessage;
 
     @FXML
     Button btnSend;
 
-    private ArrayList<Message> returnedMassages;
+    private ArrayList<Message> returnedMessages;
+    private volatile int messageCount;
+    private volatile boolean runThread;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         lblTeamName.setText(currentTeam.getName());
-        loadCurrentMassages();
+        messageCount = 0;
+        runThread = false;
+        fetchMessages();
     }
-    private void loadCurrentMassages(){
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while(true) {
-                    try{
-                        //System.out.println("Thread is doing something");
-                        fetchMassages();
-                        Thread.sleep(5000);
-                    }catch(Exception e){
-                        e.printStackTrace();
+    private void loadCurrentMessages(){
+        runThread = true;
+        new Thread(() -> {
+            while(runThread) {
+                try{
+                    MessageUpdate update = new MessageUpdate(currentTeam.getTeamId(),messageCount);
+                    Server server = ServerHandler.getInstance();
+                    update = server.checkMessageUpdate(update);
+                    if(update.isUpdate()){
+                        messageCount = update.getPrevCount();
+                        MessageUpdate finalUpdate = update;
+                        Platform.runLater(()->{
+                            setMessages(finalUpdate.getMessages());
+                        });
                     }
+                    Thread.sleep(5000);
+                }catch(Exception e){
+                    e.printStackTrace();
                 }
             }
-
         }).start();
-    }
 
-    private void fetchMassages(){
-        Platform.runLater(()->{
-            Server server = new ServerHandler().getInstance();
-            returnedMassages = server.getMassages(currentTeam.getTeamId());
-            if(returnedMassages==null)
-                returnedMassages=new ArrayList<>();
-            setMassages();
+        //for stopping thread after closing messages stage.
+        stage.setOnCloseRequest(windowEvent -> {
+            runThread = false;
         });
     }
 
-    private  void setMassages(){
-        listViewofMassages.getItems().clear();
-        for( Message message:returnedMassages){
+    //fetching messages from server.
+    private void fetchMessages(){
+        Platform.runLater(()->{
+            Server server =  ServerHandler.getInstance();
+            returnedMessages = server.getMassages(currentTeam.getTeamId());
+            if(returnedMessages ==null)
+                returnedMessages =new ArrayList<>();
+            setMessages(returnedMessages);
+            messageCount = returnedMessages.size();
+            loadCurrentMessages();
+        });
+    }
+
+    //adding all fetched messages in listview.
+    private  void setMessages(ArrayList<Message> messages){
+        for( Message message:messages){
             Label label=new Label();
             String msg = message.getSenderName() + " : " + message.getMessage();
             label.setText(msg);
             label.autosize();
             label.setMaxWidth(500);
-            label.setStyle("-fx-background-color: DarkSlateGrey");
-            label.setStyle("-fx-border-color: black");
+           // label.setStyle("-fx-background-color: DarkSlateGrey");
+          //  label.setStyle("-fx-border-color: black");
             listViewofMassages.getItems().add(label);
 
         }
     }
+
     @FXML
     void send(ActionEvent event) {
-        if (tfMassage.getText().equals("")) {
+        if (tfMessage.getText().equals("")) {
             Alert alert = new Alert(Alert.AlertType.WARNING);
             alert.setHeaderText(null);
             alert.setTitle("warning");
@@ -116,7 +137,7 @@ public class SelectTeamStudentController implements Initializable {
             newMassage.setMessage(generateId());
             newMassage.setTeamId(currentTeam.getTeamId());
             newMassage.setSenderId(student.getStudentId());
-            newMassage.setMessage(tfMassage.getText());
+            newMassage.setMessage(tfMessage.getText());
             newMassage.setDate(new Timestamp(new Date().getTime()));
 
             Server server = ServerHandler.getInstance();
@@ -124,17 +145,10 @@ public class SelectTeamStudentController implements Initializable {
     }
     @FXML
     void showAllStudents(ActionEvent event) {
-        try{
-            Stage stage = (Stage) btnSend.getScene().getWindow();
-            ShowAllStudents.fromTeacher = false;
-            Parent root = FXMLLoader.load(getClass().getResource("showAllStudents.fxml"));
-            stage.setTitle("All students");
-            stage.setScene(new Scene(root,600,600));
-            stage.show();
-        }catch (Exception e){
-            e.printStackTrace();
-        }
+        String path = "showAllStudents.fxml";
+        changeStage(path);
     }
+
     private String generateId(){
         String uniqueId = UUID.randomUUID().toString();
         return uniqueId;
@@ -142,14 +156,29 @@ public class SelectTeamStudentController implements Initializable {
 
     @FXML
     void checkExam(ActionEvent event) {
-
+        String path = "../exams/student/scheduled/ScheduledExam.fxml";
+        ScheduledExam.fromTeacher = false;
+        changeStage(path);
     }
 
     @FXML
     void goBack(ActionEvent event) {
-
+        String path = "studentTeams.fxml";
+        changeStage(path);
     }
 
+    private void changeStage(String path){
+        try {
+            runThread = false;
+            Stage stage = (Stage) btnSend.getScene().getWindow();
+            Parent root = FXMLLoader.load(getClass().getResource(path));
+            stage.setScene(new Scene(root,600,600));
+            stage.setTitle("Exam Portal");
+            stage.show();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
 }
 
 

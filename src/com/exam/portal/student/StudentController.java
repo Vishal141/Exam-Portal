@@ -1,10 +1,13 @@
 package com.exam.portal.student;
 
 import com.exam.portal.exams.scheduled.ScheduledExam;
+import com.exam.portal.login.LoginController;
+import com.exam.portal.models.Credentials;
 import com.exam.portal.models.Student;
 import com.exam.portal.models.Teacher;
 import com.exam.portal.server.Server;
 import com.exam.portal.server.ServerHandler;
+import com.exam.portal.teams.StudentTeamsController;
 import com.jfoenix.controls.JFXButton;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -20,8 +23,13 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.ObjectInputStream;
 import java.math.BigInteger;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.util.ResourceBundle;
 
@@ -74,6 +82,8 @@ public class StudentController implements Initializable {
     //logging out student.
     public void logout(ActionEvent actionEvent) {
         String path = "../login/login.fxml";
+        LoginController.isSignUp = false;
+        removeCredentials();                                 //removing saved credentials in file.
         changeStage(path,"Login",600,600);
     }
 
@@ -88,8 +98,11 @@ public class StudentController implements Initializable {
             Stage stage;
             if(title.equals("Join with Team ID") || title.equals("Edit Details"))
                 stage = new Stage();
-            else
+            else{
                 stage = (Stage) lblName.getScene().getWindow();
+                StudentTeamsController.stage = stage;
+                ScheduledExam.stage = stage;
+            }
             Parent parent = FXMLLoader.load(getClass().getResource(path));
             stage.setTitle(title);
             stage.setScene(new Scene(parent,width,height));
@@ -160,5 +173,16 @@ public class StudentController implements Initializable {
             e.printStackTrace();
         }
         return null;
+    }
+
+    //removing credentials saved in file.
+    private void removeCredentials(){
+        try {
+            String dirPath = File.listRoots()[1]+"\\Exam_Portal";
+            String filePath = "\\cd.ep";
+            Files.deleteIfExists(Paths.get(dirPath+filePath));
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 }

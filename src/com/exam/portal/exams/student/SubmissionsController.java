@@ -59,6 +59,8 @@ public class SubmissionsController implements Initializable {
         currQuestionIndex = 0;
         fetchExam();
         fetchResponse();
+
+        //TODO back button
     }
 
     //fetching exam from sever.

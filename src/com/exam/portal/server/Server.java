@@ -32,4 +32,7 @@ public interface Server {
     public ArrayList<Student> getStudentsByTeamId(String Id);
     public boolean sendMassage(Message newMassage);
     public ArrayList<Message> getMassages(String teamId);
+    public TeamUpdate checkTeamUpdate(TeamUpdate update);
+    public ExamUpdate checkExamUpdate(ExamUpdate update);
+    public MessageUpdate checkMessageUpdate(MessageUpdate update);
 }

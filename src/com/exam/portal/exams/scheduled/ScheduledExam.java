@@ -2,6 +2,7 @@ package com.exam.portal.exams.scheduled;
 
 import com.exam.portal.exams.student.InstructionController;
 import com.exam.portal.models.Exam;
+import com.exam.portal.models.ExamUpdate;
 import com.exam.portal.models.Team;
 import com.exam.portal.server.Server;
 import com.exam.portal.server.ServerHandler;
@@ -36,14 +37,22 @@ public class ScheduledExam implements Initializable {
     VBox vBox;
     @FXML
     JFXButton activeBtn;
+    @FXML
+    JFXButton upcomingBtn;
 
     //variable used for determining that it is student or teacher.
     public static boolean fromTeacher;
 
     private ArrayList<Exam> exams;
+    private volatile int examsCount;
+    private volatile boolean runThread;
+
+    public static Stage stage;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        examsCount = 0;
+        runThread = false;
         fetchExams();
     }
 
@@ -58,6 +67,9 @@ public class ScheduledExam implements Initializable {
             if(exams == null)
                 exams = new ArrayList<>();
             activeBtn.fire();          //setting active exams initially.
+            examsCount = exams.size();
+            if(!fromTeacher)
+                checkExamUpdate();
         });
     }
 
@@ -167,5 +179,33 @@ public class ScheduledExam implements Initializable {
         }catch (Exception e){
             e.printStackTrace();
         }
+    }
+
+    //checking that whether any exam scheduled in any team or not.
+    private void checkExamUpdate(){
+        runThread = true;
+        new Thread(()->{
+            try {
+                while(runThread){
+                    ExamUpdate update = new ExamUpdate(StudentController.student.getStudentId(),examsCount);
+                    update.setType("create");
+                    Server server = ServerHandler.getInstance();
+                    update = server.checkExamUpdate(update);
+                    if(update.isUpdate()){
+                        ExamUpdate finalUpdate = update;
+                        Platform.runLater(()->{
+                            exams.addAll(finalUpdate.getExams());
+                            upcomingBtn.fire();
+                        });
+                    }
+
+                    Thread.sleep(5000);
+                }
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }).start();
+
+        stage.setOnCloseRequest(windowEvent -> runThread = false);  //stopping thread after stage gets closed.
     }
 }

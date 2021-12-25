@@ -56,8 +56,12 @@ public class QuestionPaper implements Initializable {
     JFXButton submitBtn;
     @FXML
     JFXListView<Node> questionList;
+    @FXML
+    JFXListView<String> questionIndexList;
 
     public static Exam exam; //it is set from scheduled exam.
+    public static Stage stage;
+
     private int currQuestionIndex; //index of questions which is currently showing.
     private volatile boolean runTimer;
 
@@ -79,6 +83,9 @@ public class QuestionPaper implements Initializable {
         }else {
             studentName.setText(StudentController.student.getName());
         }
+
+        //TODO Back Button.
+        //TODO submit on stage close.
     }
 
     //fetching all the questions of selected exam and display first of them.
@@ -91,7 +98,8 @@ public class QuestionPaper implements Initializable {
                 exam.setQuestions(new ArrayList<>());
             }else if(exam.getQuestions().size()>0){
                 setQuestion(exam.getQuestions().get(0));
-
+                questionIndexList.getSelectionModel().select(0);
+                setQuestionIndexList();
                 if(!ScheduledExam.fromTeacher){
                     startTimer();
                     recorder = new WebcamRecorder(Integer.parseInt(exam.getDuration())); //initializing webcam recorder.
@@ -99,6 +107,28 @@ public class QuestionPaper implements Initializable {
                     checkCheatStatus();            //monitoring captured image status and number of applications opened.
                 }
             }
+        });
+    }
+
+    //setting question index list.
+    private void setQuestionIndexList(){
+        ArrayList<String> indices = new ArrayList<>();
+        for(int i=1;i<=exam.getQuestionCount();i++)
+            indices.add(i+"");
+        questionIndexList.getItems().addAll(indices);
+
+        //adding listener to question index list.
+        questionIndexList.setOnMouseClicked(mouseEvent -> {
+            //if current question is subjective than saving response in textarea.
+            Question question = exam.getQuestions().get(currQuestionIndex);
+            if(question.getQuestionType()==SUBJECTIVE){
+                JFXTextArea textArea = (JFXTextArea) questionList.getItems().get(1);
+                question.setResponse(textArea.getText());
+            }
+            int idx = Integer.parseInt(questionIndexList.getSelectionModel().getSelectedItem())-1;
+            questionList.getItems().clear();
+            setQuestion(exam.getQuestions().get(idx));
+            currQuestionIndex = idx;
         });
     }
 
@@ -153,9 +183,9 @@ public class QuestionPaper implements Initializable {
            try {
                int cheatCount = 0;    //showing warning to student 3 times if cheating found then after close exam without submitting.
                while (runTimer){
-                   if(recorder.getCheatStatus()){
+                   if(recorder.getCheatStatus() || processesDetails.getProcessesCount()!=1){
                        //System.out.println(cheatCount);
-                       if(cheatCount==3 || processesDetails.getProcessesCount()!=1){  //checking that cheatCount cross the limit or
+                       if(cheatCount==3){  //checking that cheatCount cross the limit or
                            Platform.runLater(()->{                                    //any other application has opened.
                                runTimer = false;
                                recorder.finish();
@@ -231,15 +261,6 @@ public class QuestionPaper implements Initializable {
         return vBox;
     }
 
-    //it will returns a decoded image object from base64 encoded string.
-    private Image decodeImage(String bytes){
-        if(bytes==null || bytes.equals(""))
-            return null;
-        byte[] bytes1 = Base64.getDecoder().decode(bytes);
-        Image image = new Image(new ByteArrayInputStream(bytes1));
-        return image;
-    }
-
     //adding on click listener to questionList.
     private void setListenerToQuestionList(){
         questionList.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -275,6 +296,7 @@ public class QuestionPaper implements Initializable {
             currQuestionIndex--;
             questionList.getItems().clear();
             setQuestion(exam.getQuestions().get(currQuestionIndex));
+            questionIndexList.getSelectionModel().select(currQuestionIndex);
         }
     }
 
@@ -291,6 +313,7 @@ public class QuestionPaper implements Initializable {
             currQuestionIndex++;
             questionList.getItems().clear();
             setQuestion(exam.getQuestions().get(currQuestionIndex));
+            questionIndexList.getSelectionModel().select(currQuestionIndex);
         }
     }
 
@@ -387,6 +410,7 @@ public class QuestionPaper implements Initializable {
         alert.showAndWait();
     }
 
+    //closing current stage and showing exams stage.
     private void backToExams(){
         try {
             Parent root = FXMLLoader.load(getClass().getResource("../scheduled/ScheduledExam.fxml"));
@@ -397,6 +421,15 @@ public class QuestionPaper implements Initializable {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    //it will returns a decoded image object from base64 encoded string.
+    private Image decodeImage(String bytes){
+        if(bytes==null || bytes.equals(""))
+            return null;
+        byte[] bytes1 = Base64.getDecoder().decode(bytes);
+        Image image = new Image(new ByteArrayInputStream(bytes1));
+        return image;
     }
 
 }

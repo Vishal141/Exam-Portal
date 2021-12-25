@@ -9,6 +9,12 @@ public class ExamUpdate {
     private boolean update;
     private ArrayList<Exam> exams;
 
+    public ExamUpdate(){}
+    public ExamUpdate(String studentId,int prevCount){
+        this.studentId = studentId;
+        this.prevCount = prevCount;
+    }
+
     public String getStudentId() {
         return studentId;
     }

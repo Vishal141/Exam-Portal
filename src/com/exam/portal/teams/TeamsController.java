@@ -112,8 +112,10 @@ public class TeamsController implements Initializable {
             Stage stage;
             if(title.equals("Create Team"))
                 stage = new Stage();
-            else
+            else{
                 stage = (Stage) btnBack.getScene().getWindow();
+                SelectTeamTeacherController.stage = stage;
+            }
             Parent parent = FXMLLoader.load(Objects.requireNonNull(getClass().getResource(path)));
             stage.setTitle(title);
             stage.setScene(new Scene(parent,width,height));

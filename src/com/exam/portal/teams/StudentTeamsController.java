@@ -1,6 +1,7 @@
 package com.exam.portal.teams;
 
 import com.exam.portal.models.Team;
+import com.exam.portal.models.TeamUpdate;
 import com.exam.portal.server.Server;
 import com.exam.portal.server.ServerHandler;
 import com.exam.portal.student.StudentController;
@@ -14,12 +15,12 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 import java.io.IOException;
 import java.net.URL;
@@ -34,11 +35,17 @@ public class StudentTeamsController implements Initializable {
 
     private Server server;
     private ArrayList<Team> teams;
+    private volatile int teamsCount;
+    private volatile boolean runThread;
+
+    public static Stage stage;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         server = ServerHandler.getInstance();
         studentName.setText(StudentController.student.getName());
+        teamsCount = 0;
+        runThread = false;
         fetchTeams();
         setListener();
     }
@@ -49,13 +56,15 @@ public class StudentTeamsController implements Initializable {
             teams = server.getStudentsTeams(StudentController.student.getStudentId());
             if(teams==null)
                 teams = new ArrayList<>();
-            setList();
+            setList(teams);
+            teamsCount = teams.size();
+            checkTeamUpdate();
         });
     }
 
     //adding all teams in listview
-    private void setList(){
-        for(Team team:teams){
+    private void setList(ArrayList<Team> teamArrayList){
+        for(Team team:teamArrayList){
             Label label = new Label();         //creating custom label and adding in listview.
             label.setText(team.getName());
             Font font = Font.font("System", FontWeight.BOLD, FontPosture.ITALIC,14);
@@ -70,6 +79,7 @@ public class StudentTeamsController implements Initializable {
         teamList.setOnMouseClicked(mouseEvent -> {
             SelectTeamStudentController.currentTeam=teams.get(teamList.getSelectionModel().getSelectedIndex());  //setting team in controller.
             Stage stage = (Stage) teamList.getScene().getWindow();
+            SelectTeamStudentController.stage = stage;
             try{
                 Parent root = FXMLLoader.load(getClass().getResource("selectTeamStudent.fxml"));
                 stage.setScene(new Scene(root,700,700));
@@ -106,6 +116,28 @@ public class StudentTeamsController implements Initializable {
         }catch (Exception e){
             e.printStackTrace();
         }
+    }
+
+    //checking that student has been added in any new team or not.
+    private void checkTeamUpdate(){
+        runThread = true;
+        new Thread(()->{
+            try {
+                while(runThread){
+                    TeamUpdate update = new TeamUpdate(StudentController.student.getStudentId(),teamsCount);
+                    update = server.checkTeamUpdate(update);
+                    if(update.isUpdate()){                           //student added in any team then add it in list.
+                        TeamUpdate finalUpdate = update;
+                        Platform.runLater(()-> setList(finalUpdate.getTeams()));
+                    }
+                    Thread.sleep(5000);
+                }
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }).start();
+
+        stage.setOnCloseRequest(windowEvent -> runThread = false);  //if stage gets closed then stopping thread.
     }
 
 }

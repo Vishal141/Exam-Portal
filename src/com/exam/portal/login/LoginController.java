@@ -1,5 +1,6 @@
 package com.exam.portal.login;
 
+import com.exam.portal.models.Credentials;
 import com.exam.portal.models.Student;
 import com.exam.portal.models.Teacher;
 import com.exam.portal.server.Server;
@@ -16,8 +17,11 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 
+import java.io.*;
 import java.math.BigInteger;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.util.ResourceBundle;
 import java.util.UUID;
@@ -34,8 +38,13 @@ public class LoginController implements Initializable {
     @FXML
     Button signupBtn;
 
+    public static boolean isSignUp;
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        if(!isSignUp){
+            Platform.runLater(this::loginUsingSavedCredentials);
+        }
     }
 
     @FXML  //call login method of server interface which sends request to server.
@@ -51,6 +60,13 @@ public class LoginController implements Initializable {
 
                 Platform.runLater(()->{   //making login asynchronous
                     if(server.login(student)){
+                        //saving credentials
+                        Credentials credentials = new Credentials();
+                        credentials.setEmail(student.getEmail());
+                        credentials.setPassword(student.getPassword());
+                        credentials.setType("student");
+                        saveCredentials(credentials);
+
                         StudentController.student = server.getStudent(UserEmailId.getText());
                         gotoDashboard("../student/studentDashboard.fxml");    //if login is successful than go student dashboard.
                     }else{
@@ -64,6 +80,13 @@ public class LoginController implements Initializable {
 
                 Platform.runLater(()->{
                     if(server.login(teacher)){
+                        //saving credentials
+                        Credentials credentials = new Credentials();
+                        credentials.setEmail(teacher.getEmail());
+                        credentials.setPassword(teacher.getPassword());
+                        credentials.setType("teacher");
+                        saveCredentials(credentials);
+
                         TeacherController.teacher = server.getTeacher(UserEmailId.getText());
                         gotoDashboard("../teacher/teacherDashboard.fxml");
                     }else{
@@ -74,9 +97,78 @@ public class LoginController implements Initializable {
         }
     }
 
+    //login using saved credentials.
+    private void loginUsingSavedCredentials(){
+        Credentials credentials = getCredentials();
+        if(credentials==null || credentials.getEmail().equals(""))return;
+        Server server = ServerHandler.getInstance();
+        if(credentials.getType().equals("student")){
+            Student student = new Student();
+            student.setEmail(credentials.getEmail());
+            student.setPassword(credentials.getPassword());
+            if(server.login(student)){
+                StudentController.student = server.getStudent(credentials.getEmail());
+                gotoDashboard("../student/studentDashboard.fxml");
+            }
+        }else{
+            Teacher teacher = new Teacher();
+            teacher.setEmail(credentials.getEmail());
+            teacher.setPassword(credentials.getPassword());
+            if(server.login(teacher)){
+                TeacherController.teacher = server.getTeacher(credentials.getEmail());
+                gotoDashboard("../teacher/teacherDashboard.fxml");
+            }
+        }
+    }
+
+    //checking that user is already logged in or not.
+    private Credentials getCredentials(){
+        try {
+            String dirPath = File.listRoots()[1]+"\\Exam_Portal";
+            String filePath = "\\cd.ep";
+            if(!Files.exists(Paths.get(dirPath)) || !Files.exists(Paths.get(dirPath+filePath))){
+                return null;
+            }
+
+            File file = new File(dirPath+filePath);
+            ObjectInputStream is = new ObjectInputStream(new FileInputStream(file));
+            Credentials credentials = (Credentials) is.readObject();
+            is.close();
+            return credentials;
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    //saving credentials in file for later login.
+    private void saveCredentials(Credentials credentials){
+        new Thread(()->{
+            try {
+                String dirPath = File.listRoots()[1]+"\\Exam_Portal";
+                String filePath = "\\cd.ep";
+                if(!Files.exists(Paths.get(dirPath))){
+                    Files.createDirectory(Paths.get(dirPath));
+                }
+                if(!Files.exists(Paths.get(dirPath+filePath))){
+                    Files.createFile(Paths.get(dirPath+filePath));
+                }
+
+                File file = new File(dirPath+filePath);
+                ObjectOutputStream os = new ObjectOutputStream(new FileOutputStream(file,false));
+                os.writeObject(credentials);
+                os.flush();
+                os.close();
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }).start();
+    }
+
     @FXML
     void register(ActionEvent event){    //change current stage to signUp stage.
         try {
+            isSignUp = true;
             Stage stage = (Stage) signupBtn.getScene().getWindow();
             Parent root = FXMLLoader.load(getClass().getResource("signUp.fxml"));
             stage.setTitle("Create New Account");

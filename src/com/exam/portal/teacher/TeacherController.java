@@ -1,6 +1,7 @@
 package com.exam.portal.teacher;
 
 import com.exam.portal.exams.scheduled.ScheduledExam;
+import com.exam.portal.login.LoginController;
 import com.exam.portal.models.Teacher;
 import com.exam.portal.server.Server;
 import com.exam.portal.server.ServerHandler;
@@ -15,8 +16,11 @@ import javafx.scene.control.*;
 
 import javafx.stage.Stage;
 
+import java.io.File;
 import java.math.BigInteger;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.util.Objects;
 import java.util.ResourceBundle;
@@ -61,6 +65,8 @@ public class TeacherController implements Initializable {
     @FXML
     void logout(ActionEvent event) {
         String path = "../login/login.fxml";
+        LoginController.isSignUp = false;
+        removeCredentials();                //removing credentials.
         changeStage(path,"Login",600,600);
     }
 
@@ -189,5 +195,16 @@ public class TeacherController implements Initializable {
             e.printStackTrace();
         }
         return null;
+    }
+
+    //removing credentials saved in file.
+    private void removeCredentials(){
+        try {
+            String dirPath = File.listRoots()[1]+"\\Exam_Portal";
+            String filePath = "\\cd.ep";
+            Files.deleteIfExists(Paths.get(dirPath+filePath));
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 }

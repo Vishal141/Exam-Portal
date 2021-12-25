@@ -8,6 +8,12 @@ public class TeamUpdate {
     private boolean update;
     private ArrayList<Team> teams;
 
+    public TeamUpdate(){}
+    public TeamUpdate(String studentId,int prevCount){
+        this.studentId = studentId;
+        this.prevCount = prevCount;
+    }
+
     public String getStudentId() {
         return studentId;
     }

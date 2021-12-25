@@ -25,7 +25,7 @@ public class ServerHandler implements Server{
 
     private static ServerHandler serverHandler=null;
 
-    public ServerHandler(){
+    private ServerHandler(){
         gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
     }
 
@@ -484,6 +484,7 @@ public class ServerHandler implements Server{
     }
 
     //sending request for checking that whether student has been added in new team or not.
+    @Override
     public TeamUpdate checkTeamUpdate(TeamUpdate update){
         try{
             String url = TEAM_URL+"/get/update";
@@ -505,6 +506,7 @@ public class ServerHandler implements Server{
 
     //sending request for checking whether a new exam has been scheduled or ready to start within 15
     // minutes in teams in which student is present.
+    @Override
     public ExamUpdate checkExamUpdate(ExamUpdate update){
         try{
             String url = EXAM_URL+"/get/update";
@@ -563,6 +565,26 @@ public class ServerHandler implements Server{
             e.printStackTrace();
         }
         return null;
+    }
+
+    //sending current count of messages which will be compare with messages on server and extra messages gets returned.
+    @Override
+    public MessageUpdate checkMessageUpdate(MessageUpdate update){
+        try {
+            String url = TEAM_URL+"/get/update/message";
+            connection = ServerConfig.getConnection(url);
+            assert connection!=null;
+            String json = gson.toJson(update);
+            writeJson(json);
+
+            BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            String response = reader.readLine();
+            update = gson.fromJson(response,MessageUpdate.class);
+            return update;
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return update;
     }
 
     //method for writing object in request body
