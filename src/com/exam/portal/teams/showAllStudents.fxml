@@ -11,7 +11,6 @@
 <?import javafx.scene.text.Font?>
 
 <BorderPane stylesheets="@../cssFiles/style.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.exam.portal.teams.ShowAllStudents">
-<<<<<<< HEAD
     <center>
         <AnchorPane prefHeight="400.0" prefWidth="600.0">
             <TableView fx:id="table" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -43,7 +42,6 @@
         </HBox>
     </top>
 </BorderPane>
-=======
    <center>
       <AnchorPane prefHeight="400.0" prefWidth="600.0">
            <TableView fx:id="table" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -75,4 +73,3 @@
       </HBox>
    </top>
 </BorderPane>
->>>>>>> 5f4468f59db15492ec31f7b0d6bbf6aed4fb37fb
