@@ -1,9 +1,6 @@
 package com.exam.portal.controllers;
 
-import com.exam.portal.entities.Exam;
-import com.exam.portal.entities.ExamResponse;
-import com.exam.portal.entities.ExamUpdate;
-import com.exam.portal.entities.Image;
+import com.exam.portal.entities.*;
 import com.exam.portal.interfaces.ExamUtils;
 import com.exam.portal.proctor.Proctor;
 import com.exam.portal.services.ExamUtilsService;
@@ -79,4 +76,11 @@ public class ExamUtilsController{
             return examUtils.checkExamUpdate(update);
         return examUtils.checkExamStartUpdate(update);
     }
+
+    @RequestMapping("/get/exam/submission/details/{examId}")
+    public ArrayList<StudentResponse> getExamsSubmissionDetails(@PathVariable String examId){
+        examId = "Exam#"+examId;
+        return examUtils.getExamsSubmissionDetails(examId);
+    }
+    
 }

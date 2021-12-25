@@ -469,6 +469,32 @@ public class ExamUtilsDb {
         return 0;
     }
 
+    //getting submission details of an Exam
+    public ArrayList<StudentResponse> getExamsSubmissionDetails(String examId){
+        PreparedStatement preparedStatement=null;
+        ResultSet rs;
+        String query = "SELECT s.NAME , s.EMAIL, s.CONTACT_NUMBER ,e.MARKS FROM EXAMRESPONSE e INNER JOIN STUDENT s ON s.studentId=e.examId=?";
+        try{
+            preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1,examId);
+            rs = preparedStatement.executeQuery();
+            ArrayList<StudentResponse> studentresponses = new ArrayList<>();
+            while(rs.next()){
+                StudentResponse studentresponse = new StudentResponse();
+                studentresponse.setName(rs.getString(1));
+                studentresponse.setEmail(rs.getString(2));
+                studentresponse.setContact(rs.getString(3));
+                studentresponse.setMarksObtained(rs.getDouble(4));
+
+                studentresponses.add(studentresponse);
+            }
+            return studentresponses;
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     //getting blob of image using fileId and encode it as a string and return ti.
     private String getImage(String fileId){
         try {
@@ -520,3 +546,5 @@ public class ExamUtilsDb {
         return null;
     }
 }
+
+   //
