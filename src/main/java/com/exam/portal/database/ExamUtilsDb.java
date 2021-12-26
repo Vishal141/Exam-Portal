@@ -35,7 +35,7 @@ public class ExamUtilsDb {
             preparedStatement.setDate(5,exam.getExamDate());
             preparedStatement.setTime(6,exam.getTime());
             preparedStatement.setInt(7,Integer.parseInt(exam.getDuration()));
-            preparedStatement.setTimestamp(8,new Timestamp(new Date().getTime()));
+            preparedStatement.setTimestamp(8,new Timestamp(System.currentTimeMillis()));
             preparedStatement.setInt(9,exam.getQuestionCount());
             preparedStatement.setDouble(10,exam.getMaxScore());
             preparedStatement.execute();
@@ -386,14 +386,30 @@ public class ExamUtilsDb {
         return responses;
     }
 
+    //updating student marks.
+    public boolean updateMarks(ExamResponse response){
+        try {
+            String query = "UPDATE Exam_Response SET Marks=? WHERE Exam_Id=? AND Student_Id=?";
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setDouble(1,response.getMarks());
+            preparedStatement.setString(2,response.getExamId());
+            preparedStatement.setString(3,response.getStudentId());
+            int count = preparedStatement.executeUpdate();
+            return true;
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return false;
+    }
+
     //comparing prevCount of exams with current count if they are not equal than adding new exams to list in examUpdate.
     public ExamUpdate checkExamUpdate(ExamUpdate update){
         int count = getExamCount(update.getStudentId());
         if(count>update.getPrevCount()){
             update.setUpdate(true);
-            update.setPrevCount(count);
             int diff = count-update.getPrevCount();
-            String query = "SELECT * FROM Exams WHERE Team_Id IN (SELECT Team_Id FROM BelongTo WHERE Student_Id=?) DESC Created_At LIMIT ?";
+            update.setPrevCount(count);
+            String query = "SELECT * FROM Exams WHERE Team_Id IN (SELECT Team_Id FROM BelongTo WHERE Student_Id=?) ORDER BY Created_At DESC LIMIT ?";
             try{
                 PreparedStatement preparedStatement = connection.prepareStatement(query);
                 preparedStatement.setString(1,update.getStudentId());
@@ -436,7 +452,7 @@ public class ExamUtilsDb {
             try{
                 int diff = count-update.getPrevCount();
                 String query = "SELECT COUNT(Exam_Id) WHERE Creator_Id IN (SELECT Team_Id FROM BelongTo WHERE Student_Id=?) AND  " +
-                               "Exam_Date=NOW() AND Exam_Time>NOW() AND Exam_Time<=NOW()+INTERVAL 15 MINUTE DESC Created_At LIMIT ?";
+                               "Exam_Date=NOW() AND Exam_Time>NOW() AND Exam_Time<=NOW()+INTERVAL 15 MINUTE ORDER BY Created_At DESC LIMIT ?";
                 PreparedStatement preparedStatement = connection.prepareStatement(query);
                 preparedStatement.setInt(2,diff);
                 preparedStatement.setString(1,update.getStudentId());
@@ -473,12 +489,13 @@ public class ExamUtilsDb {
     public ArrayList<StudentResponse> getExamsSubmissionDetails(String examId){
         PreparedStatement preparedStatement=null;
         ResultSet rs;
-        String query = "SELECT s.NAME , s.EMAIL, s.CONTACT_NUMBER ,e.MARKS FROM EXAMRESPONSE e INNER JOIN STUDENT s ON s.studentId=e.examId=?";
+        String query = "SELECT s.Name,s.Email,s.ContactNo,e.Marks FROM Exam_Response e " +
+                "INNER JOIN STUDENT s ON s.Student_Id=e.Student_Id AND e.Exam_Id=?";
         try{
             preparedStatement = connection.prepareStatement(query);
             preparedStatement.setString(1,examId);
             rs = preparedStatement.executeQuery();
-            ArrayList<StudentResponse> studentresponses = new ArrayList<>();
+            ArrayList<StudentResponse> studentResponses = new ArrayList<>();
             while(rs.next()){
                 StudentResponse studentresponse = new StudentResponse();
                 studentresponse.setName(rs.getString(1));
@@ -486,9 +503,9 @@ public class ExamUtilsDb {
                 studentresponse.setContact(rs.getString(3));
                 studentresponse.setMarksObtained(rs.getDouble(4));
 
-                studentresponses.add(studentresponse);
+                studentResponses.add(studentresponse);
             }
-            return studentresponses;
+            return studentResponses;
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -546,5 +563,3 @@ public class ExamUtilsDb {
         return null;
     }
 }
-
-   //

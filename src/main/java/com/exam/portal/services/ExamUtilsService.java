@@ -58,5 +58,9 @@ public class ExamUtilsService implements ExamUtils {
         return examUtilsDb.getExamsSubmissionDetails(examId);
     }
 
+    @Override
+    public boolean updateMarks(ExamResponse response){
+        return examUtilsDb.updateMarks(response);
+    }
 
 }

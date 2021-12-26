@@ -55,7 +55,7 @@ public class TeamUtilsDb {
             preparedStatement = connection.prepareStatement(query);
             preparedStatement.setString(1, belongTo.getStudentId());
             preparedStatement.setString(2, belongTo.getTeamId());
-            preparedStatement.setTimestamp(3,new Timestamp(new Date().getTime()));
+            preparedStatement.setTimestamp(3,new Timestamp(System.currentTimeMillis()));
             preparedStatement.execute();
             return true;
         }catch(Exception e){
@@ -124,7 +124,7 @@ public class TeamUtilsDb {
                 preparedStatement = connection.prepareStatement(query);
                 preparedStatement.setString(1, studentId);
                 preparedStatement.setString(2, teamId);
-                preparedStatement.setTimestamp(3,new Timestamp(new Date().getTime()));
+                preparedStatement.setTimestamp(3,new Timestamp(System.currentTimeMillis()));
                 preparedStatement.execute();
                 return true;
             }
@@ -143,7 +143,7 @@ public class TeamUtilsDb {
           preparedStatement.setString(3, message.getSenderId());
           preparedStatement.setString(4,message.getSenderName());
           preparedStatement.setString(5, message.getMessage());
-          preparedStatement.setTimestamp(6,message.getDate());
+          preparedStatement.setTimestamp(6,new Timestamp(System.currentTimeMillis()));
           preparedStatement.execute();
           return true;
       }catch(Exception e){
@@ -155,10 +155,9 @@ public class TeamUtilsDb {
 
   public  ArrayList<Message> getTeamMessage(String teamId){
         PreparedStatement preparedStatement=null;
-        PreparedStatement preparedStatement1=null;
         ArrayList<Message> messages=new ArrayList<>();
-      try{
-            String query="SELECT * FROM Messages WHERE TEAM_ID=?";
+        try{
+            String query="SELECT * FROM Messages WHERE TEAM_ID=? ORDER BY Time";
             preparedStatement = connection.prepareStatement(query);
             preparedStatement.setString(1,teamId);
             ResultSet rs=preparedStatement.executeQuery();
@@ -210,10 +209,10 @@ public class TeamUtilsDb {
         int count = getTeamCount(teamUpdate.getStudentId());
         if(count > teamUpdate.getPrevCount()){  //if current count is greater than previous means student added in some new teams.
             teamUpdate.setUpdate(true);
-            teamUpdate.setPrevCount(count);
             int diff = count-teamUpdate.getPrevCount();
+            teamUpdate.setPrevCount(count);
             try{
-                String query = "SELECT * FROM Teams WHERE Team_Id IN (SELECT Team_Id FROM BelongTo WHERE Student_Id=? DESC Added_Date LIMIT ?)";
+                String query = "SELECT * FROM Teams WHERE Team_Id IN (SELECT Team_Id FROM BelongTo WHERE Student_Id=? ORDER BY Added_Date DESC LIMIT ?)";
                 PreparedStatement preparedStatement = connection.prepareStatement(query);
                 preparedStatement.setString(1,teamUpdate.getStudentId());
                 preparedStatement.setInt(2,diff);
@@ -257,10 +256,10 @@ public class TeamUtilsDb {
         int count = getMessageCount(update.getTeamId());
         if(count>update.getPrevCount()){
             update.setUpdate(true);
-            update.setPrevCount(count);
             int diff = count-update.getPrevCount();
+            update.setPrevCount(count);
             try {
-                String query = "SELECT * FROM Messages WHERE Team_Id=? DESC Time LIMIT ?";
+                String query = "SELECT * FROM Messages WHERE Team_Id=? ORDER BY Time DESC LIMIT ?";
                 PreparedStatement preparedStatement = connection.prepareStatement(query);
                 preparedStatement.setString(1,update.getTeamId());
                 preparedStatement.setInt(2,diff);

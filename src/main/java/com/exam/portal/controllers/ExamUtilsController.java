@@ -53,7 +53,6 @@ public class ExamUtilsController{
     public Exam getExamById(@PathVariable String examId){
         examId = "Exam#"+examId;
         Exam exam =  examUtils.getExamById(examId);
-       // System.out.println(exam.getQuestions().get(0).isImage());
         return exam;
     }
 
@@ -70,14 +69,19 @@ public class ExamUtilsController{
         return examUtils.getStudentSubmission(examId,studentId);
     }
 
-    @RequestMapping("/get/update")
-    public ExamUpdate checkExamUpdate(@RequestBody ExamUpdate update){
-        if(update.getType().equals("create"))
-            return examUtils.checkExamUpdate(update);
-        return examUtils.checkExamStartUpdate(update);
+    @RequestMapping("/update/marks")
+    public String updateMarks(@RequestBody ExamResponse response){
+        if(examUtils.updateMarks(response))
+            return SUCCESSFUL;
+        return FAILED;
     }
 
-    @RequestMapping("/get/exam/submission/details/{examId}")
+    @RequestMapping("/get/update")
+    public ExamUpdate checkExamUpdate(@RequestBody ExamUpdate update){
+        return examUtils.checkExamUpdate(update);
+    }
+
+    @RequestMapping("/get/exam/submission/details/exam_id={examId}")
     public ArrayList<StudentResponse> getExamsSubmissionDetails(@PathVariable String examId){
         examId = "Exam#"+examId;
         return examUtils.getExamsSubmissionDetails(examId);

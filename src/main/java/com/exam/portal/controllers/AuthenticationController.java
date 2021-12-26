@@ -39,7 +39,6 @@ public class AuthenticationController {
 
     @RequestMapping("/teacher/signUp")
     public String teacherRegister(@RequestBody Teacher teacher){
-       // System.out.println(teacher);
         if(authentication.register(teacher))
             return SUCCESSFUL;
         return FAILED;
@@ -54,7 +53,6 @@ public class AuthenticationController {
 
     @RequestMapping("/teacher/get/{email}")
     public Teacher getTeacher(@PathVariable String email){
-        System.out.println(email);
         return authentication.findTeacherByEmail(email);
     }
 

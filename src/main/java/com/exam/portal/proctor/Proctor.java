@@ -31,8 +31,10 @@ public class Proctor {
            // System.out.println(response);
             Gson gson = new Gson();
             FaceDetectionResponse faceDetectionResponse = gson.fromJson(response,FaceDetectionResponse.class);
-            if(faceDetectionResponse.getResult().getFaces().size() != 1)
+            if(faceDetectionResponse.getResult().getFaces().size() != 1){
+                System.out.println(response);
                 return false;
+            }
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -49,8 +51,10 @@ public class Proctor {
             TagDetectionResponse tagDetectionResponse = gson.fromJson(response,TagDetectionResponse.class);
             for(Tags tags:tagDetectionResponse.getResult().getTags()){
                 String tag = tags.getTag().getEn().toLowerCase();
-                if((tag.equals("mobile") || tag.equals("laptop")))
+                if((tag.equals("mobile") || tag.equals("laptop")) && tags.getConfidence()>25){
+                    System.out.println(response);
                     return false;
+                }
             }
         }catch (Exception e){
             e.printStackTrace();

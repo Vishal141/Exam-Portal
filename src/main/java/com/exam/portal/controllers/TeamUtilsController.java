@@ -58,7 +58,6 @@ public class TeamUtilsController {
     @RequestMapping("/get/id={Id}")
     public Team findTeamById(@PathVariable String Id){
         Id = "Team#"+Id;
-        System.out.println(Id);
         return teamUtils.findTeamById(Id);
     }
 

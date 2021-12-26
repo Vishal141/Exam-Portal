@@ -14,4 +14,5 @@ public interface ExamUtils {
     public ExamUpdate checkExamUpdate(ExamUpdate update);
     public ExamUpdate checkExamStartUpdate(ExamUpdate update);
     public ArrayList<StudentResponse> getExamsSubmissionDetails(String examId);
+    public boolean updateMarks(ExamResponse response);
 }
