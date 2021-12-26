@@ -1,12 +1,15 @@
 package com.exam.portal.exams.student;
 
+import com.exam.portal.exams.scheduled.ScheduledExam;
 import com.exam.portal.models.*;
 import com.exam.portal.server.Server;
 import com.exam.portal.server.ServerHandler;
 import com.exam.portal.student.StudentController;
 
+import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXListView;
 import com.jfoenix.controls.JFXTextArea;
+import com.jfoenix.controls.JFXTextField;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -15,6 +18,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -40,15 +44,16 @@ public class SubmissionsController implements Initializable {
 
     @FXML
     Label testTitle;
-
     @FXML
     Label studentName;
-
     @FXML
     Label marks;
-
     @FXML
     JFXListView<Node> questionList;
+    @FXML
+    JFXTextField newMarks;
+    @FXML
+    JFXButton updateBtn;
 
     public static Exam exam;
     private ExamResponse response;
@@ -64,6 +69,13 @@ public class SubmissionsController implements Initializable {
         currQuestionIndex = 0;
         fetchExam();
         fetchResponse();
+
+        //making update btn invisible and disable if user is student
+        if(!ScheduledExam.fromTeacher){
+            newMarks.setVisible(false);
+            updateBtn.setDisable(true);
+            updateBtn.setVisible(false);
+        }
     }
 
     //fetching exam from sever.
@@ -194,10 +206,43 @@ public class SubmissionsController implements Initializable {
     }
 
     @FXML
+    public void updateMarks(ActionEvent event){
+        try {
+            ExamResponse response = new ExamResponse();
+            response.setExamId(exam.getExamId());
+            response.setStudentId(StudentController.student.getStudentId());
+            response.setMarks(Double.parseDouble(newMarks.getText()));
+
+            Platform.runLater(()->{
+                if(server.updateMarks(response)){
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setHeaderText(null);
+                    alert.setTitle("Successful");
+                    alert.setContentText("Marks successfully updated.");
+                    alert.showAndWait();
+                    newMarks.setText("");
+                }else{
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setHeaderText(null);
+                    alert.setTitle("Failed");
+                    alert.setContentText("failed to update marks.");
+                    alert.showAndWait();
+                }
+            });
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
     public void back(ActionEvent event){
         try {
             Stage stage = (Stage) testTitle.getScene().getWindow();
-            Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("../scheduled/ScheduledExam.fxml")));
+            Parent root;
+            if(ScheduledExam.fromTeacher)
+                root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("../teacher/viewSubmissions.fxml")));
+            else
+                root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("../scheduled/scheduledExam.fxml")));
             stage.setTitle("Exam Portal");
             stage.setScene(new Scene(root,600,600));
             stage.show();

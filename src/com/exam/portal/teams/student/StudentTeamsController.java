@@ -1,4 +1,4 @@
-package com.exam.portal.teams;
+package com.exam.portal.teams.student;
 
 import com.exam.portal.models.Team;
 import com.exam.portal.models.TeamUpdate;
@@ -8,7 +8,6 @@ import com.exam.portal.student.StudentController;
 import com.jfoenix.controls.JFXListView;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -20,11 +19,11 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class StudentTeamsController implements Initializable {
@@ -64,6 +63,7 @@ public class StudentTeamsController implements Initializable {
 
     //adding all teams in listview
     private void setList(ArrayList<Team> teamArrayList){
+        if(teamArrayList==null)return;
         for(Team team:teamArrayList){
             Label label = new Label();         //creating custom label and adding in listview.
             label.setText(team.getName());
@@ -81,7 +81,7 @@ public class StudentTeamsController implements Initializable {
             Stage stage = (Stage) teamList.getScene().getWindow();
             SelectTeamStudentController.stage = stage;
             try{
-                Parent root = FXMLLoader.load(getClass().getResource("selectTeamStudent.fxml"));
+                Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("selectTeamStudent.fxml")));
                 stage.setScene(new Scene(root,700,700));
                 stage.setTitle(SelectTeamStudentController.currentTeam.getName());
                 stage.show();
@@ -95,7 +95,7 @@ public class StudentTeamsController implements Initializable {
     @FXML
     public void joinTeam(ActionEvent event) {
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("../student/joinWithId.fxml"));
+            Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("../../student/joinWithId.fxml")));
             Stage stage = new Stage();
             stage.setTitle("Join Team");
             stage.setScene(new Scene(root,600,600));
@@ -108,7 +108,7 @@ public class StudentTeamsController implements Initializable {
     @FXML
     public void back(ActionEvent event){
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("../student/studentDashboard.fxml"));
+            Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("../../student/studentDashboard.fxml")));
             Stage stage = (Stage) teamList.getScene().getWindow();
             stage.setTitle("Exam Portal");
             stage.setScene(new Scene(root,600,600));
@@ -122,8 +122,8 @@ public class StudentTeamsController implements Initializable {
     private void checkTeamUpdate(){
         runThread = true;
         new Thread(()->{
-            try {
-                while(runThread){
+            while(runThread){
+                try {
                     TeamUpdate update = new TeamUpdate(StudentController.student.getStudentId(),teamsCount);
                     update = server.checkTeamUpdate(update);
                     if(update.isUpdate()){                           //student added in any team then add it in list.
@@ -131,9 +131,9 @@ public class StudentTeamsController implements Initializable {
                         Platform.runLater(()-> setList(finalUpdate.getTeams()));
                     }
                     Thread.sleep(5000);
+                }catch (Exception e){
+                    e.printStackTrace();
                 }
-            }catch (Exception e){
-                e.printStackTrace();
             }
         }).start();
 

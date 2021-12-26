@@ -384,7 +384,6 @@ public class ServerHandler implements Server{
             assert connection!=null;
             BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
             String response = reader.readLine();
-            System.out.println(response);
             Exam exam = gson.fromJson(response,Exam.class);
             return exam;
         }catch (Exception e){
@@ -482,6 +481,24 @@ public class ServerHandler implements Server{
             e.printStackTrace();
         }
         return null;
+    }
+
+    @Override
+    public boolean updateMarks(ExamResponse response){
+        try {
+            String url = EXAM_URL+"/update/marks";
+            connection = ServerConfig.getConnection(url);
+            assert connection!=null;
+            String json = gson.toJson(response);
+            writeJson(json);
+
+            BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            String res = reader.readLine();
+            return res.equals(SUCCESSFUL);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return false;
     }
 
     //sending request for checking that whether student has been added in new team or not.

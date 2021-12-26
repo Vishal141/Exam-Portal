@@ -3,6 +3,8 @@ package com.exam.portal.teams;
 import com.exam.portal.models.Student;
 import com.exam.portal.server.Server;
 import com.exam.portal.server.ServerHandler;
+import com.exam.portal.teams.student.SelectTeamStudentController;
+import com.exam.portal.teams.teacher.SelectTeamTeacherController;
 import com.jfoenix.controls.JFXTextField;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -85,9 +87,9 @@ public class ShowAllStudents implements Initializable {
             Stage stage = (Stage) searchText.getScene().getWindow();
             Parent root;
             if(fromTeacher)
-                root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("selectTeamTeacher.fxml")));
+                root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("teacher/selectTeamTeacher.fxml")));
             else
-                root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("selectTeamStudent.fxml")));
+                root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("student/selectTeamStudent.fxml")));
             stage.setTitle("Exam Portal");
             stage.setScene(new Scene(root,700,700));
             stage.show();

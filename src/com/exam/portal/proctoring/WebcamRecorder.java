@@ -58,63 +58,36 @@ public class WebcamRecorder {
     }
 
     //start recording student's video and sending image to server for proctoring.
-    private void start(){
+    public void start(){
         isThreadRunning = true;
-        Thread thread = new Thread(()->{
-            IMediaWriter writer = ToolFactory.makeWriter(file.getAbsolutePath());
-            Dimension dimension = WebcamResolution.QVGA.getSize();
-            writer.addVideoStream(0,0, ICodec.ID.CODEC_ID_H264,dimension.width,dimension.height);
-
+        new Thread(()->{
             Webcam webcam = Webcam.getDefault();
-            webcam.setViewSize(dimension);
             webcam.open(true);
-            System.out.println("Recording started...");
-            long start = System.currentTimeMillis();
-            boolean keyFrame = true;
+            Server server = ServerHandler.getInstance();
+            System.out.println("Recording started");
             while (isThreadRunning){
-                BufferedImage image = ConverterFactory.convertToType(webcam.getImage(),BufferedImage.TYPE_3BYTE_BGR);
-                IConverter converter = ConverterFactory.createConverter(image, IPixelFormat.Type.YUV420P);
-                long time = (System.currentTimeMillis()-start)*1000;
-                IVideoPicture frame = converter.toPicture(image,time);
-                if(keyFrame){
-                    frame.setKeyFrame(true);
-                    keyFrame = false;
-                }
-                frame.setQuality(0);
-                writer.encodeVideo(0,frame);
-
-                new Thread(()->{             //in different thread image send to server and checked for cheating.
-                    try{
-                        long t = time;
-                        Server server = ServerHandler.getInstance();
-                        ByteArrayOutputStream os = new ByteArrayOutputStream();
-                        ImageIO.write(image,"jpg",os);
-                        String bytes = Base64.getEncoder().encodeToString(os.toByteArray());
+                try {
+                    BufferedImage image = webcam.getImage();
+                    ByteArrayOutputStream os = new ByteArrayOutputStream();
+                    ImageIO.write(image,"jpg",os);
+                    String bytes = Base64.getEncoder().encodeToString(os.toByteArray());
+                    new Thread(()->{
                         Image image1 = new Image();
                         image1.setStudentId(StudentController.student.getStudentId());
                         image1.setBytes(bytes);
-                        if(!server.getProctorResult(image1)){
+                        if(!server.getProctorResult(image1))
                             cheatFound++;
-                        }
                         totalCheck++;
-                    }catch (Exception e){
-                        e.printStackTrace();
-                    }
-                }).start();
+                    }).start();
 
-                try {
-                    Thread.sleep(5000);
-                } catch (InterruptedException e) {
+                    Thread.sleep(3000);
+                }catch (Exception e){
                     e.printStackTrace();
                 }
             }
 
-            writer.flush();
-            writer.close();
             webcam.close();
-        });
-
-        thread.start();
+        }).start();
     }
 
     public void finish(){
@@ -123,8 +96,7 @@ public class WebcamRecorder {
     }
 
     public boolean getCheatStatus(){
-       int percentage = (int) Math.ceil(cheatFound*100.00/totalCheck);
-       return percentage>=5;
+       return cheatFound>5;
     }
 
     public void startRecording(){

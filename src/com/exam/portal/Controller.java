@@ -13,6 +13,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class Controller implements Initializable {
@@ -29,21 +30,19 @@ public class Controller implements Initializable {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            Platform.runLater(()->{
-                try {
-                    moveToLogin();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            });
+            Platform.runLater(this::moveToLogin);
         }).start();
     }
 
-    private void moveToLogin() throws IOException {
-        Stage primaryStage = (Stage) anchorPane.getScene().getWindow();
-        Parent root = FXMLLoader.load(getClass().getResource("login/login.fxml"));
-        primaryStage.setTitle("Login");
-        primaryStage.setScene(new Scene(root, 700,500));
-        primaryStage.show();
+    private void moveToLogin() {
+        try {
+            Stage primaryStage = (Stage) anchorPane.getScene().getWindow();
+            Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("login/login.fxml")));
+            primaryStage.setTitle("Login");
+            primaryStage.setScene(new Scene(root, 700,500));
+            primaryStage.show();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 }

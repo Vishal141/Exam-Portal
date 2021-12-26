@@ -2,13 +2,10 @@ package com.exam.portal.student;
 
 import com.exam.portal.exams.scheduled.ScheduledExam;
 import com.exam.portal.login.LoginController;
-import com.exam.portal.models.Credentials;
 import com.exam.portal.models.Student;
-import com.exam.portal.models.Teacher;
 import com.exam.portal.server.Server;
 import com.exam.portal.server.ServerHandler;
-import com.exam.portal.teams.StudentTeamsController;
-import com.jfoenix.controls.JFXButton;
+import com.exam.portal.teams.student.StudentTeamsController;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -21,11 +18,8 @@ import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.ObjectInputStream;
 import java.math.BigInteger;
 import java.net.URL;
 import java.nio.file.Files;
@@ -65,13 +59,13 @@ public class StudentController implements Initializable {
 
     //opening team window of selected team.
     public void teamsClicked(ActionEvent actionEvent) {
-        String path = "../teams/studentTeams.fxml";
+        String path = "../teams/student/studentTeams.fxml";
         changeStage(path,"Exam Portal",600,600);
     }
 
     //opening window which shows all the exams.
     public void examsClicked(ActionEvent actionEvent) {
-        String path = "../exams/scheduled/ScheduledExam.fxml";
+        String path = "../exams/scheduled/scheduledExam.fxml";
         ScheduledExam.fromTeacher = false;
         changeStage(path,"Scheduled Exams",600,600);
     }

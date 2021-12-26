@@ -77,26 +77,26 @@ public class TeacherController implements Initializable {
 
     @FXML
     void examsClicked(ActionEvent event) {          //opening window which shows all the exam scheduled by teacher.
-        String path = "../exams/scheduled/ScheduledExam.fxml";
+        String path = "../exams/scheduled/scheduledExam.fxml";
         ScheduledExam.fromTeacher = true;
         changeStage(path,"Scheduled Exams",800,600);
     }
 
     @FXML
     void teamsClicked(ActionEvent event) {       //opens selected team window.
-        changeStage("../teams/teams.fxml","Teams",500,500);
+        changeStage("../teams/teacher/teacherTeams.fxml","Teams",500,500);
     }
 
     public void gotoCreateTeam(ActionEvent actionEvent) {      //opens a new window using which teacher can create a new team.
-        changeStage("../teams/createTeam.fxml","Create Team",500,500);
+        changeStage("../teams/teacher/createTeam.fxml","Create Team",500,500);
     }
 
     public void gotoConductExam(ActionEvent actionEvent) {     //opens a new window using which teacher can create a new exam.
-        changeStage("../exams/teacher/CreateExam.fxml","Create Exam",800,800);
+        changeStage("../exams/teacher/createExam.fxml","Create Exam",800,800);
     }
 
     public void gotoAddStudent(ActionEvent actionEvent) {        //opens a new window using which teacher can add a new student in team.
-        changeStage("../teams/addStudent.fxml","Add Student",700,500);
+        changeStage("../teams/teacher/addStudent.fxml","Add Student",700,500);
     }
 
     ////opens a new window using which teacher can edit details.

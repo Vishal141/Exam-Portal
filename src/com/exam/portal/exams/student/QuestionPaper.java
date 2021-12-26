@@ -150,11 +150,11 @@ public class QuestionPaper implements Initializable {
 
                 while ((hr>0 || mm>0 || sec>0) && runTimer){
                     if(mm==0 && hr>0){
-                        mm += 60;
+                        mm += 59;
                         hr--;
                     }
                     if(sec==0 && mm>0){
-                        sec += 60;
+                        sec += 59;
                         mm--;
                     }
                     int finalHr = hr;
@@ -210,7 +210,7 @@ public class QuestionPaper implements Initializable {
                        }
                        cheatCount++;
                    }
-                   Thread.sleep(5000);
+                   Thread.sleep(2000);
                }
            }catch (Exception e){
                e.printStackTrace();
@@ -415,7 +415,7 @@ public class QuestionPaper implements Initializable {
     //closing current stage and showing exams stage.
     private void backToExams(){
         try {
-            Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("../scheduled/ScheduledExam.fxml")));
+            Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("../scheduled/scheduledExam.fxml")));
             Stage stage = (Stage) testTitle.getScene().getWindow();
             stage.setTitle("Exams");
             stage.setScene(new Scene(root,600,600));

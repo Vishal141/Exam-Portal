@@ -1,10 +1,10 @@
 package com.exam.portal.models;
 
 public class StudentResponse {
-    public  String name;
-    public  String email;
-    public  String contact;
-    public double marksObtained;
+    private String name;
+    private String email;
+    private String contact;
+    private double marksObtained;
 
     public String getName() {
         return name;

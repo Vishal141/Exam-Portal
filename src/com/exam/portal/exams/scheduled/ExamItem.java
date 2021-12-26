@@ -76,6 +76,7 @@ public class ExamItem {
                     InstructionController.exam = exam;
                     SubmissionsController.exam = exam;
                     ViewSubmissionsController.exam = exam;
+                    QuestionPaper.stage = stage;
                     Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource(path)));
                     Scene scene = new Scene(root, 600, 600);
                     stage.setTitle("Exam Portal");

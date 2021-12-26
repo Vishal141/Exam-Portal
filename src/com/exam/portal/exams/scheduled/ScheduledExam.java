@@ -80,7 +80,7 @@ public class ScheduledExam implements Initializable {
         Server server = ServerHandler.getInstance();
         try{
            for(Exam exam:examArrayList) {
-               FXMLLoader loader = new FXMLLoader(getClass().getResource("ExamItem.fxml"));
+               FXMLLoader loader = new FXMLLoader(getClass().getResource("examItem.fxml"));
                Node node = loader.load();
                ExamItem examItem = loader.getController();
                examItem.setTitle(exam.getTitle());
@@ -187,13 +187,13 @@ public class ScheduledExam implements Initializable {
     private void checkExamUpdate(){
         runThread = true;
         new Thread(()->{
-            try {
-                while(runThread){
+            while(runThread){
+                try {
                     ExamUpdate update = new ExamUpdate(StudentController.student.getStudentId(),examsCount);
                     update.setType("create");
                     Server server = ServerHandler.getInstance();
                     update = server.checkExamUpdate(update);
-                    if(update.isUpdate()){
+                    if(update!=null && update.isUpdate()){
                         ExamUpdate finalUpdate = update;
                         Platform.runLater(()->{
                             exams.addAll(finalUpdate.getExams());
@@ -202,9 +202,9 @@ public class ScheduledExam implements Initializable {
                     }
 
                     Thread.sleep(5000);
+                }catch (Exception e){
+                    e.printStackTrace();
                 }
-            }catch (Exception e){
-                e.printStackTrace();
             }
         }).start();
 

@@ -126,8 +126,7 @@ public class CreateExamController implements Initializable {
                     alert.setContentText("Exam successfully created.");
                     alert.showAndWait();
                     stopThread();
-                    Stage stage = (Stage) tfTitle.getScene().getWindow();
-                    stage.close();
+                    back(event);
                 }else{
                     Alert alert = new Alert(Alert.AlertType.ERROR);
                     alert.setHeaderText(null);

@@ -1,8 +1,10 @@
 package com.exam.portal.login;
 
 import com.exam.portal.models.Credentials;
+import com.exam.portal.models.Exam;
 import com.exam.portal.models.Student;
 import com.exam.portal.models.Teacher;
+import com.exam.portal.notificatios.Notification;
 import com.exam.portal.server.Server;
 import com.exam.portal.server.ServerHandler;
 import com.exam.portal.student.StudentController;
@@ -23,6 +25,7 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.MessageDigest;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 import java.util.UUID;
 
@@ -60,14 +63,15 @@ public class LoginController implements Initializable {
 
                 Platform.runLater(()->{   //making login asynchronous
                     if(server.login(student)){
+                        StudentController.student = server.getStudent(UserEmailId.getText());
                         //saving credentials
                         Credentials credentials = new Credentials();
                         credentials.setEmail(student.getEmail());
                         credentials.setPassword(student.getPassword());
                         credentials.setType("student");
+                        credentials.setStudentId(StudentController.student.getStudentId());
                         saveCredentials(credentials);
 
-                        StudentController.student = server.getStudent(UserEmailId.getText());
                         gotoDashboard("../student/studentDashboard.fxml");    //if login is successful than go student dashboard.
                     }else{
                         showWarning("Invalid Credentials", Alert.AlertType.ERROR);    //showing alert if login failed.
@@ -107,6 +111,7 @@ public class LoginController implements Initializable {
             student.setEmail(credentials.getEmail());
             student.setPassword(credentials.getPassword());
             if(server.login(student)){
+                Notification.runThread();                                              //running thread for notifications.
                 StudentController.student = server.getStudent(credentials.getEmail());
                 gotoDashboard("../student/studentDashboard.fxml");
             }
@@ -153,6 +158,13 @@ public class LoginController implements Initializable {
                 if(!Files.exists(Paths.get(dirPath+filePath))){
                     Files.createFile(Paths.get(dirPath+filePath));
                 }
+
+                Server server = ServerHandler.getInstance();
+                ArrayList<Exam> exams = server.getExamScheduledFor(credentials.getStudentId());
+                credentials.setExamCount(exams.size());
+
+                Notification.setTimerForExams(exams,false);  //running threads for showing notifications.
+                Notification.runThread();
 
                 File file = new File(dirPath+filePath);
                 ObjectOutputStream os = new ObjectOutputStream(new FileOutputStream(file,false));
@@ -207,6 +219,14 @@ public class LoginController implements Initializable {
 
                 Platform.runLater(()->{
                     if(server.register(student)){
+                        //saving credentials
+                        Credentials credentials = new Credentials();
+                        credentials.setEmail(student.getEmail());
+                        credentials.setPassword(student.getPassword());
+                        credentials.setType("student");
+                        credentials.setStudentId(student.getStudentId());
+                        saveCredentials(credentials);
+
                         StudentController.student = student;
                         gotoDashboard("../student/studentDashboard.fxml");  //goto dashboard if signUp request is successful.
                     }else{
@@ -223,6 +243,13 @@ public class LoginController implements Initializable {
 
                 Platform.runLater(()->{
                     if(server.register(teacher)){
+                        //saving credentials
+                        Credentials credentials = new Credentials();
+                        credentials.setEmail(teacher.getEmail());
+                        credentials.setPassword(teacher.getPassword());
+                        credentials.setType("teacher");
+                        saveCredentials(credentials);
+
                         TeacherController.teacher = server.getTeacher(teacher.getEmail());
                         gotoDashboard("../teacher/teacherDashboard.fxml");
                     }else {

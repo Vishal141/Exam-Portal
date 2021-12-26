@@ -4,10 +4,12 @@ import com.exam.portal.models.Exam;
 import com.exam.portal.models.StudentResponse;
 import com.exam.portal.server.Server;
 import com.exam.portal.server.ServerHandler;
+import com.exam.portal.student.StudentController;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -16,6 +18,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
 import java.net.URL;
@@ -64,7 +67,7 @@ public class ViewSubmissionsController implements Initializable {
 
         title.setText(exam.getTitle());
         responseList = FXCollections.observableArrayList();
-
+        setListenerToTable();
         fetchSubmissionDetails();
     }
 
@@ -95,12 +98,31 @@ public class ViewSubmissionsController implements Initializable {
         });
     }
 
+    private void setListenerToTable(){
+        responseTable.setOnMouseClicked(mouseEvent -> {
+            StudentResponse studentResponse = responseTable.getSelectionModel().getSelectedItem();
+            Server server = ServerHandler.getInstance();
+            Platform.runLater(()->{
+                StudentController.student = server.getStudent(studentResponse.getEmail());
+                try {
+                    Stage stage = (Stage) searchText.getScene().getWindow();
+                    Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("../student/submissions.fxml")));
+                    stage.setScene(new Scene(root,600,600));
+                    stage.setTitle("Exam Portal");
+                    stage.show();
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            });
+        });
+    }
+
     @FXML
     void back(ActionEvent event) {
         try {
             Stage stage = (Stage) backBtn.getScene().getWindow();
             Parent root;
-            root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("../scheduled/ScheduledExam.fxml")));
+            root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("../scheduled/scheduledExam.fxml")));
             stage.setTitle("Scheduled Exams");
             stage.setScene(new Scene(root, 700, 700));
             stage.show();

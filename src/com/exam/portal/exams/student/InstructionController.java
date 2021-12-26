@@ -57,7 +57,7 @@ public class InstructionController implements Initializable {
             examStartInTimer();
         }
         testTitle.setText(exam.getTitle());
-        duration.setText(exam.getDuration());
+        duration.setText(exam.getDuration() + " Minutes");
         questionCount.setText(exam.getQuestionCount()+"");
         maxScore.setText(exam.getMaxScore()+"");
     }
@@ -172,6 +172,7 @@ public class InstructionController implements Initializable {
 
             Stage stage = (Stage) startBtn.getScene().getWindow();
             QuestionPaper.exam = exam;
+            QuestionPaper.stage = stage;
             Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("questionPaper.fxml")));
             stage.setTitle("Exam Portal");
             stage.setScene(new Scene(root,600,600));
@@ -193,7 +194,7 @@ public class InstructionController implements Initializable {
     public void back(ActionEvent event){
         try {
             Stage stage = (Stage) timerStatus.getScene().getWindow();
-            Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("../scheduled/ScheduledExam.fxml")));
+            Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("../scheduled/scheduledExam.fxml")));
             stage.setScene(new Scene(root,600,600));
             stage.setTitle("Exam Portal");
             stage.show();

@@ -35,6 +35,6 @@ public interface Server {
     public TeamUpdate checkTeamUpdate(TeamUpdate update);
     public ExamUpdate checkExamUpdate(ExamUpdate update);
     public MessageUpdate checkMessageUpdate(MessageUpdate update);
-    public  ArrayList<StudentResponse>fetchExamDetails(String examId);
-
+    public  ArrayList<StudentResponse> fetchExamDetails(String examId);
+    public boolean updateMarks(ExamResponse response);
 }
