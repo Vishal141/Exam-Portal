@@ -7,7 +7,6 @@ import javax.sql.rowset.serial.SerialBlob;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Base64;
-import java.util.Date;
 import java.util.StringTokenizer;
 import java.util.UUID;
 
@@ -83,7 +82,7 @@ public class ExamUtilsDb {
     }
 
     //uploading options of question.
-    public boolean uploadOptions(ArrayList<Option> options){
+    public void uploadOptions(ArrayList<Option> options){
         PreparedStatement preparedStatement=null;
         String query = "INSERT INTO Options VALUES(?,?,?,?,?,?)";
         try{
@@ -102,11 +101,9 @@ public class ExamUtilsDb {
                     preparedStatement.setString(5,option.getText());
                 preparedStatement.execute();
             }
-            return true;
         }catch (Exception e){
             e.printStackTrace();
         }
-        return false;
     }
 
     //uploading images and return its id.
@@ -168,7 +165,7 @@ public class ExamUtilsDb {
     public ArrayList<Exam> getExamsScheduledBy(String teacherId){
         PreparedStatement preparedStatement=null;
         ResultSet rs;
-        String query = "SELECT * FROM Exams WHERE Creator_Id=?";
+        String query = "SELECT * FROM Exams WHERE Creator_Id=? ORDER BY Created_At";
         try{
             preparedStatement = connection.prepareStatement(query);
             preparedStatement.setString(1,teacherId);
@@ -187,9 +184,9 @@ public class ExamUtilsDb {
 
     //return all the exams(without questions) which are scheduled in team in which student having id studentId is included.
     public ArrayList<Exam> getExamsScheduledFor(String studentId){
-        PreparedStatement preparedStatement=null;
+        PreparedStatement preparedStatement;
         ResultSet rs;
-        String query = "SELECT * FROM Exams WHERE Team_Id IN (SELECT Team_Id FROM BelongTo WHERE Student_Id=?)";
+        String query = "SELECT * FROM Exams WHERE Team_Id IN (SELECT Team_Id FROM BelongTo WHERE Student_Id=?) ORDER BY Created_At";
         try{
             preparedStatement = connection.prepareStatement(query);
             preparedStatement.setString(1,studentId);
@@ -372,11 +369,12 @@ public class ExamUtilsDb {
             QuestionResponse questionResponse = new QuestionResponse();
             String token = tokenizer.nextToken();
             String text = token.substring(0,token.lastIndexOf('@'));
-            String type = token.substring(token.lastIndexOf('@'));
+            String type = token.substring(token.lastIndexOf('@')+1);
             questionResponse.setQId(""+idx++);
             questionResponse.setResponse(text);
             if(type.equals(TEXT)){
                 questionResponse.setResponseType(TEXT);
+                questionResponse.setResponse(getText(text));
             }else{
                 questionResponse.setResponseType(OPTIONS);
             }

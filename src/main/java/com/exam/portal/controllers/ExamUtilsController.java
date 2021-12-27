@@ -4,6 +4,7 @@ import com.exam.portal.entities.*;
 import com.exam.portal.interfaces.ExamUtils;
 import com.exam.portal.proctor.Proctor;
 import com.exam.portal.services.ExamUtilsService;
+import com.google.gson.Gson;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;

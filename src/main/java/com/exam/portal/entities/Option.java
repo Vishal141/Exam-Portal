@@ -10,7 +10,6 @@ public class Option {
     private String file;
 
     private boolean correct;
-    private boolean selected;
 
     public Option(){}
 
@@ -68,13 +67,5 @@ public class Option {
 
     public void setCorrect(boolean correct) {
         this.correct = correct;
-    }
-
-    public boolean isSelected() {
-        return selected;
-    }
-
-    public void setSelected(boolean selected) {
-        this.selected = selected;
     }
 }

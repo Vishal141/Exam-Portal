@@ -212,7 +212,8 @@ public class TeamUtilsDb {
             int diff = count-teamUpdate.getPrevCount();
             teamUpdate.setPrevCount(count);
             try{
-                String query = "SELECT * FROM Teams WHERE Team_Id IN (SELECT Team_Id FROM BelongTo WHERE Student_Id=? ORDER BY Added_Date DESC LIMIT ?)";
+                String query = "SELECT T.Team_Id,T.Name,T.Creator_Id,T.Date_Created FROM Teams T INNER JOIN " +
+                        "(SELECT Team_Id FROM BelongTo WHERE Student_Id=? ORDER BY Added_Date DESC LIMIT ?) V ON T.Team_Id=V.Team_Id";
                 PreparedStatement preparedStatement = connection.prepareStatement(query);
                 preparedStatement.setString(1,teamUpdate.getStudentId());
                 preparedStatement.setInt(2,diff);
