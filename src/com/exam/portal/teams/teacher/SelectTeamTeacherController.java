@@ -89,6 +89,7 @@ public class SelectTeamTeacherController implements Initializable {
                         messageCount = update.getPrevCount();
                         MessageUpdate finalUpdate = update;
                         Platform.runLater(()->{
+                            returnedMassages.addAll(finalUpdate.getMessages());
                             setMassages(finalUpdate.getMessages());
                         });
                     }
@@ -178,6 +179,7 @@ public class SelectTeamTeacherController implements Initializable {
 
     @FXML
     void showAllStudents(ActionEvent event) {
+        ShowAllStudents.fromTeacher = true;
         String path ="../showAllStudents.fxml";
         changeStage(path,"students",700,600);
     }

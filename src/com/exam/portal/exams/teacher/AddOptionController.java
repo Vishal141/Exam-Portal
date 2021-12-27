@@ -61,8 +61,9 @@ public class AddOptionController implements Initializable {
                 option.setIsImage(true);
                 option.setText(file.getAbsolutePath());
                 option.setFile(encodeImageToBase64Binary(file));
-                if(correct.isSelected())
+                if(correct.isSelected()){
                     option.setCorrect(true);
+                }
             }
         }else{
             if(optionText.getText().equals("")){                 //checking option text is entered or not.
@@ -76,6 +77,8 @@ public class AddOptionController implements Initializable {
                 flag = true;
                 option.setIsImage(false);
                 option.setText(optionText.getText());
+                if(correct.isSelected())
+                    option.setCorrect(true);
             }
         }
 

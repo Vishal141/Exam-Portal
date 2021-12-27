@@ -20,7 +20,7 @@ public class ProcessesDetails {
                 //System.out.println(name);
             }
           //  System.out.println(count);
-            return count-4;
+            return count-5;
         } catch (IOException e) {
             e.printStackTrace();
         }

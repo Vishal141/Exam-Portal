@@ -4,6 +4,7 @@ import com.exam.portal.exams.scheduled.ScheduledExam;
 import com.exam.portal.models.Message;
 import com.exam.portal.models.MessageUpdate;
 import com.exam.portal.models.Team;
+import com.exam.portal.teams.ShowAllStudents;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -77,6 +78,7 @@ public class SelectTeamStudentController implements Initializable {
                     if(update.isUpdate()){
                         messageCount = update.getPrevCount();
                         MessageUpdate finalUpdate = update;
+                        returnedMessages.addAll(finalUpdate.getMessages());
                         Platform.runLater(()->{
                             setMessages(finalUpdate.getMessages());
                         });
@@ -155,6 +157,7 @@ public class SelectTeamStudentController implements Initializable {
     }
     @FXML
     void showAllStudents(ActionEvent event) {
+        ShowAllStudents.fromTeacher = false;
         String path = "../showAllStudents.fxml";
         changeStage(path);
     }

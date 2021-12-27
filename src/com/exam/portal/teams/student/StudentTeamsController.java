@@ -126,8 +126,9 @@ public class StudentTeamsController implements Initializable {
                 try {
                     TeamUpdate update = new TeamUpdate(StudentController.student.getStudentId(),teamsCount);
                     update = server.checkTeamUpdate(update);
-                    if(update.isUpdate()){                           //student added in any team then add it in list.
+                    if(update!=null && update.isUpdate()){                           //student added in any team then add it in list.
                         TeamUpdate finalUpdate = update;
+                        teams.addAll(finalUpdate.getTeams());
                         Platform.runLater(()-> setList(finalUpdate.getTeams()));
                     }
                     Thread.sleep(5000);

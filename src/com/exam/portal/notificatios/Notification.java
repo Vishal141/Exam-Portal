@@ -63,7 +63,7 @@ public class Notification {
                     Server server = ServerHandler.getInstance();
                     update = server.checkExamUpdate(update);
 
-                    if(update.isUpdate()){
+                    if(update!=null && update.isUpdate()){
                         credentials.setExamCount(update.getPrevCount());
                         //saving credential again in file.
                         ObjectOutputStream os = new ObjectOutputStream(new FileOutputStream(dirPath+filePath,false));

@@ -71,7 +71,7 @@ public class Option {
         this.questionId = questionId;
     }
 
-    public boolean getCorrect() {
+    public boolean isCorrect() {
         return correct;
     }
 

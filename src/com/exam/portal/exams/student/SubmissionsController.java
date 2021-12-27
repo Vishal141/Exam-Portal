@@ -102,6 +102,7 @@ public class SubmissionsController implements Initializable {
     //setting student response in question
     private void setResponses(){
         int idx = 0;
+        if(response==null || response.getResponses()==null)return;
         for(QuestionResponse questionResponse:response.getResponses()){
             Question question = exam.getQuestions().get(idx++);
             if(questionResponse.getResponseType().equals(TEXT))
@@ -161,11 +162,12 @@ public class SubmissionsController implements Initializable {
             boolean isSelected = option.getSelected();
             if(isSelected)
                 questionList.getItems().get(optionIndex).setStyle("-fx-background-color: #304ffe");
-            if(option.getCorrect())
+            if(option.isCorrect())
                 answers.append(optionIndex).append(",");
             optionIndex++;
         }
-        answers.deleteCharAt(answers.lastIndexOf(","));
+        if(answers.length()>0)
+            answers.deleteCharAt(answers.lastIndexOf(","));
 
         Label label = new Label();    //adding label which shows the correct options.
         label.setPrefHeight(30);

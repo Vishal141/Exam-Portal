@@ -12,7 +12,6 @@ import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXListView;
 import com.jfoenix.controls.JFXTextArea;
 import javafx.application.Platform;
-import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -35,7 +34,6 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
-import javax.swing.*;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URL;
@@ -112,7 +110,7 @@ public class QuestionPaper implements Initializable {
         });
     }
 
-    //setting question index list.
+    //setting question index list using which student can go to any question by clicking index.
     private void setQuestionIndexList(){
         ArrayList<String> indices = new ArrayList<>();
         for(int i=1;i<=exam.getQuestionCount();i++)
@@ -182,16 +180,15 @@ public class QuestionPaper implements Initializable {
     private void checkCheatStatus(){
         ProcessesDetails processesDetails = new ProcessesDetails();
         new Thread(()->{
-           try {
-               int cheatCount = 0;    //showing warning to student 3 times if cheating found then after close exam without submitting.
-               while (runTimer){
+           int cheatCount = 0;    //showing warning to student 3 times if cheating found then after close exam without submitting.
+           while (runTimer){
+               try {
                    if(recorder.getCheatStatus() || processesDetails.getProcessesCount()!=1){
                        //System.out.println(cheatCount);
                        if(cheatCount==3){  //checking that cheatCount cross the limit or
-                           Platform.runLater(()->{                                    //any other application has opened.
-                               runTimer = false;
-                               recorder.finish();
-
+                           runTimer = false;
+                           recorder.finish();
+                           Platform.runLater(()->{
                                ExamResponse response = new ExamResponse();
                                response.setExamId(exam.getExamId());
                                response.setStudentId(StudentController.student.getStudentId());
@@ -210,10 +207,10 @@ public class QuestionPaper implements Initializable {
                        }
                        cheatCount++;
                    }
-                   Thread.sleep(2000);
+                   Thread.sleep(5000);
+               }catch (Exception e){
+                   e.printStackTrace();
                }
-           }catch (Exception e){
-               e.printStackTrace();
            }
         }).start();
     }
@@ -388,7 +385,7 @@ public class QuestionPaper implements Initializable {
             }else{
                 boolean flag=true;  //checking that all the options selected by student are correct or not.
                 for(Option option:question.getOptions()){
-                    if (option.getSelected() ^ option.getCorrect()) {       //checking that whether selected option is correct of not.
+                    if (option.getSelected() ^ option.isCorrect()) {       //checking that whether selected option is correct of not.
                         flag = false;
                         break;
                     }
